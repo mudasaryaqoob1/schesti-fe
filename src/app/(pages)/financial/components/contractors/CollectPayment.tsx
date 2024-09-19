@@ -88,26 +88,12 @@ export function CollectPayment({ invoice, onSuccess }: Props) {
             value: formik.values.paymentMethod,
             onBlur: formik.handleBlur,
             options: [
-              {
-                label: 'Cash',
-                value: 'cash',
-              },
-              {
-                label: 'Bank Transfer',
-                value: 'bankTransfer',
-              },
-              {
-                label: 'Cheque',
-                value: 'cheque',
-              },
-              {
-                label: 'Card',
-                value: 'card',
-              },
-              {
-                label: 'Other',
-                value: 'other',
-              },
+              { label: 'Cash', value: 'Cash' },
+              { label: 'Check', value: 'Check' },
+              { label: 'Credit Card', value: 'Credit Card' },
+              { label: 'Debit Card', value: 'Debit Card' },
+              { label: 'Bank Transfer', value: 'Bank Transfer' },
+              { label: 'Other', value: 'Other' },
             ],
           }}
         />

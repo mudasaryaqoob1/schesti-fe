@@ -54,21 +54,21 @@ export function AssetForm({ item, onSuccess }: Props) {
     initialValues: item
       ? { ...item }
       : {
-          file: undefined,
-          name: '',
-          costCode: '',
-          assetType: '',
-          assetDate: new Date().toISOString(),
-          invoiceNo: '',
-          totalPrice: 0,
-          project: '',
-          note: '',
-          salesTax: 0,
-          countryTax: 0,
-          paymentMethod: '',
-          reference: '',
-          repeat: '',
-        },
+        file: undefined,
+        name: '',
+        costCode: '',
+        assetType: '',
+        assetDate: new Date().toISOString(),
+        invoiceNo: '',
+        totalPrice: 0,
+        project: '',
+        note: '',
+        salesTax: 0,
+        countryTax: 0,
+        paymentMethod: '',
+        reference: '',
+        repeat: '',
+      },
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {
@@ -144,7 +144,7 @@ export function AssetForm({ item, onSuccess }: Props) {
           itemRender={() => {
             return null;
           }}
-          onChange={() => {}}
+          onChange={() => { }}
         >
           <p className="ant-upload-drag-icon">
             <Image
@@ -279,7 +279,6 @@ export function AssetForm({ item, onSuccess }: Props) {
                 label: 'Current Assets',
                 title: 'Current Assets',
                 options: [
-                  { label: 'Current Assets', value: 'Current Assets' },
                   { label: 'Cash on Bank', value: 'Cash on Bank' },
                   {
                     label: 'Contract Receivable',

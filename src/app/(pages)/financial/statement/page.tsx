@@ -21,11 +21,12 @@ import { useEffect, useState } from 'react';
 import financialStatement from '@/app/services/financial/financial-statement';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
+import dayjs from 'dayjs';
 
 function FinancialStatementPage() {
   const [dates, setDates] = useState({
-    start: new Date(),
-    end: new Date(),
+    start: dayjs().startOf("month").toDate(),
+    end: dayjs().toDate(),
   })
 
   const [data, setData] = useState({});
@@ -107,6 +108,15 @@ function FinancialStatementPage() {
 
           <DatePicker.RangePicker
             className='border-none'
+            value={[dayjs(dates.start), dayjs(dates.end)]}
+            onChange={(value) => {
+              if (value && value[0] && value[1]) {
+                setDates({
+                  start: value[0].toDate(),
+                  end: value[1].toDate(),
+                })
+              }
+            }}
           />
         </div>
 
