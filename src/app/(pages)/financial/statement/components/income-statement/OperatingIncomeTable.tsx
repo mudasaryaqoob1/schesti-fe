@@ -1,29 +1,46 @@
-import TertiaryHeading from '@/app/component/headings/tertiary';
-import Table, { type ColumnsType } from 'antd/es/table';
+import { NumberInputComponent } from "@/app/component/customInput/NumberInput";
 
 export function OperatingIncomeTable() {
-  const columns: ColumnsType<{}> = [
-    { title: 'Operating Income', dataIndex: 'name' },
-    { title: 'Amount', dataIndex: 'amount' },
-  ];
+
   return (
-    <Table
-      columns={columns}
-      dataSource={[{ name: 'Contract Home', value: '$45,873.12' }]}
-      footer={() => (
-        <div className="w-full flex justify-around">
-          <TertiaryHeading
-            title="Total Operating Income"
-            className="text-schestiPrimaryBlack"
-          />
-          <TertiaryHeading
-            title="$45,873.12"
-            className="text-schestiPrimaryBlack"
-          />
-        </div>
-      )}
-      bordered
-      pagination={false}
-    />
+    <table className="w-full">
+      <thead>
+        <tr className="bg-schestiPrimaryBG rounded-md">
+          <th className=" py-4 rounded-tl-lg ">Operating Income</th>
+          <th className="py-4 ">Amount</th>
+          <th className="py-4 rounded-tr-lg">Total</th>
+        </tr>
+      </thead>
+
+      <tbody className="text-sm">
+
+        <tr className="border-b border-border dark:border-border">
+          <td className="p-4">Contract Income</td>
+          <td className="p-4 text-center max-w-12">
+            <NumberInputComponent
+              label=""
+              name=""
+              prefix="$"
+              placeholder=""
+              field={{
+                className: "pointer-events-none",
+                value: 0.00,
+
+              }}
+            />
+          </td>
+          <td className="p-4"></td>
+        </tr>
+
+
+        {/* Footer */}
+
+        <tr className="border-b border-border dark:border-border">
+          <td className="p-4 font-bold">Total Operating Income</td>
+          <td className="p-4"></td>
+          <td className="p-4 font-bold text-center">$52,358.00</td>
+        </tr>
+      </tbody>
+    </table>
   );
 }
