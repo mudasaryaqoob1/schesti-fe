@@ -130,6 +130,9 @@ function FinancialStatementPage() {
         totalCurrentAssets: function () {
           return this.cashOnBank + this.totalStandardInvoices + this.contractReceivable + formik.values.assets.cashClearing + formik.values.assets.startUpInventory
         }
+      },
+      longTermAssets: {
+        totalLongTermAssets: data.assets.reduce((acc, curr) => acc + curr.totalPrice, 0)
       }
     };
     return () => {
@@ -169,7 +172,10 @@ function FinancialStatementPage() {
           formik={formik}
           calculatedValues={calculatedValues()}
         />
-        <LongTermAssetTable />
+        <LongTermAssetTable
+          calulatedValues={calculatedValues()}
+          assets={data.assets}
+        />
         <AccumulatedDepreciationTable
           formik={formik}
         />

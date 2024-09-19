@@ -30,5 +30,8 @@ export type IFinancialStatementCalculatedValues = {
         totalStandardInvoices: number,
         contractReceivable: number,
         totalCurrentAssets: () => number,
+    },
+    longTermAssets: {
+        totalLongTermAssets: number,
     }
 }
