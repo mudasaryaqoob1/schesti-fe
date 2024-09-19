@@ -79,7 +79,7 @@ function FinancialStatementPage() {
         <CurrentLiabilitiesTable
           formik={formik}
         />
-        <LongTermLiabilitiesTable />
+        <LongTermLiabilitiesTable formik={formik} />
         <TotalLiabilities />
       </div>
 

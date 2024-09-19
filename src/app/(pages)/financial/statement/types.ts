@@ -14,6 +14,5 @@ export type IFinancialStatementState = {
         totalLongTermLiabilities: number,
         statePayrollTaxesPayable: number,
 
-
     }
 }
