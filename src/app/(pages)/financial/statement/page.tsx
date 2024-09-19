@@ -13,7 +13,6 @@ import { LongTermLiabilitiesTable } from './components/liabilities/LongTermLiabi
 import { EquityTable } from './components/equity/EquityTable';
 import { OperatingIncomeTable } from './components/income-statement/OperatingIncomeTable';
 import { DirectExpenseTable } from './components/income-statement/DirectExpenseTable';
-import { TotalExpense } from './components/income-statement/TotalExpense';
 import { OverheadExpenseTable } from './components/income-statement/OverheadExpense';
 import { TotalIndirectExpense } from './components/income-statement/TotalndirectExpense';
 import { DatePicker } from 'antd';
@@ -128,7 +127,7 @@ function FinancialStatementPage() {
         <TertiaryHeading title="Income Statement Jan-Jun 2023" />
         <OperatingIncomeTable />
         <DirectExpenseTable />
-        <TotalExpense />
+
 
         <OverheadExpenseTable />
         <TotalIndirectExpense />
