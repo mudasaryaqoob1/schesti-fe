@@ -10,9 +10,7 @@ import { AccumulatedDepreciationTable } from './components/assets/AccumulatedDep
 import { AssetTotal } from './components/assets/AssetTotal';
 import { CurrentLiabilitiesTable } from './components/liabilities/CurrentLiabilities';
 import { LongTermLiabilitiesTable } from './components/liabilities/LongTermLiabilities';
-import { TotalLiabilities } from './components/liabilities/TotalLiabilities';
 import { EquityTable } from './components/equity/EquityTable';
-import { TotalEquity } from './components/equity/TotalEquity';
 import { OperatingIncomeTable } from './components/income-statement/OperatingIncomeTable';
 import { DirectExpenseTable } from './components/income-statement/DirectExpenseTable';
 import { TotalExpense } from './components/income-statement/TotalExpense';
@@ -37,6 +35,12 @@ function FinancialStatementPage() {
         shareHoldersPayable: 0.0,
         totalLongTermLiabilities: 0.0,
         statePayrollTaxesPayable: 0.0,
+      },
+
+      equity: {
+        capitalStock: 0.0,
+        otherPaidInCapital: 0.0,
+        retainedEarnings: 0.0,
       }
     },
     onSubmit() {
@@ -80,14 +84,13 @@ function FinancialStatementPage() {
           formik={formik}
         />
         <LongTermLiabilitiesTable formik={formik} />
-        <TotalLiabilities />
       </div>
 
       <div className="p-4 border space-y-2 rounded-md">
         <TertiaryHeading title="Equity" />
 
-        <EquityTable />
-        <TotalEquity />
+        <EquityTable formik={formik} />
+
       </div>
 
       {/* Current  profit or loss */}

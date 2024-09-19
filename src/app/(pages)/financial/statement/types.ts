@@ -14,5 +14,11 @@ export type IFinancialStatementState = {
         totalLongTermLiabilities: number,
         statePayrollTaxesPayable: number,
 
+    },
+
+    equity: {
+        capitalStock: number,
+        otherPaidInCapital: number,
+        retainedEarnings: number,
     }
 }
