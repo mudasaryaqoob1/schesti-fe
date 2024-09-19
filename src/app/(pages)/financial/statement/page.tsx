@@ -14,7 +14,6 @@ import { EquityTable } from './components/equity/EquityTable';
 import { OperatingIncomeTable } from './components/income-statement/OperatingIncomeTable';
 import { DirectExpenseTable } from './components/income-statement/DirectExpenseTable';
 import { OverheadExpenseTable } from './components/income-statement/OverheadExpense';
-import { TotalIndirectExpense } from './components/income-statement/TotalndirectExpense';
 import { DatePicker } from 'antd';
 import { IFinancialStatementState } from './types';
 import { useFormik } from 'formik';
@@ -130,7 +129,7 @@ function FinancialStatementPage() {
 
 
         <OverheadExpenseTable />
-        <TotalIndirectExpense />
+
       </div>
 
       {/*  NET  Income  */}
