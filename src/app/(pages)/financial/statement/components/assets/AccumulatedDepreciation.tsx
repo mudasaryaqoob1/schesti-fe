@@ -29,10 +29,13 @@ export function AccumulatedDepreciationTable({ formik }: Props) {
               placeholder=""
               field={{
                 className: "",
-                value: formik.values.assets.accumulatedDepreciationVehicle ? formik.values.assets.accumulatedDepreciationVehicle : undefined,
+                value: formik.values.assets.accumulatedDepreciationVehicle,
                 onChange: val => {
-                  formik.setFieldValue('assets.accumulatedDepreciationVehicle', val as number)
-                }
+                  formik.setFieldValue('assets.accumulatedDepreciationVehicle', Number(val) as number)
+                },
+                formatter(value) {
+                  return `(${value})`
+                },
               }}
             />
           </td>
@@ -44,15 +47,18 @@ export function AccumulatedDepreciationTable({ formik }: Props) {
           <td className="p-4 text-center max-w-12">
             <NumberInputComponent
               label=""
-              name="assets.totalAccumulatedDepreciation"
+              name="assets.totalAccumulatedDepreciationBuilding"
               prefix="$"
               placeholder=""
               field={{
                 className: "",
-                value: formik.values.assets.totalAccumulatedDepreciation ? formik.values.assets.totalAccumulatedDepreciation : undefined,
+                value: formik.values.assets.totalAccumulatedDepreciationBuilding,
                 onChange: val => {
-                  formik.setFieldValue('assets.totalAccumulatedDepreciation', val as number)
-                }
+                  formik.setFieldValue('assets.totalAccumulatedDepreciationBuilding', Number(val) as number)
+                },
+                formatter(value) {
+                  return `(${value})`
+                },
               }}
             />
           </td>
@@ -61,11 +67,11 @@ export function AccumulatedDepreciationTable({ formik }: Props) {
 
         {/* Footer */}
 
-        <tr className="border-b border-border dark:border-border">
+        {/* <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Total Long Term Assets</td>
           <td className="p-4"></td>
           <td className="p-4 font-bold text-center">$52,358.00</td>
-        </tr>
+        </tr> */}
       </tbody>
     </table>
   );

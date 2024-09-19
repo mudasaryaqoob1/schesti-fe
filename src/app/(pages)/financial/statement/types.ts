@@ -5,7 +5,7 @@ export type IFinancialStatementState = {
 
         // Accumulated Depreciation
         accumulatedDepreciationVehicle: number;
-        totalAccumulatedDepreciation: number;
+        totalAccumulatedDepreciationBuilding: number;
     },
 
     liabilities: {
@@ -33,5 +33,10 @@ export type IFinancialStatementCalculatedValues = {
     },
     longTermAssets: {
         totalLongTermAssets: number,
+    },
+    accumalatedDepreciation: {
+        netLongTermAssets: () => number;
+        totalAssets: () => number;
+        totalAccumulatedDepreciation: () => number;
     }
 }

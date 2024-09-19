@@ -82,7 +82,7 @@ function FinancialStatementPage() {
         startUpInventory: 0.0,
 
         accumulatedDepreciationVehicle: 0.0,
-        totalAccumulatedDepreciation: 0.0,
+        totalAccumulatedDepreciationBuilding: 0.0,
       },
       liabilities: {
         healthInsurancePayable: 0.0,
@@ -133,6 +133,17 @@ function FinancialStatementPage() {
       },
       longTermAssets: {
         totalLongTermAssets: data.assets.reduce((acc, curr) => acc + curr.totalPrice, 0)
+      },
+      accumalatedDepreciation: {
+        totalAccumulatedDepreciation: () => {
+          return formik.values.assets.totalAccumulatedDepreciationBuilding + formik.values.assets.accumulatedDepreciationVehicle
+        },
+        netLongTermAssets: () => {
+          return values.longTermAssets.totalLongTermAssets - values.accumalatedDepreciation.totalAccumulatedDepreciation();
+        },
+        totalAssets: () => {
+          return values.assets.totalCurrentAssets() + values.accumalatedDepreciation.netLongTermAssets();
+        },
       }
     };
     return () => {
@@ -179,7 +190,7 @@ function FinancialStatementPage() {
         <AccumulatedDepreciationTable
           formik={formik}
         />
-        <AssetTotal />
+        <AssetTotal calculatedValues={calculatedValues()} />
       </div>
 
       {/* LiabILITIES */}
