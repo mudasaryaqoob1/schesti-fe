@@ -22,6 +22,10 @@ import financialStatement from '@/app/services/financial/financial-statement';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
+import { IInvoice } from '@/app/interfaces/invoices.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IFinancialExpense } from '@/app/interfaces/financial/financial-expense.interface';
+import { IFinancialAsset } from '@/app/interfaces/financial/financial-asset.interface';
 
 function FinancialStatementPage() {
   const [dates, setDates] = useState({
@@ -29,7 +33,17 @@ function FinancialStatementPage() {
     end: dayjs().toDate(),
   })
 
-  const [data, setData] = useState({});
+  const [data, setData] = useState<{
+    standardInvoices: IInvoice[],
+    aiainvoices: IAIAInvoice[],
+    expenses: IFinancialExpense[],
+    assets: IFinancialAsset[]
+  }>({
+    aiainvoices: [],
+    standardInvoices: [],
+    expenses: [],
+    assets: []
+  });
 
   const [loading, setLoading] = useState(false);
 
@@ -58,6 +72,8 @@ function FinancialStatementPage() {
     }
   }
 
+
+  console.log(data);
 
 
   const formik = useFormik<IFinancialStatementState>({
