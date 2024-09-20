@@ -29,10 +29,10 @@ const menuItems: MenuProps['items'] = [
     key: 'edit',
     label: <p>Edit</p>,
   },
-  {
-    key: 'editTools',
-    label: <p>Edit Tools</p>,
-  },
+  // {
+  //   key: 'editTools',
+  //   label: <p>Edit Tools</p>,
+  // },
   {
     key: 'viewContract',
     label: <p>View Contract</p>,

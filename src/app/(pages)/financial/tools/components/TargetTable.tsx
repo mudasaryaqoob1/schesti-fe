@@ -1,4 +1,5 @@
 import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
@@ -13,6 +14,8 @@ import { totalReceivable } from '../utils';
 import { Excel } from 'antd-table-saveas-excel';
 import moment from 'moment';
 import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { Routes } from '@/app/utils/plans.utils';
 
 type Props = {
   targetsQuery: UseQueryResult<IResponseInterface<ISettingTarget[]>, unknown>;
@@ -30,6 +33,7 @@ type Option = {
 
 export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const router = useRouterHook();
   const currency = useCurrencyFormatter();
   if (clientInvoiceQuery.isLoading || targetsQuery.isLoading) {
     return <Skeleton />;
@@ -112,12 +116,11 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
         str2Percent: true,
       })
       .saveAs(
-        `${
-          'financial-tools' +
-          '-' +
-          moment().month() +
-          '-' +
-          new Date().getTime()
+        `${'financial-tools' +
+        '-' +
+        moment().month() +
+        '-' +
+        new Date().getTime()
         }.xlsx`
       );
   };
@@ -142,10 +145,19 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
             onChange={(value) => setSelectedYear(value)}
             className="w-40"
           />
-          <CustomButton
+          <WhiteButton
             text="Download"
-            className="!w-44 !py-2"
+            className="!w-fit !py-2"
             onClick={handleClick}
+          />
+          <CustomButton
+            text="Financial Statement"
+            className="!w-fit !py-2"
+            onClick={() => {
+              router.push(
+                `${Routes.Financial.Statement}`
+              )
+            }}
           />
         </div>
       </div>
