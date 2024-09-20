@@ -1,6 +1,13 @@
 import { NumberInputComponent } from "@/app/component/customInput/NumberInput";
+import { IFinancialStatementCalculatedValues } from "../../types";
+import { USCurrencyFormat } from "@/app/utils/format";
 
-export function OperatingIncomeTable() {
+
+type Props = {
+  calculatedValues: IFinancialStatementCalculatedValues
+}
+
+export function OperatingIncomeTable({ calculatedValues }: Props) {
 
   return (
     <table className="w-full">
@@ -24,7 +31,7 @@ export function OperatingIncomeTable() {
               placeholder=""
               field={{
                 className: "pointer-events-none",
-                value: 0.00,
+                value: calculatedValues.operatingIncome.contractIncome(),
 
               }}
             />
@@ -38,7 +45,7 @@ export function OperatingIncomeTable() {
         <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Total Operating Income</td>
           <td className="p-4"></td>
-          <td className="p-4 font-bold text-center">$52,358.00</td>
+          <td className="p-4 font-bold text-center">{USCurrencyFormat.format(calculatedValues.operatingIncome.totalOperatingIncome())}</td>
         </tr>
       </tbody>
     </table>

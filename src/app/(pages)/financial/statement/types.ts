@@ -56,5 +56,9 @@ export type IFinancialStatementCalculatedValues = {
         subcontractedExpense: number;
         otherJobExpense: number;
         totalDirectExpense: () => number;
+    },
+    operatingIncome: {
+        contractIncome: () => number;
+        totalOperatingIncome: () => number;
     }
 }

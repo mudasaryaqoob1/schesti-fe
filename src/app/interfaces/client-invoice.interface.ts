@@ -51,4 +51,5 @@ export type IAIAInvoice = {
   otherFiles: FileInterface[];
 
   isParent: boolean;
+  parent: string;
 } & G7State;

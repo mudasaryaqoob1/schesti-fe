@@ -27,6 +27,7 @@ import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import { IFinancialExpense } from '@/app/interfaces/financial/financial-expense.interface';
 import { IFinancialAsset } from '@/app/interfaces/financial/financial-asset.interface';
 import { getCashonBankFromAssets } from './utils';
+import _ from 'lodash';
 
 function FinancialStatementPage() {
   const [dates, setDates] = useState({
@@ -116,17 +117,26 @@ function FinancialStatementPage() {
   }
 
   function getCalculatedValues() {
-    const aiaInvoicesReceiveables = data.aiainvoices.filter(invoice => invoice.isParent).map((invoice) => {
-      // get receivable amount
-      const receiveables = invoice.amountPaid;
-      return receiveables;
+    // const aiaInvoicesReceiveables = data.aiainvoices.filter(invoice => invoice.isParent).map((invoice) => {
+    //   // get receivable amount
+    //   const receiveables = invoice.amountPaid;
+    //   return receiveables;
+    // });
+
+    const groupedApplications = _.groupBy(data.aiainvoices, app => app.isParent ? app._id : app.parent);
+
+    const lastPhases = _.map(groupedApplications, group => {
+      return _.maxBy(group, 'createdAt'); // Select the last phase by createdAt
     });
+
+    const totalRemainingAmount = _.sumBy(lastPhases, (app) => app ? (app.totalAmount - app.amountPaid) : 0);
+
 
     const values: IFinancialStatementCalculatedValues = {
       assets: {
         cashOnBank: getCashonBankFromAssets(data.assets).reduce((acc, curr) => acc + curr.totalPrice, 0),
         totalStandardInvoices: data.standardInvoices.reduce((acc, curr) => acc + curr.amount, 0),
-        contractReceivable: aiaInvoicesReceiveables.reduce((acc, curr) => acc + curr, 0),
+        contractReceivable: totalRemainingAmount,
         totalCurrentAssets: function () {
           return this.cashOnBank + this.totalStandardInvoices + this.contractReceivable + formik.values.assets.cashClearing + formik.values.assets.startUpInventory
         }
@@ -171,6 +181,14 @@ function FinancialStatementPage() {
         subcontractedExpense: data.expenses.filter(expense => expense.expenseType === 'SubContract').reduce((acc, curr) => acc + curr.totalPrice, 0),
         totalDirectExpense() {
           return this.materials + this.labourExpenses + this.otherJobExpense + this.subcontractedExpense
+        },
+      },
+      operatingIncome: {
+        contractIncome: () => {
+          return values.assets.contractReceivable + values.assets.totalStandardInvoices;
+        },
+        totalOperatingIncome() {
+          return this.contractIncome();
         },
       }
     };
@@ -277,7 +295,9 @@ function FinancialStatementPage() {
       {/* Income Statement */}
       <div className="p-4 border space-y-2 rounded-md">
         <TertiaryHeading title="Income Statement Jan-Jun 2023" />
-        <OperatingIncomeTable />
+        <OperatingIncomeTable
+          calculatedValues={calculatedValues()}
+        />
         <DirectExpenseTable
           calculatedValues={calculatedValues()}
         />
