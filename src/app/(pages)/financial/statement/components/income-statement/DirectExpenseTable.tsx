@@ -1,6 +1,13 @@
 import { NumberInputComponent } from '@/app/component/customInput/NumberInput';
+import { IFinancialStatementCalculatedValues } from '../../types';
+import { USCurrencyFormat } from '@/app/utils/format';
 
-export function DirectExpenseTable() {
+
+type Props = {
+  calculatedValues: IFinancialStatementCalculatedValues;
+}
+
+export function DirectExpenseTable({ calculatedValues }: Props) {
   return (
     <table className="w-full">
       <thead>
@@ -23,8 +30,7 @@ export function DirectExpenseTable() {
               placeholder=""
               field={{
                 className: "pointer-events-none",
-                value: 0.00,
-
+                value: calculatedValues.directExpense.materials,
               }}
             />
           </td>
@@ -41,7 +47,7 @@ export function DirectExpenseTable() {
               placeholder=""
               field={{
                 className: "pointer-events-none",
-                value: 0.00,
+                value: calculatedValues.directExpense.labourExpenses,
 
               }}
             />
@@ -59,7 +65,7 @@ export function DirectExpenseTable() {
               placeholder=""
               field={{
                 className: "pointer-events-none",
-                value: 0.00,
+                value: calculatedValues.directExpense.subcontractedExpense,
 
               }}
             />
@@ -76,7 +82,7 @@ export function DirectExpenseTable() {
               placeholder=""
               field={{
                 className: "pointer-events-none",
-                value: 0.00,
+                value: calculatedValues.directExpense.otherJobExpense,
 
               }}
             />
@@ -90,17 +96,17 @@ export function DirectExpenseTable() {
         <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Total Direct Expense</td>
           <td className="p-4"></td>
-          <td className="p-4 font-bold text-center">$52,358.00</td>
+          <td className="p-4 font-bold text-center">{USCurrencyFormat.format(calculatedValues.directExpense.totalDirectExpense())}</td>
         </tr>
         <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Total Direct and Equipment/Shop Expense</td>
           <td className="p-4"></td>
-          <td className="p-4 font-bold text-center">$52,358.00</td>
+          <td className="p-4 font-bold text-center">{USCurrencyFormat.format(calculatedValues.directExpense.totalDirectExpense())}</td>
         </tr>
         <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Gross Profit</td>
           <td className="p-4"></td>
-          <td className="p-4 font-bold text-center">$52,358.00</td>
+          <td className="p-4 font-bold text-center">{USCurrencyFormat.format(0)}</td>
         </tr>
       </tbody>
     </table>

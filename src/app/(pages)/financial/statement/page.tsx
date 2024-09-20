@@ -162,6 +162,16 @@ function FinancialStatementPage() {
         subTotalEquity() {
           return formik.values.equity.capitalStock + formik.values.equity.otherPaidInCapital + formik.values.equity.retainedEarnings;
         },
+      },
+
+      directExpense: {
+        materials: data.expenses.filter(expense => expense.expenseType === 'Material').reduce((acc, curr) => acc + curr.totalPrice, 0),
+        labourExpenses: data.expenses.filter(expense => expense.expenseType === 'Labour').reduce((acc, curr) => acc + curr.totalPrice, 0),
+        otherJobExpense: data.expenses.filter(expense => expense.expenseType === 'General Condition').reduce((acc, curr) => acc + curr.totalPrice, 0),
+        subcontractedExpense: data.expenses.filter(expense => expense.expenseType === 'SubContract').reduce((acc, curr) => acc + curr.totalPrice, 0),
+        totalDirectExpense() {
+          return this.materials + this.labourExpenses + this.otherJobExpense + this.subcontractedExpense
+        },
       }
     };
     return () => {
@@ -268,7 +278,9 @@ function FinancialStatementPage() {
       <div className="p-4 border space-y-2 rounded-md">
         <TertiaryHeading title="Income Statement Jan-Jun 2023" />
         <OperatingIncomeTable />
-        <DirectExpenseTable />
+        <DirectExpenseTable
+          calculatedValues={calculatedValues()}
+        />
 
 
         <OverheadExpenseTable />

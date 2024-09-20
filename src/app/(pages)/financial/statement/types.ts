@@ -49,5 +49,12 @@ export type IFinancialStatementCalculatedValues = {
     },
     equity: {
         subTotalEquity: () => number;
+    },
+    directExpense: {
+        materials: number;
+        labourExpenses: number;
+        subcontractedExpense: number;
+        otherJobExpense: number;
+        totalDirectExpense: () => number;
     }
 }
