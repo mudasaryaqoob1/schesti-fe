@@ -106,7 +106,7 @@ export function DirectExpenseTable({ calculatedValues }: Props) {
         <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Gross Profit</td>
           <td className="p-4"></td>
-          <td className="p-4 font-bold text-center">{USCurrencyFormat.format(0)}</td>
+          <td className="p-4 font-bold text-center">{USCurrencyFormat.format(calculatedValues.operatingIncome.totalOperatingIncome() - calculatedValues.directExpense.totalDirectExpense())}</td>
         </tr>
       </tbody>
     </table>
