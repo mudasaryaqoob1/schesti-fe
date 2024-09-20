@@ -144,6 +144,14 @@ function FinancialStatementPage() {
         totalAssets: () => {
           return values.assets.totalCurrentAssets() + values.accumalatedDepreciation.netLongTermAssets();
         },
+      },
+      currentLiabilities: {
+        totalAccountsPayable: data.expenses.filter(expense => expense.expenseType === 'SubContract').reduce((acc, curr) => acc + curr.totalPrice, 0),
+        creditCards: data.expenses.filter(expense => expense.paymentMethod === 'Credit Card').reduce((acc, curr) => acc + curr.totalPrice, 0),
+        totalCurrentLiabilities() {
+          return this.totalAccountsPayable + formik.values.liabilities.statePayrollTaxesPayable + formik.values.liabilities.healthInsurancePayable
+            + this.creditCards
+        },
       }
     };
     return () => {
@@ -200,6 +208,7 @@ function FinancialStatementPage() {
 
         <CurrentLiabilitiesTable
           formik={formik}
+          calculatedValues={calculatedValues()}
         />
         <LongTermLiabilitiesTable formik={formik} />
       </div>

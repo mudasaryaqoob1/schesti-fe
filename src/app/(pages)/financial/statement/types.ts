@@ -38,5 +38,10 @@ export type IFinancialStatementCalculatedValues = {
         netLongTermAssets: () => number;
         totalAssets: () => number;
         totalAccumulatedDepreciation: () => number;
+    },
+    currentLiabilities: {
+        totalAccountsPayable: number;
+        creditCards: number;
+        totalCurrentLiabilities: () => number;
     }
 }

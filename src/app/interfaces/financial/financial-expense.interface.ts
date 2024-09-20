@@ -1,11 +1,15 @@
 import { FileInterface } from '../file.interface';
+import { IPaymentMethod } from '../invoices.interface';
 import { IUserInterface } from '../user.interface';
+
+
+type ExpenseType = 'Labour' | 'Material' | 'SubContract' | 'General Condition' | 'Overhead';
 
 export interface IFinancialExpense {
   _id: string;
   name: string;
   costCode: number;
-  expenseType: string;
+  expenseType: ExpenseType;
   expenseDate: string;
   invoiceNo: string;
   totalPrice: number;
@@ -13,7 +17,7 @@ export interface IFinancialExpense {
   note: string;
   salesTax: number;
   countryTax: number;
-  paymentMethod: string;
+  paymentMethod: IPaymentMethod;
   reference: string;
   repeat: string;
   file: FileInterface;

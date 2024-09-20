@@ -1,11 +1,13 @@
 import type { FormikProps } from "formik";
-import { IFinancialStatementState } from "../../types";
+import { IFinancialStatementCalculatedValues, IFinancialStatementState } from "../../types";
 import { NumberInputComponent } from "@/app/component/customInput/NumberInput";
+import { USCurrencyFormat } from "@/app/utils/format";
 
 type Props = {
-  formik: FormikProps<IFinancialStatementState>
+  formik: FormikProps<IFinancialStatementState>;
+  calculatedValues: IFinancialStatementCalculatedValues;
 }
-export function CurrentLiabilitiesTable({ formik }: Props) {
+export function CurrentLiabilitiesTable({ formik, calculatedValues }: Props) {
 
   return (
     <table className="w-full">
@@ -28,7 +30,7 @@ export function CurrentLiabilitiesTable({ formik }: Props) {
               placeholder=""
               field={{
                 className: "pointer-events-none",
-                value: 0.00,
+                value: calculatedValues.currentLiabilities.totalAccountsPayable,
 
               }}
             />
@@ -50,7 +52,7 @@ export function CurrentLiabilitiesTable({ formik }: Props) {
                 className: "",
                 value: formik.values.liabilities.statePayrollTaxesPayable ? formik.values.liabilities.statePayrollTaxesPayable : undefined,
                 onChange: val => {
-                  formik.setFieldValue('liabilities.statePayrollTaxesPayable', val as number)
+                  formik.setFieldValue('liabilities.statePayrollTaxesPayable', Number(val))
                 }
 
               }}
@@ -72,7 +74,7 @@ export function CurrentLiabilitiesTable({ formik }: Props) {
                 className: "",
                 value: formik.values.liabilities.healthInsurancePayable ? formik.values.liabilities.healthInsurancePayable : undefined,
                 onChange: val => {
-                  formik.setFieldValue('liabilities.healthInsurancePayable', val as number)
+                  formik.setFieldValue('liabilities.healthInsurancePayable', Number(val))
                 }
 
               }}
@@ -91,7 +93,7 @@ export function CurrentLiabilitiesTable({ formik }: Props) {
               placeholder=""
               field={{
                 className: "pointer-events-none",
-                value: 0.00,
+                value: calculatedValues.currentLiabilities.creditCards,
 
               }}
             />
@@ -103,7 +105,7 @@ export function CurrentLiabilitiesTable({ formik }: Props) {
         <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Total Current Liabilities</td>
           <td className="p-4"></td>
-          <td className="p-4 font-bold text-center">$52,358.00</td>
+          <td className="p-4 font-bold text-center">{USCurrencyFormat.format(calculatedValues.currentLiabilities.totalCurrentLiabilities())}</td>
         </tr>
       </tbody>
     </table>
