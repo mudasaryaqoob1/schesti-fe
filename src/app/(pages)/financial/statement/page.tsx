@@ -152,6 +152,11 @@ function FinancialStatementPage() {
           return this.totalAccountsPayable + formik.values.liabilities.statePayrollTaxesPayable + formik.values.liabilities.healthInsurancePayable
             + this.creditCards
         },
+      },
+      liabilities: {
+        totalLiabilities() {
+          return formik.values.liabilities.shareHoldersPayable + formik.values.liabilities.totalLongTermLiabilities
+        },
       }
     };
     return () => {
@@ -210,7 +215,9 @@ function FinancialStatementPage() {
           formik={formik}
           calculatedValues={calculatedValues()}
         />
-        <LongTermLiabilitiesTable formik={formik} />
+        <LongTermLiabilitiesTable
+          calculatedValues={calculatedValues()}
+          formik={formik} />
       </div>
 
       <div className="p-4 border space-y-2 rounded-md">

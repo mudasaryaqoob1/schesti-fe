@@ -1,11 +1,13 @@
 import type { FormikProps } from "formik"
-import { IFinancialStatementState } from "../../types"
+import { IFinancialStatementCalculatedValues, IFinancialStatementState } from "../../types"
 import { NumberInputComponent } from "@/app/component/customInput/NumberInput"
+import { USCurrencyFormat } from "@/app/utils/format";
 
 type Props = {
-  formik: FormikProps<IFinancialStatementState>
+  formik: FormikProps<IFinancialStatementState>;
+  calculatedValues: IFinancialStatementCalculatedValues;
 }
-export function LongTermLiabilitiesTable({ formik }: Props) {
+export function LongTermLiabilitiesTable({ formik, calculatedValues }: Props) {
   return <table className="w-full">
     <thead>
       <tr className="bg-schestiPrimaryBG rounded-md">
@@ -28,7 +30,7 @@ export function LongTermLiabilitiesTable({ formik }: Props) {
               className: "",
               value: formik.values.liabilities.shareHoldersPayable ? formik.values.liabilities.shareHoldersPayable : undefined,
               onChange: val => {
-                formik.setFieldValue('liabilities.shareHoldersPayable', val as number)
+                formik.setFieldValue('liabilities.shareHoldersPayable', Number(val))
               }
             }}
           />
@@ -48,7 +50,7 @@ export function LongTermLiabilitiesTable({ formik }: Props) {
               className: "",
               value: formik.values.liabilities.totalLongTermLiabilities ? formik.values.liabilities.totalLongTermLiabilities : undefined,
               onChange: val => {
-                formik.setFieldValue('liabilities.totalLongTermLiabilities', val as number)
+                formik.setFieldValue('liabilities.totalLongTermLiabilities', Number(val))
               }
             }}
           />
@@ -63,7 +65,7 @@ export function LongTermLiabilitiesTable({ formik }: Props) {
       <tr className="border-b border-border dark:border-border">
         <td className="p-4 font-bold">Total Liabilities</td>
         <td className="p-4"></td>
-        <td className="p-4 font-bold text-center">$52,358.00</td>
+        <td className="p-4 font-bold text-center">{USCurrencyFormat.format(calculatedValues.liabilities.totalLiabilities())}</td>
       </tr>
     </tbody>
   </table>

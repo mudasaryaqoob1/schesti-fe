@@ -43,5 +43,8 @@ export type IFinancialStatementCalculatedValues = {
         totalAccountsPayable: number;
         creditCards: number;
         totalCurrentLiabilities: () => number;
+    },
+    liabilities: {
+        totalLiabilities: () => number;
     }
 }
