@@ -50,7 +50,7 @@ export function CurrentLiabilitiesTable({ formik, calculatedValues }: Props) {
               placeholder=""
               field={{
                 className: "",
-                value: formik.values.liabilities.statePayrollTaxesPayable ? formik.values.liabilities.statePayrollTaxesPayable : undefined,
+                value: formik.values.liabilities.statePayrollTaxesPayable,
                 onChange: val => {
                   formik.setFieldValue('liabilities.statePayrollTaxesPayable', Number(val))
                 }
@@ -72,7 +72,7 @@ export function CurrentLiabilitiesTable({ formik, calculatedValues }: Props) {
               placeholder=""
               field={{
                 className: "",
-                value: formik.values.liabilities.healthInsurancePayable ? formik.values.liabilities.healthInsurancePayable : undefined,
+                value: formik.values.liabilities.healthInsurancePayable,
                 onChange: val => {
                   formik.setFieldValue('liabilities.healthInsurancePayable', Number(val))
                 }

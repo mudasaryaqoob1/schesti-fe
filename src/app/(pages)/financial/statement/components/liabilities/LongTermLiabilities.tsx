@@ -28,7 +28,7 @@ export function LongTermLiabilitiesTable({ formik, calculatedValues }: Props) {
             placeholder=""
             field={{
               className: "",
-              value: formik.values.liabilities.shareHoldersPayable ? formik.values.liabilities.shareHoldersPayable : undefined,
+              value: formik.values.liabilities.shareHoldersPayable,
               onChange: val => {
                 formik.setFieldValue('liabilities.shareHoldersPayable', Number(val))
               }
@@ -48,7 +48,7 @@ export function LongTermLiabilitiesTable({ formik, calculatedValues }: Props) {
             placeholder=""
             field={{
               className: "",
-              value: formik.values.liabilities.totalLongTermLiabilities ? formik.values.liabilities.totalLongTermLiabilities : undefined,
+              value: formik.values.liabilities.totalLongTermLiabilities,
               onChange: val => {
                 formik.setFieldValue('liabilities.totalLongTermLiabilities', Number(val))
               }

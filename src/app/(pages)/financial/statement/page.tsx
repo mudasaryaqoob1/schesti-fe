@@ -157,6 +157,11 @@ function FinancialStatementPage() {
         totalLiabilities() {
           return formik.values.liabilities.shareHoldersPayable + formik.values.liabilities.totalLongTermLiabilities
         },
+      },
+      equity: {
+        subTotalEquity() {
+          return formik.values.equity.capitalStock + formik.values.equity.otherPaidInCapital + formik.values.equity.retainedEarnings;
+        },
       }
     };
     return () => {
@@ -223,7 +228,9 @@ function FinancialStatementPage() {
       <div className="p-4 border space-y-2 rounded-md">
         <TertiaryHeading title="Equity" />
 
-        <EquityTable formik={formik} />
+        <EquityTable
+          calculatedValues={calculatedValues()}
+          formik={formik} />
 
       </div>
 
