@@ -51,6 +51,8 @@ export type IFinancialStatementCalculatedValues = {
     },
     equity: {
         subTotalEquity: () => number;
+        totalEquity: () => number;
+        totalLiabilitiesAndEquity: () => number;
     },
     directExpense: {
         materials: number;

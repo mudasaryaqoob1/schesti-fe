@@ -28,6 +28,7 @@ import { IFinancialExpense } from '@/app/interfaces/financial/financial-expense.
 import { IFinancialAsset } from '@/app/interfaces/financial/financial-asset.interface';
 import { getCashonBankFromAssets } from './utils';
 import _ from 'lodash';
+import { USCurrencyFormat } from '@/app/utils/format';
 
 function FinancialStatementPage() {
   const [dates, setDates] = useState({
@@ -172,6 +173,12 @@ function FinancialStatementPage() {
         subTotalEquity() {
           return formik.values.equity.capitalStock + formik.values.equity.otherPaidInCapital + formik.values.equity.retainedEarnings;
         },
+        totalEquity: () => {
+          return values.accumalatedDepreciation.totalAssets() - values.liabilities.totalLiabilities();
+        },
+        totalLiabilitiesAndEquity: () => {
+          return values.liabilities.totalLiabilities() + values.equity.subTotalEquity();
+        }
       },
 
       directExpense: {
@@ -294,7 +301,9 @@ function FinancialStatementPage() {
               title="Current Profit (Loss)"
               className=" font-medium text-base"
             />
-            <TertiaryHeading title="$4000.12" className=" text-base" />
+            <TertiaryHeading
+              title={USCurrencyFormat.format(calculatedValues().netIncome.totalNetIncome())}
+              className=" text-base" />
           </div>
 
           <div className="grid grid-cols-5">
@@ -302,7 +311,9 @@ function FinancialStatementPage() {
               title="Total Equity/Capital"
               className=" font-medium text-base"
             />
-            <TertiaryHeading title="$4000.12" className=" text-base" />
+            <TertiaryHeading
+              title={USCurrencyFormat.format(calculatedValues().equity.totalEquity())}
+              className=" text-base" />
           </div>
 
           <div className="grid grid-cols-5">
@@ -310,7 +321,9 @@ function FinancialStatementPage() {
               title="Total Liabilities & Equity"
               className=" font-medium text-base"
             />
-            <TertiaryHeading title="$4000.12" className=" text-base" />
+            <TertiaryHeading
+              title={USCurrencyFormat.format(calculatedValues().equity.totalLiabilitiesAndEquity())}
+              className=" text-base" />
           </div>
         </div>
       </div>
@@ -340,7 +353,7 @@ function FinancialStatementPage() {
               title="Net Income  before Tax"
               className=" font-medium text-base"
             />
-            <TertiaryHeading title="$4000.12" className=" text-base" />
+            <TertiaryHeading title={USCurrencyFormat.format(calculatedValues().netIncome.netIncomeBeforeTax())} className=" text-base" />
           </div>
 
           <div className="grid grid-cols-5">
@@ -348,7 +361,9 @@ function FinancialStatementPage() {
               title="Net Income"
               className=" font-medium text-base"
             />
-            <TertiaryHeading title="$4000.12" className=" text-base" />
+            <TertiaryHeading
+              title={USCurrencyFormat.format(calculatedValues().netIncome.netIncomeBeforeTax())}
+              className=" text-base" />
           </div>
         </div>
       </div>
