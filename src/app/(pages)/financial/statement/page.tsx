@@ -182,6 +182,9 @@ function FinancialStatementPage() {
         totalDirectExpense() {
           return this.materials + this.labourExpenses + this.otherJobExpense + this.subcontractedExpense
         },
+        grossProfit: () => {
+          return values.operatingIncome.totalOperatingIncome() - values.directExpense.totalDirectExpense()
+        },
       },
       operatingIncome: {
         contractIncome: () => {
@@ -189,6 +192,26 @@ function FinancialStatementPage() {
         },
         totalOperatingIncome() {
           return this.contractIncome();
+        },
+      },
+      overheadExpense: {
+        overheadList: data.expenses.filter(expense => expense.expenseType === 'Overhead'),
+        incomeFromOperations: () => {
+          return values.directExpense.grossProfit() + values.overheadExpense.totalIndirectExpense();
+        },
+        totalIndirectExpense() {
+          return this.totalOverheadExpense();
+        },
+        totalOverheadExpense() {
+          return this.overheadList.reduce((acc, curr) => acc + curr.totalPrice, 0);
+        },
+      },
+      netIncome: {
+        netIncomeBeforeTax: () => {
+          return values.overheadExpense.totalOverheadExpense();
+        },
+        totalNetIncome() {
+          return this.netIncomeBeforeTax();
         },
       }
     };
@@ -303,7 +326,9 @@ function FinancialStatementPage() {
         />
 
 
-        <OverheadExpenseTable />
+        <OverheadExpenseTable
+          calculatedValues={calculatedValues()}
+        />
 
       </div>
 

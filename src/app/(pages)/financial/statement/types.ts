@@ -1,3 +1,5 @@
+import { IFinancialExpense } from "@/app/interfaces/financial/financial-expense.interface";
+
 export type IFinancialStatementState = {
     assets: {
         cashClearing: number,
@@ -56,9 +58,21 @@ export type IFinancialStatementCalculatedValues = {
         subcontractedExpense: number;
         otherJobExpense: number;
         totalDirectExpense: () => number;
+        grossProfit: () => number;
     },
     operatingIncome: {
         contractIncome: () => number;
         totalOperatingIncome: () => number;
+    },
+    overheadExpense: {
+        overheadList: IFinancialExpense[];
+
+        totalOverheadExpense: () => number;
+        totalIndirectExpense: () => number;
+        incomeFromOperations: () => number;
+    },
+    netIncome: {
+        netIncomeBeforeTax: () => number;
+        totalNetIncome: () => number;
     }
 }
