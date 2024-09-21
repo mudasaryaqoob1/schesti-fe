@@ -12,7 +12,7 @@ import DraggableItem from './DraggableItem';
 import { StandardToolItem } from './standard-tools-items';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import DraggableTool from './DraggableTool';
-import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { toast } from 'react-toastify';
@@ -34,13 +34,14 @@ type Props = {
   tools: ToolState[];
   setTools: React.Dispatch<React.SetStateAction<ToolState[]>>;
   color?: string;
+  receipt: ContractPartyType | null;
 };
 
 export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
-  ({ mode, pdfFile, tools, setTools, contract, color = '#007ab6' }, ref) => {
+  ({ mode, pdfFile, tools, setTools, contract, receipt, color = '#007ab6' }, ref) => {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
-    const { PDFJs } = usePDFJS(async () => {});
+    const { PDFJs } = usePDFJS(async () => { });
     const containerRef = useRef<HTMLDivElement>(null);
     const pdfContainerRef = useRef<HTMLDivElement>(null);
     const [selectedTool, setSelectedTool] = useState<ToolState | null>(null);
@@ -231,6 +232,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                       contract={contract}
                       color={color}
                       tools={tools}
+                      receipt={receipt}
                     />
                   ) : mode === 'edit-fields' ? (
                     <DraggableItem type={item.tool} key={item.id} data={item}>
@@ -242,19 +244,21 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                         key={item.id}
                         onDelete={() => handleRemoveTool(item)}
                         contract={contract}
+                        receipt={null}
                       />
                     </DraggableItem>
                   ) : mode === 'view-fields' || mode === 'view-values' ? (
                     <StandardToolItem
                       color={color}
-                      onClick={() => {}}
-                      onClose={() => {}}
+                      onClick={() => { }}
+                      onClose={() => { }}
                       selectedTool={selectedTool}
-                      onChange={() => {}}
+                      onChange={() => { }}
                       mode={mode}
                       item={item}
                       key={item.id}
                       contract={contract}
+                      receipt={receipt}
                     />
                   ) : null;
                 })}

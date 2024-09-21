@@ -155,6 +155,7 @@ export default function SignPdfContract() {
             tools={tools}
             setTools={setTools}
             color={receipt.color}
+            receipt={receipt}
             ref={contractPdfRef}
           />
         </div>

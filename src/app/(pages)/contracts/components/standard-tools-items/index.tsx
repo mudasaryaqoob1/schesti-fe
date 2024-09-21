@@ -16,7 +16,7 @@ import {
 } from '@/app/component/fonts';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { CloseOutlined, LoadingOutlined } from '@ant-design/icons';
-import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 import { GetStandardToolIcon } from './GetIcon';
 import SignaturePad from 'react-signature-pad-wrapper';
 import { FileInterface } from '@/app/interfaces/file.interface';
@@ -33,6 +33,7 @@ type Props = {
   contract: ICrmContract;
   color: string;
   tools?: ToolState[];
+  receipt: ContractPartyType | null;
 };
 export function StandardToolItem({
   item,
@@ -45,6 +46,7 @@ export function StandardToolItem({
   contract,
   color,
   tools,
+  receipt
 }: Props) {
   if (mode === 'add-values') {
     return (
@@ -62,14 +64,14 @@ export function StandardToolItem({
         {selectedTool ? (
           <ModalComponent
             open={true}
-            setOpen={() => {}}
+            setOpen={() => { }}
             width="300px"
             key={selectedTool.tool}
             className={'!bg-transparent !h-fit'}
           >
             <Popups
               title="Add Standard Tools"
-              onClose={onClose ? onClose : () => {}}
+              onClose={onClose ? onClose : () => { }}
             >
               <StandardToolInput
                 contract={contract}
@@ -80,7 +82,7 @@ export function StandardToolItem({
             </Popups>
           </ModalComponent>
         ) : null}
-        <Item color={color} item={item} mode={mode} onClick={onClick} />
+        <Item receipt={receipt} color={color} item={item} mode={mode} onClick={onClick} />
       </div>
     );
   } else if (mode === 'view-fields' || mode === 'view-values') {
@@ -95,11 +97,11 @@ export function StandardToolItem({
           backgroundColor: 'transparent',
         }}
       >
-        <Item color={color} item={item} mode={mode} />
+        <Item receipt={receipt} color={color} item={item} mode={mode} />
       </div>
     );
   } else if (mode === 'edit-fields') {
-    return <Item color={color} item={item} mode={mode} onDelete={onDelete} />;
+    return <Item receipt={null} color={color} item={item} mode={mode} onDelete={onDelete} />;
   }
   return null;
 }
@@ -110,8 +112,9 @@ type ItemProps = {
   onDelete?: () => void;
   color: string;
   onClick?: () => void;
+  receipt: ContractPartyType | null;
 };
-function Item({ item, mode, onClick, onDelete, color }: ItemProps) {
+function Item({ item, receipt, mode, onClick, onDelete, color }: ItemProps) {
   return (
     <div
       onClick={() => {
@@ -130,7 +133,7 @@ function Item({ item, mode, onClick, onDelete, color }: ItemProps) {
     >
       {!item.value ? <GetStandardToolIcon type={item.tool} /> : null}
 
-      <RenderStandardInputValue item={item} mode={mode} />
+      <RenderStandardInputValue receipt={receipt} item={item} mode={mode} />
 
       {mode === 'edit-fields' && (
         <CloseOutlined
@@ -191,10 +194,13 @@ function StandardToolInput({ item, onChange, contract, tools }: InputProps) {
 function RenderStandardInputValue({
   item,
   mode,
+  receipt
 }: {
   item: ToolState;
   mode: PdfContractMode;
+  receipt: ContractPartyType | null;
 }) {
+
   if (mode === 'add-values' || mode === 'view-values') {
     if (item.value) {
       if (typeof item.value === 'string') {
@@ -215,6 +221,7 @@ function RenderStandardInputValue({
                 {moment(new Date()).format('DD MMM YYYY HH:mm:ss')}
               </div>
             ) : null}
+            {receipt ? <div className="text-[10px]">{receipt.email}</div> : null}
           </div>
         );
       } else if ('url' in item.value) {
@@ -236,6 +243,8 @@ function RenderStandardInputValue({
                 {moment(new Date()).format('DD MMM YYYY HH:mm:ss')}
               </div>
             ) : null}
+            {receipt ? <div className="text-[10px]">{receipt.email}</div> : null}
+
           </div>
         );
       }
@@ -346,9 +355,9 @@ function GetInitialToolValue({
   const initialVal =
     signature && typeof signature.value != 'undefined'
       ? (signature.value as any)?.value
-          .split(' ')
-          .map((word: string) => word.charAt(0))
-          .join('')
+        .split(' ')
+        .map((word: string) => word.charAt(0))
+        .join('')
       : '';
   console.log({ signature, tools });
   const [value, setValue] = useState(
