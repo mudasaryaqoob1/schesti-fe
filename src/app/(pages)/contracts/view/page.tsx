@@ -100,7 +100,7 @@ function ViewContract() {
     let clonedReceipt: ContractPartyType | null = _.cloneDeep(receipt);
     setReceipt(null);
 
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
       if (contract) {
         mergeAllTools(contract.receipts)
         resolve(null);
