@@ -110,7 +110,9 @@ function ViewContract() {
       contractPdfRef.current?.handleAction(() => {
       });
     }).finally(() => {
-      setIsDownloading(false);
+      setTimeout(() => {
+        setIsDownloading(false);
+      }, 5000);
       setTools(receipt?.tools ?? []);
       setReceipt(clonedReceipt ?? null);
     })
@@ -154,6 +156,7 @@ function ViewContract() {
           className="!w-fit"
           onClick={handleDownload}
           isLoading={isDownloading}
+          loadingText={isDownloading ? 'Downloading...' : ""}
         />
       </div>
 
