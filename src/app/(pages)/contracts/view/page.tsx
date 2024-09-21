@@ -143,6 +143,7 @@ function ViewContract() {
             setTools={setTools}
             tools={tools}
             color={receipt?.color}
+            receipt={receipt}
           />
         </div>
       </div>

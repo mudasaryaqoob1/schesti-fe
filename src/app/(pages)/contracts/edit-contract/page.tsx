@@ -187,6 +187,7 @@ function EditContractDocumentPage() {
         tools={tools}
         setTools={setTools}
         color={selectedReceipt?.color}
+        receipt={selectedReceipt}
       />
     </div>
   );
