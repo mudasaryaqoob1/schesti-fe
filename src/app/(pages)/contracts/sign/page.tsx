@@ -17,6 +17,7 @@ import NoData from '@/app/component/noData';
 import { Skeleton } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
 import { parseEmailFromQuery } from '@/app/utils/utils';
+import AwsS3 from '@/app/utils/S3Intergration';
 
 export default function SignPdfContract() {
   const [contract, setContract] = useState<ICrmContract | null>(null);
@@ -28,7 +29,7 @@ export default function SignPdfContract() {
   const [tools, setTools] = useState<ToolState[]>([]);
   const [receipt, setReceipt] = useState<ContractPartyType | null>(null);
   const contractPdfRef = useRef<{
-    handleAction: () => void;
+    handleAction: (cb: (blob: Blob) => void) => void;
   } | null>(null);
 
   useEffect(() => {
@@ -98,7 +99,23 @@ export default function SignPdfContract() {
         return;
       }
       try {
-        const response = await crmContractService.httpSignContract(id, receipt);
+        let pdfUrl = '';
+        if (contractPdfRef.current) {
+          await new Promise((resolve, reject) => {
+            contractPdfRef.current?.handleAction(async (blob) => {
+              try {
+                // Upload the blob to S3 and get the URL
+                pdfUrl = await new AwsS3(blob, 'documents/contracts/').getS3URL();
+                console.log(pdfUrl);
+                resolve(pdfUrl); // Resolve the promise once the URL is received
+              } catch (error) {
+                console.log('Error in getting s3 url', error);
+                reject(error); // Reject the promise if there's an error
+              }
+            });
+          });
+        }
+        const response = await crmContractService.httpSignContract(id, { ...receipt, pdf: pdfUrl });
         if (response.data) {
           toast.success('Contract signed successfully');
           setContract(response.data);
@@ -139,7 +156,9 @@ export default function SignPdfContract() {
             text="Download"
             className="!w-fit"
             onClick={() => {
-              contractPdfRef.current?.handleAction();
+              contractPdfRef.current?.handleAction(() => {
+
+              });
             }}
           />
         )}

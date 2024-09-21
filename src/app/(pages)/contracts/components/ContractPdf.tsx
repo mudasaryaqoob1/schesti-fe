@@ -37,7 +37,7 @@ type Props = {
   receipt: ContractPartyType | null;
 };
 
-export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
+export const ContractPdf = forwardRef<{ handleAction: (cb: (_blob: Blob) => void) => void }, Props>(
   ({ mode, pdfFile, tools, setTools, contract, receipt, color = '#007ab6' }, ref) => {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
@@ -59,7 +59,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
     // })
 
     useImperativeHandle(ref, () => ({
-      handleAction: () => handleDownload(),
+      handleAction: (cb) => handleDownload(cb),
     }));
 
     useEffect(() => {
@@ -159,7 +159,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
       }
     }
 
-    function handleDownload() {
+    function handleDownload(cb: (blob: Blob) => void) {
       const container = containerRef.current!;
       container.style.height = 'auto'; // Temporarily expand the container
 
@@ -168,7 +168,6 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
         const pdf = new jsPDF('p', 'mm', 'a4');
         const imgWidth = pdf.internal.pageSize.getWidth();
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
         let positionY = 0;
         const pageHeight = pdf.internal.pageSize.height;
 
@@ -179,6 +178,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
             pdf.addPage();
           }
         }
+        cb(pdf.output("blob"));
         pdf.save(`${contract.title}.pdf`);
 
         // Restore the original height
