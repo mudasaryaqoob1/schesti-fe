@@ -222,6 +222,7 @@ function RenderStandardInputValue({
               </div>
             ) : null}
             {receipt ? <div className="text-[10px]">{receipt.email}</div> : null}
+            {'email' in item ? <div className="text-[10px]">{item.email}</div> : null}
           </div>
         );
       } else if ('url' in item.value) {
@@ -244,6 +245,7 @@ function RenderStandardInputValue({
               </div>
             ) : null}
             {receipt ? <div className="text-[10px]">{receipt.email}</div> : null}
+            {'email' in item ? <div className="text-[10px]">{item.email}</div> : null}
 
           </div>
         );

@@ -9,7 +9,7 @@ import {
   ICrmContract,
 } from '@/app/interfaces/crm/crm-contract.interface';
 import crmContractService from '@/app/services/crm/crm-contract.service';
-import { AxiosError } from 'axios';
+import { AxiosError, all } from 'axios';
 import { toast } from 'react-toastify';
 import { Skeleton } from 'antd';
 import NoData from '@/app/component/noData';
@@ -18,6 +18,7 @@ import { ContractInfo } from '../components/info/ContractInfo';
 import { ContractPdf } from '../components/ContractPdf';
 import WhiteButton from '@/app/component/customButton/white';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
+import _ from 'lodash';
 
 function ViewContract() {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +31,7 @@ function ViewContract() {
   const [receipt, setReceipt] = useState<ContractPartyType | null>(null);
 
   const contractPdfRef = useRef<{
-    handleAction: () => void;
+    handleAction: (cb: (_blob: Blob) => void) => void;
   } | null>(null);
 
   useEffect(() => {
@@ -62,6 +63,16 @@ function ViewContract() {
     }
   }
 
+  function mergeAllTools(receipts: ContractPartyType[]) {
+    setTools(
+      _.chain(receipts)
+        .map((receipt) => receipt.tools.map(tool => ({ ...tool, email: receipt.email })))
+        .flatten()
+        .uniqBy('id')
+        .value()
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 gap-4">
@@ -86,8 +97,23 @@ function ViewContract() {
 
   function handleDownload() {
     setIsDownloading(true);
-    contractPdfRef.current?.handleAction();
-    setIsDownloading(false);
+    let clonedReceipt: ContractPartyType | null = _.cloneDeep(receipt);
+    setReceipt(null);
+
+    new Promise((resolve, reject) => {
+      if (contract) {
+        mergeAllTools(contract.receipts)
+        resolve(null);
+      }
+      resolve(null);
+    }).then(() => {
+      contractPdfRef.current?.handleAction(() => {
+      });
+    }).finally(() => {
+      setIsDownloading(false);
+      setTools(receipt?.tools ?? []);
+      setReceipt(clonedReceipt ?? null);
+    })
   }
 
   return (
