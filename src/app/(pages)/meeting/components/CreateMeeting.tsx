@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { meetingService } from '@/app/services/meeting.service';
 import { toast } from 'react-toastify';
 import { AppDispatch } from '@/redux/store';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import WhiteButton from '@/app/component/customButton/white';
 import CustomButton from '@/app/component/customButton/button';
@@ -37,6 +37,45 @@ type Props = {
 };
 
 // let timezones = Intl.supportedValuesOf('timeZone');
+
+const dateValidation = Yup.date().required('Date is required');
+
+const recurrenceSchema = Yup.object().shape({
+  isChecked: Yup.boolean(),
+  frequency: Yup.mixed()
+    .oneOf(['daily', 'weekly', 'monthly', 'custom'], 'Invalid frequency type')
+    .when('isChecked', {
+      is: true,
+      then: () => Yup.string().required('Recurrence frequency is required'),
+      otherwise: () => Yup.string().notRequired(),
+    }),
+  days: Yup.array().of(Yup.string().required('Day is required'))
+    .min(1, 'At least one day is required')
+    .when('frequency', {
+      is: 'weekly',
+      then: () => Yup.array().required().min(1, 'Select at least one day'),
+      otherwise: () => Yup.array().notRequired(),
+    }),
+  dates: Yup.array().of(dateValidation)
+    .when('frequency', {
+      is: 'custom',
+      then: () => Yup.array().of(dateValidation).min(1, 'At least one custom date is required'),
+      otherwise: () => Yup.array().notRequired(),
+    }),
+  endsOn: Yup.string().oneOf(['never', 'date'], 'Invalid end option')
+    .when('frequency', {
+      is: 'custom',
+      then: () => Yup.string().required('End option is required for custom recurrence'),
+      otherwise: () => Yup.string().notRequired(),
+
+    }),
+  endDate: Yup.date().when('endsOn', {
+    is: 'date',
+    then: () => dateValidation.required('End date is required'),
+    otherwise: () => Yup.date().notRequired(),
+  }),
+});
+
 export function CreateMeeting({
   showModal,
   setShowModal,
@@ -68,6 +107,12 @@ export function CreateMeeting({
         )
         .required('Email is required'),
     startDate: Yup.date().required('Start Time is required'),
+    recurrence: Yup.lazy((value) => {
+      if (!value || !value.isChecked) {
+        return Yup.mixed().notRequired();
+      }
+      return recurrenceSchema;
+    })
   });
 
   useEffect(() => {
@@ -91,7 +136,9 @@ export function CreateMeeting({
         startDate: dayjs()
           .tz((timezone as ITimezoneOption).value)
           .format('YYYY-MM-DDTHH:mm:ss'),
-        recurrence: undefined as IMeeting['recurrence']
+        recurrence: {
+          isChecked: false,
+        } as IMeeting['recurrence']
       },
     validationSchema: CreateMeetingSchema,
     enableReinitialize: meeting ? true : false,
@@ -170,6 +217,7 @@ export function CreateMeeting({
     formik.resetForm();
   }
 
+  console.log('Recurrence', formik.errors.recurrence);
   return (
     <ModalComponent
       width="50%"
