@@ -2,25 +2,20 @@
 
 type DailyRecurrence = {
   frequency: "daily";
-  time: string;
 };
 
 type WeeklyRecurrence = {
   frequency: "weekly";
   days: string[];
-  time: string;
 };
 
 type MonthlyRecurrence = {
   frequency: "monthly";
-  day: number;
-  time: string;
 };
 
 type CustomRecurrence = {
   frequency: "custom";
   dates: Date[];
-  time: string;
   endsOn: "never" | "date";
   endDate?: Date;
 }
