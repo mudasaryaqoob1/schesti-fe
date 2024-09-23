@@ -288,7 +288,6 @@ export function CreateMeeting({
                         { label: "Sunday", value: 0 }
                       ],
                       mode: "multiple",
-
                       onChange: (value) => {
                         formik.setFieldValue('recurrence.days', value);
                       },
