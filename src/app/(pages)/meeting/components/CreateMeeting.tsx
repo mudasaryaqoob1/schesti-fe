@@ -2,11 +2,14 @@ import * as Yup from 'yup';
 import { meetingService } from '@/app/services/meeting.service';
 import { toast } from 'react-toastify';
 import { AppDispatch } from '@/redux/store';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import WhiteButton from '@/app/component/customButton/white';
 import CustomButton from '@/app/component/customButton/button';
-import { useFormik } from 'formik';
+import {
+  type FormikErrors, type FormikTouched,
+  useFormik
+} from 'formik';
 import ModalComponent from '@/app/component/modal';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { CloseOutlined } from '@ant-design/icons';
@@ -53,13 +56,13 @@ const recurrenceSchema = Yup.object().shape({
     .min(1, 'At least one day is required')
     .when('frequency', {
       is: 'weekly',
-      then: () => Yup.array().required().min(1, 'Select at least one day'),
+      then: () => Yup.array().required().min(1, 'Select at least one day').required('Days are required'),
       otherwise: () => Yup.array().notRequired(),
     }),
   dates: Yup.array().of(dateValidation)
     .when('frequency', {
       is: 'custom',
-      then: () => Yup.array().of(dateValidation).min(1, 'At least one custom date is required'),
+      then: () => Yup.array().of(dateValidation).min(1, 'At least one custom date is required').required('Dates are required'),
       otherwise: () => Yup.array().notRequired(),
     }),
   endsOn: Yup.string().oneOf(['never', 'date'], 'Invalid end option')
@@ -156,6 +159,7 @@ export function CreateMeeting({
             roomName: meeting.roomName,
             timezone: getTimeZoneValue(timezone),
             topic: values.topic,
+            recurrence: values.recurrence,
           })
           .then((response) => {
             if (response.data) {
@@ -185,6 +189,7 @@ export function CreateMeeting({
             link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
             topic: values.topic,
             timezone: getTimeZoneValue(timezone),
+            recurrence: values.recurrence,
           })
           .then((response) => {
             if (response.data) {
@@ -218,6 +223,8 @@ export function CreateMeeting({
   }
 
   console.log('Recurrence', formik.errors.recurrence);
+  const recurrenceTouched = formik.touched.recurrence as FormikTouched<IMeeting['recurrence']>;
+  const recurrenceError = formik.errors.recurrence as FormikErrors<IMeeting['recurrence']>;
   return (
     <ModalComponent
       width="50%"
@@ -317,6 +324,8 @@ export function CreateMeeting({
                     },
                     onBlur: formik.handleBlur,
                   }}
+                  hasError={recurrenceTouched && recurrenceError && recurrenceTouched.frequency && Boolean(recurrenceError.frequency)}
+                  errorMessage={recurrenceError && Boolean(recurrenceError.frequency) ? recurrenceError.frequency : undefined}
                 />
 
                 {formik.values.recurrence?.frequency === 'weekly' ? <>
@@ -341,6 +350,10 @@ export function CreateMeeting({
                       },
                       onBlur: formik.handleBlur,
                     }}
+                    // @ts-ignore
+                    hasError={(recurrenceTouched && recurrenceError && recurrenceTouched.days && Boolean(recurrenceError.days))}
+                    // @ts-ignore
+                    errorMessage={(recurrenceError && Boolean(recurrenceError.days)) ? recurrenceError.days : undefined}
                   />
                 </> : null}
 
@@ -358,6 +371,10 @@ export function CreateMeeting({
                       },
                       format: 'MM/DD/YYYY',
                     }}
+                    // @ts-ignore
+                    hasError={recurrenceTouched && recurrenceError && recurrenceTouched.dates && Boolean(recurrenceError.dates)}
+                    // @ts-ignore
+                    errorMessage={recurrenceError && Boolean(recurrenceError.dates) ? recurrenceError.dates : undefined}
                   />
 
                   <SelectComponent
@@ -375,6 +392,10 @@ export function CreateMeeting({
                       },
                       onBlur: formik.handleBlur,
                     }}
+                    // @ts-ignore
+                    hasError={recurrenceTouched && recurrenceError && recurrenceTouched.endsOn && Boolean(recurrenceError.endsOn)}
+                    // @ts-ignore
+                    errorMessage={recurrenceError && Boolean(recurrenceError.endsOn) ? recurrenceError.endsOn : undefined}
                   />
 
                   {formik.values.recurrence?.endsOn === "date" ? <>
@@ -389,6 +410,10 @@ export function CreateMeeting({
                         format: 'MM/DD/YYYY',
                         onBlur: formik.handleBlur,
                       }}
+                      // @ts-ignore
+                      hasError={recurrenceTouched && recurrenceError && recurrenceTouched.endDate && Boolean(recurrenceError.endDate)}
+                      // @ts-ignore
+                      errorMessage={recurrenceError && recurrenceError.endDate ? recurrenceError.endDate : undefined}
                     />
                   </> : null}
                 </> : null}
