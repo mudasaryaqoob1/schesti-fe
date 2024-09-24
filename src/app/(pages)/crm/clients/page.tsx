@@ -113,7 +113,7 @@ const ClientTable = () => {
     if (key === 'createEstimateRequest') {
       router.push(`/estimates/requests/create?clientId=${client._id}`);
     } else if (key === 'createNewInvoice') {
-      router.push(`/financial/aia-invoicing`);
+      router.push(`/financial/aia-invoicing?clientId=${client._id}`);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
     } else if (key == 'deleteClient') {

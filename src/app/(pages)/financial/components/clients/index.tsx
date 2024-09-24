@@ -34,6 +34,7 @@ import { ICrmItem } from '@/app/interfaces/crm/crm.interface';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { getCrmItemsThunk } from '@/redux/crm/crm.thunk';
 import { AddCrmArchitectForm } from '@/app/(pages)/crm/architects/components/AddCrmArchitectForm';
+import { useSearchParams } from 'next/navigation';
 
 const ValidationSchema = Yup.object({
   invoiceName: Yup.string().required('Invoice name is required'),
@@ -57,6 +58,10 @@ export function Clients() {
     (state: RootState) => state.clientInvoices.loading
   );
   const [search, setSearch] = useState('');
+  const searchParams = useSearchParams();
+
+  const clientId = searchParams.get("clientId");
+
   const formik = useFormik<{
     invoiceName: string;
     client: string | ICrmItem;
@@ -64,9 +69,10 @@ export function Clients() {
   }>({
     initialValues: {
       invoiceName: '',
-      client: '',
+      client: clientId ? clientId : '',
       architect: '',
     },
+    enableReinitialize: clientId ? true : false,
     validationSchema: ValidationSchema,
     async onSubmit(values) {
       setIsLoading(true);
