@@ -32,7 +32,13 @@ const newClientSchema = Yup.object({
   address: Yup.string().required('Address is required!'),
   secondAddress: Yup.string(),
 });
-const initialValues: IClient = {
+
+type ICrmClient = IClient & {
+  state?: string;
+  country?: string;
+  zipCode?: string;
+};
+const initialValues: ICrmClient = {
   firstName: '',
   lastName: '',
   email: '',
@@ -40,6 +46,9 @@ const initialValues: IClient = {
   companyName: '',
   address: '',
   secondAddress: '',
+  state: '',
+  country: '',
+  zipCode: '',
 };
 
 type Props = {
@@ -138,13 +147,29 @@ export function AddCrmClientForm({ onClose, onSuccess }: Props) {
                   name="address"
                   placeholder="Address"
                 />
-                <FormControl
-                  control="input"
-                  label="Address 2"
-                  type="text"
-                  name="secondAddress"
-                  placeholder="Address 2"
-                />
+                <div className='grid grid-cols-3 gap-3'>
+                  <FormControl
+                    control="input"
+                    label="State"
+                    type="text"
+                    name="state"
+                    placeholder="State"
+                  />
+                  <FormControl
+                    control="input"
+                    label="Country"
+                    type="text"
+                    name="country"
+                    placeholder="Country"
+                  />
+                  <FormControl
+                    control="input"
+                    label="Zip Code"
+                    type="text"
+                    name="zipCode"
+                    placeholder="Zip Code"
+                  />
+                </div>
               </div>
               <div className="self-end flex justify-end items-center gap-5 md:mt-4 my-3">
                 <div>
