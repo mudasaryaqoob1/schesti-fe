@@ -144,6 +144,7 @@ const ClientTable = () => {
     {
       title: 'Client Name',
       dataIndex: 'firstName',
+      render: (_, value) => <>{value?.firstName} {value?.lastName}</>,
     },
     {
       title: 'Company',
