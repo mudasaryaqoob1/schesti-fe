@@ -209,10 +209,10 @@ export function G702Component({
             </Checkbox>
             <Checkbox
               disabled={mode === 'view'}
-              checked={state.distributionTo === 'contractor'}
-              onChange={() => handleState('distributionTo', 'contractor')}
+              checked={state.distributionTo === 'client'}
+              onChange={() => handleState('distributionTo', 'client')}
             >
-              <QuinaryHeading title="CONTRACTOR" />
+              <QuinaryHeading title="CLIENT" />
             </Checkbox>
           </div>
         </div>
