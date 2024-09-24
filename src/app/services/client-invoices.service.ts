@@ -7,8 +7,8 @@ class ClientInvoiceService extends HttpService {
   private readonly prefix: string = 'api/client-invoices';
 
   httpCreateInitialInvoice = (data: {
-    clientName: string;
-    architectName: string;
+    client: string;
+    architect: string;
     invoiceName: string;
   }): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
     this.post(`${this.prefix}/create`, data);

@@ -10,6 +10,8 @@ type Props = {
   hasError?: boolean;
   field?: SelectProps;
   errorMessage?: string;
+  label2?: string | React.ReactNode;
+  label2Style?: ClassValue;
 };
 
 export function SelectComponent({
@@ -20,19 +22,31 @@ export function SelectComponent({
   field,
   errorMessage = '',
   hasError,
+  label2,
+  label2Style
 }: Props) {
   return (
     <div>
       <label
         className={twMerge(
           clsx(
-            'text-graphiteGray text-sm font-medium leading-6 capitalize',
+            `text-graphiteGray ${label2 ? 'flex justify-between' : 'block'
+            } text-sm font-medium leading-6 capitalize`,
             labelStyle
           )
         )}
         htmlFor={name}
       >
-        {label}
+        {label}{' '}
+        {typeof label2 === 'string' ? (
+          <span
+            className={twMerge(clsx('text-right text-[#98A2B3]', label2Style))}
+          >
+            {label2}
+          </span>
+        ) : (
+          label2
+        )}
       </label>
 
       {/* <Field name={name} id={name}>
@@ -45,8 +59,7 @@ export function SelectComponent({
         {...field}
         className={twMerge(
           clsx(
-            ` p-0 h-full border ${
-              hasError ? 'border-red-500' : 'border-gray-100'
+            ` p-0 h-full border ${hasError ? 'border-red-500' : 'border-gray-100'
             } !w-full !rounded-lg focus:border-blue-500  ${field?.className}`
           )
         )}
