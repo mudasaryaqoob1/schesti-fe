@@ -1,5 +1,5 @@
 'use client';
-import { useState, useContext, useEffect, useLayoutEffect } from 'react';
+import { useState, useContext, useEffect, useLayoutEffect, useRef } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
@@ -7,6 +7,7 @@ import {
   Avatar,
   ColorPicker,
   Dropdown,
+  Empty,
   InputNumber,
   Menu,
   Popover,
@@ -82,6 +83,7 @@ import { useSelector } from 'react-redux';
 import { useDraw } from '@/app/hooks';
 import { HttpService } from '@/app/services/base.service';
 import { Option } from 'antd/es/mentions';
+import moment from 'moment';
 // import axios from 'axios';
 
 interface ControlPoint {
@@ -580,6 +582,7 @@ const TakeOffNewPage = () => {
   // });
   const [draw, setDraw] = useState<any>({});
   const [takeOff, settakeOff] = useState<any>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
   // const [pdMeasurements, setpdMeasurements] = useState(null)
   const [selectedTakeOffTab, setselectedTakeOffTab] = useState<
     'overview' | 'page' | 'file'
@@ -685,7 +688,7 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -735,7 +738,7 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -789,7 +792,7 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -845,7 +848,7 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -1776,23 +1779,23 @@ const TakeOffNewPage = () => {
             reportData = [
               ...reportData,
               ...(takeOff?.measurements[key][type] &&
-              Array.isArray(takeOff?.measurements[key][type]) &&
-              takeOff?.measurements[key][type]?.length > 0
+                Array.isArray(takeOff?.measurements[key][type]) &&
+                takeOff?.measurements[key][type]?.length > 0
                 ? takeOff.measurements[key][type].map((arrit: any) => {
-                    return {
-                      ...arrit,
-                      pageId: key,
-                      type,
-                      pageData: takeOff?.pages?.find(
-                        (pg: any) => pg?.pageId == key
-                      ),
-                      pageLabel: takeOff?.pages?.find(
-                        (pg: any) => pg?.pageId == key
-                      )?.pageNum,
-                      color: arrit?.stroke,
-                      config: arrit,
-                    };
-                  })
+                  return {
+                    ...arrit,
+                    pageId: key,
+                    type,
+                    pageData: takeOff?.pages?.find(
+                      (pg: any) => pg?.pageId == key
+                    ),
+                    pageLabel: takeOff?.pages?.find(
+                      (pg: any) => pg?.pageId == key
+                    )?.pageNum,
+                    color: arrit?.stroke,
+                    config: arrit,
+                  };
+                })
                 : []),
             ];
           });
@@ -1877,7 +1880,7 @@ const TakeOffNewPage = () => {
     }
     console.log(
       returningArr,
-      ' =====> measurementsTableData measurementsTableData'
+      ' =====> measurementsTableData measurementsTableData all measurmetns in plan array'
     );
     if (returningArr?.length > 0) {
       //Reduce code for category
@@ -1919,10 +1922,10 @@ const TakeOffNewPage = () => {
                 ? calculatePolygonArea(points, scale)?.toFixed(2)
                 : type == 'volume'
                   ? calculatePolygonVolume(
-                      points,
-                      currentItem?.depth || 1,
-                      scale
-                    )?.toFixed(2)
+                    points,
+                    currentItem?.depth || 1,
+                    scale
+                  )?.toFixed(2)
                   : tx; //getNumberFromText(tx);
         // Check if there's already an entry with the same projectName and pageLabel
         const existingEntry = result?.find(
@@ -2001,6 +2004,86 @@ const TakeOffNewPage = () => {
     }
     return returningArr;
   };
+
+  const measurementsplanArray = (takeOff: any, search?: string): Array<any> => {
+    let returningArr: any = [];
+    if (
+      takeOff?.measurements &&
+      Object.keys(takeOff?.measurements) &&
+      Object.keys(takeOff?.measurements)?.length > 0
+    ) {
+      Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
+        console.log(
+          ind,
+          takeOff?.measurements[key],
+          ' =====> measurementsTableData measurementsTableData gotArr'
+        );
+        if (takeOff?.measurements[`${key}`]) {
+          const gotArr = getSingleMeasurements(
+            takeOff?.measurements[`${key}`],
+            key
+          );
+          console.log(
+            gotArr,
+            takeOff?.measurements[`${key}`],
+            ' =====> measurementsTableData measurementsTableData gotArr'
+          );
+          if (Array.isArray(gotArr)) {
+            returningArr = [...returningArr, ...gotArr];
+          }
+        }
+        return '';
+      });
+    }
+    if (search && search?.length > 0) {
+      returningArr = returningArr?.filter((i: any) => {
+        return (
+          i?.projectName
+            ?.toLocaleLowerCase()
+            ?.includes(search?.toLocaleLowerCase()) ||
+          i?.category
+            ?.toLocaleLowerCase()
+            ?.includes(search?.toLocaleLowerCase()) ||
+          i?.subcategory
+            ?.toLocaleLowerCase()
+            ?.includes(search?.toLocaleLowerCase())
+        );
+      });
+    }
+    console.log(
+      returningArr,
+      ' =====> measurementsTableData measurementsTableData all measurmetns in plan array'
+    );
+    return returningArr;
+  };
+
+  const getText = (record: any) => {
+    const { pageId, type, points } = record
+    //curpage and scaling runtime here
+    const curmpage = takeOff?.pages?.find((i: any) => i?.pageId == pageId);
+    const scale = curmpage?.scale ?? {
+      xScale: `1in=1in`,
+      yScale: `1in=1in`,
+      precision: '1',
+    };
+    const text =
+      type == 'line'
+        ? calcLineDistance(points, scale, true)
+        : type == 'perimeter'
+          ? points?.length > 4
+            ? calculatePolygonPerimeter(points, scale)
+            : calcLineDistance(points, scale, true)
+          : type == 'area'
+            ? calculatePolygonArea(points, scale)?.toFixed(2)
+            : type == 'volume'
+              ? calculatePolygonVolume(
+                points,
+                record?.depth || 1,
+                scale
+              )?.toFixed(2)
+              : `${record?.text}`.slice(0, 8);
+    return text
+  }
 
   const measurementsTableData = (takeOff: any, search?: string) => {
     let returningArr: any = [];
@@ -2102,10 +2185,10 @@ const TakeOffNewPage = () => {
                 ? calculatePolygonArea(points, scale)
                 : type == 'volume'
                   ? calculatePolygonVolume(
-                      points,
-                      currentItem?.depth || 1,
-                      scale
-                    )
+                    points,
+                    currentItem?.depth || 1,
+                    scale
+                  )
                   : '';
 
         // Check if there's already an entry with the same projectName and pageLabel
@@ -2191,72 +2274,72 @@ const TakeOffNewPage = () => {
             existingEntry?.children?.push(
               subcategory
                 ? {
-                    key: dateTime,
-                    isSubParent: true,
-                    isParent: false,
-                    category,
-                    subcategory,
-                    dateTime,
-                    points,
-                    projectName,
-                    stroke,
-                    strokeWidth,
-                    textUnit,
-                    id,
-                    lineCap,
-                    depth,
-                    x,
-                    y,
-                    user,
-                    type,
-                    pageId,
-                    text,
-                    children: [
-                      {
-                        key: dateTime,
-                        isParent: false,
-                        isChild: true,
-                        category,
-                        subcategory,
-                        dateTime,
-                        points,
-                        projectName,
-                        stroke,
-                        strokeWidth,
-                        textUnit,
-                        id,
-                        lineCap,
-                        depth,
-                        x,
-                        y,
-                        user,
-                        type,
-                        pageId,
-                        text,
-                      },
-                    ],
-                  }
+                  key: dateTime,
+                  isSubParent: true,
+                  isParent: false,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  type,
+                  pageId,
+                  text,
+                  children: [
+                    {
+                      key: dateTime,
+                      isParent: false,
+                      isChild: true,
+                      category,
+                      subcategory,
+                      dateTime,
+                      points,
+                      projectName,
+                      stroke,
+                      strokeWidth,
+                      textUnit,
+                      id,
+                      lineCap,
+                      depth,
+                      x,
+                      y,
+                      user,
+                      type,
+                      pageId,
+                      text,
+                    },
+                  ],
+                }
                 : {
-                    key: dateTime,
-                    category,
-                    subcategory,
-                    dateTime,
-                    points,
-                    projectName,
-                    stroke,
-                    strokeWidth,
-                    textUnit,
-                    id,
-                    lineCap,
-                    depth,
-                    x,
-                    y,
-                    user,
-                    isParent: false,
-                    type,
-                    pageId,
-                    text,
-                  }
+                  key: dateTime,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  isParent: false,
+                  type,
+                  pageId,
+                  text,
+                }
             );
           }
         } else {
@@ -2282,76 +2365,76 @@ const TakeOffNewPage = () => {
             text,
             children: subcategory
               ? [
-                  {
-                    key: dateTime,
-                    isSubParent: true,
-                    isParent: false,
-                    category,
-                    subcategory,
-                    dateTime,
-                    points,
-                    projectName,
-                    stroke,
-                    strokeWidth,
-                    textUnit,
-                    id,
-                    lineCap,
-                    depth,
-                    x,
-                    y,
-                    user,
-                    type,
-                    pageId,
-                    text,
-                    children: [
-                      {
-                        key: dateTime,
-                        isParent: false,
-                        isChild: true,
-                        category,
-                        subcategory,
-                        dateTime,
-                        points,
-                        projectName,
-                        stroke,
-                        strokeWidth,
-                        textUnit,
-                        id,
-                        lineCap,
-                        depth,
-                        x,
-                        y,
-                        user,
-                        type,
-                        pageId,
-                        text,
-                      },
-                    ],
-                  },
-                ]
+                {
+                  key: dateTime,
+                  isSubParent: true,
+                  isParent: false,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  type,
+                  pageId,
+                  text,
+                  children: [
+                    {
+                      key: dateTime,
+                      isParent: false,
+                      isChild: true,
+                      category,
+                      subcategory,
+                      dateTime,
+                      points,
+                      projectName,
+                      stroke,
+                      strokeWidth,
+                      textUnit,
+                      id,
+                      lineCap,
+                      depth,
+                      x,
+                      y,
+                      user,
+                      type,
+                      pageId,
+                      text,
+                    },
+                  ],
+                },
+              ]
               : [
-                  {
-                    key: dateTime,
-                    isParent: false,
-                    category,
-                    subcategory,
-                    dateTime,
-                    points,
-                    projectName,
-                    stroke,
-                    strokeWidth,
-                    textUnit,
-                    id,
-                    lineCap,
-                    depth,
-                    x,
-                    y,
-                    user,
-                    type,
-                    pageId,
-                    text,
-                  },
-                ],
+                {
+                  key: dateTime,
+                  isParent: false,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  type,
+                  pageId,
+                  text,
+                },
+              ],
           });
         }
         return result;
@@ -2364,14 +2447,14 @@ const TakeOffNewPage = () => {
         children: [
           ...(Array.isArray(takeOff?.subCategories)
             ? [
-                ...takeOff.subCategories.map((it: any, index: number) => ({
-                  category: i,
-                  isSubParent: true,
-                  isParent: false,
-                  key: new Date()?.toString() + ind + index,
-                  subcategory: it,
-                })),
-              ]
+              ...takeOff.subCategories.map((it: any, index: number) => ({
+                category: i,
+                isSubParent: true,
+                isParent: false,
+                key: new Date()?.toString() + ind + index,
+                subcategory: it,
+              })),
+            ]
             : []),
         ],
         isParent: true,
@@ -2978,45 +3061,47 @@ const TakeOffNewPage = () => {
 
   console.log(selectedShape, selectedPage, ' ===> selected shape here');
 
-  //drag resize handle
-  const parent = document.getElementById('drag-container');
-  const child1 = document.getElementById('left-side');
-  const child2 = document.getElementById('right-side');
-  const handle = document.getElementById('handle');
+  useEffect(() => {
+    //drag resize handle
+    const parent = document.getElementById('drag-container');
+    const child1 = document.getElementById('left-side');
+    const child2 = document.getElementById('right-side');
+    const handle = document.getElementById('handle');
 
-  if (parent && handle && child1 && child2) {
-    handle.addEventListener('mousedown', function (e) {
-      e.preventDefault();
+    if (parent && handle && child1 && child2) {
+      handle.addEventListener('mousedown', function (e) {
+        e.preventDefault();
 
-      // Get the initial positions and sizes
-      const initialX = e.clientX;
-      const initialChild1Width = child1.offsetWidth;
-      // const initialChild2Width = child2.offsetWidth;
-      const parentWidth = parent.offsetWidth;
+        // Get the initial positions and sizes
+        const initialX = e.clientX;
+        const initialChild1Width = child1.offsetWidth;
+        // const initialChild2Width = child2.offsetWidth;
+        const parentWidth = parent.offsetWidth;
 
-      function onMouseMove(e: any) {
-        // Calculate the new width of child1
-        const deltaX = e.clientX - initialX;
-        const newChild1Width = initialChild1Width + deltaX;
-        const newChild1WidthPercent = (newChild1Width / parentWidth) * 100;
+        function onMouseMove(e: any) {
+          // Calculate the new width of child1
+          const deltaX = e.clientX - initialX;
+          const newChild1Width = initialChild1Width + deltaX;
+          const newChild1WidthPercent = (newChild1Width / parentWidth) * 100;
 
-        // Set the new width for child1 and adjust child2 accordingly
-        //@ts-ignore
-        child1.style.width = `${newChild1WidthPercent}%`;
-        //@ts-ignore
-        child2.style.width = `${100 - newChild1WidthPercent - 2}%`; // -2% accounts for the handle width
-      }
+          // Set the new width for child1 and adjust child2 accordingly
+          //@ts-ignore
+          child1.style.width = `${newChild1WidthPercent}%`;
+          //@ts-ignore
+          child2.style.width = `${100 - newChild1WidthPercent - 2}%`; // -2% accounts for the handle width
+        }
 
-      function onMouseUp() {
-        window.removeEventListener('mousemove', onMouseMove);
-        window.removeEventListener('mouseup', onMouseUp);
-      }
+        function onMouseUp() {
+          window.removeEventListener('mousemove', onMouseMove);
+          window.removeEventListener('mouseup', onMouseUp);
+        }
 
-      // Attach the listeners
-      window.addEventListener('mousemove', onMouseMove);
-      window.addEventListener('mouseup', onMouseUp);
-    });
-  }
+        // Attach the listeners
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+      });
+    }
+  }, [leftOpened])
 
   // const [catDDOpen, setcatDDOpen] = useState(true);
   const [catopened, setcatopened] = useState<number[]>([]);
@@ -3042,10 +3127,10 @@ const TakeOffNewPage = () => {
               onClick={() => {
                 setreportModal(true);
               }}
-              // onClick={() => {
-              //   //@ts-ignore
-              //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
-              // }}
+            // onClick={() => {
+            //   //@ts-ignore
+            //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
+            // }}
             />
             <Popover
               title={'Select File'}
@@ -3097,7 +3182,7 @@ const TakeOffNewPage = () => {
                 iconheight={20}
                 isLoading={markuploading}
                 icon={<DownOutlined />}
-                // onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0) ? takeOff?.files[0] : {}) }}
+              // onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0) ? takeOff?.files[0] : {}) }}
               />
             </Popover>
           </div>
@@ -3118,7 +3203,7 @@ const TakeOffNewPage = () => {
               <div className="!py-0 w-[full] h-[25%] border-b bg-gradient-to-r from-[#8449EB]/5 to-[#6A56F6]/5 flex flex-col px-3 bg-transparent rounded-t-2xl">
                 {/* upper */}
                 <div className="h-[70%] flex flex-col justify-evenly">
-                  <div className="flex gap-x-2">
+                  <div className="flex flex-wrap gap-2">
                     <Button
                       onClick={() => {
                         setsideTabs('Plans');
@@ -3249,7 +3334,7 @@ const TakeOffNewPage = () => {
                             </Space>
                           </>
                         )}
-                        // options={[...(Array.isArray(takeOff?.categories) ? takeOff?.categories : [])].map((item: any) => ({ label: item, value: item }))}
+                      // options={[...(Array.isArray(takeOff?.categories) ? takeOff?.categories : [])].map((item: any) => ({ label: item, value: item }))}
                       >
                         {[
                           ...(Array.isArray(takeOff?.categories)
@@ -3344,15 +3429,15 @@ const TakeOffNewPage = () => {
                             )}
                           </>
                         )}
-                        // options={[...(Array.isArray(takeOff?.subCategories) ? takeOff?.subCategories : [])].map((item: any) => (
-                        //   { label: item, value: item }
-                        // ))}
+                      // options={[...(Array.isArray(takeOff?.subCategories) ? takeOff?.subCategories : [])].map((item: any) => (
+                      //   { label: item, value: item }
+                      // ))}
                       >
                         {[
                           ...(Array.isArray(takeOff?.subCategories)
                             ? takeOff.subCategories.filter((val: string) =>
-                                val?.includes(selectedCate)
-                              )
+                              val?.includes(selectedCate)
+                            )
                             : []),
                         ].map((item: any, index: number) => (
                           <Option key={index + ''} value={item}>
@@ -3417,33 +3502,343 @@ const TakeOffNewPage = () => {
                 </div>
               )}
               {sideTabs == 'TakeOff' && (
-                <div className="grow flex !border-black">
-                  <Table
+                <div className="grow flex items-start justify-center !border-black">
+                  {/* <Table
                     columns={tableColumns}
                     expandable={{
-                      // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
                       rowExpandable: (record) => record?.isParent == true,
-                      // expandIcon:(record:any) => <DownOutlined />
                     }}
-                    // dataSource={groupDataForFileTable(pages)}
                     dataSource={tableData}
                     className="grow bg-transparent transparent-table"
                     scroll={{ y: 580 }}
                     pagination={false}
                     showHeader={true}
-                    // bordered
                     style={{ backgroundColor: 'transparent' }}
                     rowClassName={'table-row-transparent'}
                     rootClassName="table-row-transparent"
-                    // expandedRowKeys={expandedKeys.takeOff}
-                    // onExpand={(expanded, record) => {
-                    //   if (expanded) {
-                    //     setexpandedKeys(ps => ({ ...ps, takeOff: [record.key] }))
-                    //   } else {
-                    //     setexpandedKeys(ps => ({ ...ps, takeOff: [] }))
-                    //   }
-                    // }}
-                  />
+                  /> */}
+                  <div className='w-[98%] max-h-[580px] overflow-auto border rounded-md my-2 flex flex-col' >
+                    <div className='flex bg-lavenderPurpleReplica bg-opacity-10 min-w-max' >
+                      <span className='w-[40%] min-w-[167px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1' >Name</span>
+                      <span className='w-[10%] min-w-[42px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1' >Sheet Number</span>
+                      <span className='w-[9%] min-w-[37px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1' >Measu- rement</span>
+                      <span className='w-[21%] min-w-[90px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1' >User</span>
+                      <span className='w-[13%] min-w-[58px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1' >Date</span>
+                      <span className='w-[3%] min-w-[15px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1' ></span>
+                    </div>
+                    <div className='flex flex-col min-w-max' >
+                      <div className='flex flex-col min-w-max' >
+                        {
+                          (!Array.isArray(measurementsplanArray(takeOff, sideSearch)) || !(measurementsplanArray(takeOff, sideSearch).length>0)) && 
+                          <div className='flex items-center justify-center w-[100%] py-5'>
+                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                          </div>
+                        }
+                        {
+                          [...(Array.isArray(takeOff?.categories) ? takeOff?.categories : []), 'Length Measurement', 'Arc Measurement', 'Area Measurement', 'Volume Measurement', 'Curve Measurement', 'Count Measurement', 'Text Measurement', 'Dynamic Measurement', 'Perimeter Measurement']
+                            .filter((ct: string) => (measurementsplanArray(takeOff, sideSearch).some((m: any) => (m?.category == ct)))).map((prct: string, ctind: number) => {
+                              return <>
+                                <div className='min-w-max p-2 text-[#333E4F] bg-[#475467] bg-opacity-0 font-extrabold border-b text-[10px] w-[100%]'>{prct}</div>
+                                {
+                                  [...(Array.isArray(takeOff?.subCategories) ? takeOff?.subCategories : [])].filter((sct: string) => (measurementsplanArray(takeOff, sideSearch).some((m: any) => (m?.subcategory == sct)) && sct?.includes(prct))).map((prsct: string, sctInd) => {
+                                    return <>
+                                      <div className='min-w-max p-2 pl-5 text-[#333E4F] bg-[#475467] bg-opacity-0 font-extrabold border-b text-[10px]'>{prsct}</div>
+                                      {
+                                        measurementsplanArray(takeOff, sideSearch).filter((gvl: any) => (gvl?.subcategory == prsct)).map((pmsr: any, msrInd: number) => {
+                                          return <>
+                                            <div className='flex min-w-max border-b pl-6 hover:bg-[#475467] hover:bg-opacity-20 cursor-pointer'
+                                              onClick={() => {
+                                                if (pmsr?.type == 'count' || pmsr?.type == 'texts') {
+                                                  return;
+                                                }
+                                                openShap(pmsr);
+                                                const pg = takeOff?.pages?.find(
+                                                  (pgs: any) => pgs?.pageId == pmsr?.pageId
+                                                );
+                                                if (pg) {
+                                                  if (
+                                                    pmsr?.points &&
+                                                    Array.isArray(pmsr?.points) &&
+                                                    pmsr?.points?.length > 1
+                                                  ) {
+                                                    // setStageValues(record?.points[0]-100, record?.points[1]-100)
+                                                  }
+                                                  setselectedPage(pg);
+                                                  setselectedTakeOffTab('page');
+                                                  if (
+                                                    !selectedPagesList?.find(
+                                                      (i: any) => i?.pageId == pg?.pageId
+                                                    )
+                                                  ) {
+                                                    //@ts-ignore
+                                                    setselectedPagesList((ps: any) => [...ps, pg]);
+                                                  }
+                                                }
+                                              }}
+                                            >
+                                              <span className='w-[40%] min-w-[197px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1 gap-x-2' >
+                                                <ColorPicker
+                                                  onChangeComplete={(val) => {
+                                                    updateTableChangeInTakeOff(
+                                                      pmsr?.pageId,
+                                                      pmsr?.type,
+                                                      pmsr?.dateTime,
+                                                      pmsr?.type == 'count' || pmsr?.type == 'texts'
+                                                        ? 'textColor'
+                                                        : 'stroke',
+                                                      val.toHexString()
+                                                    );
+                                                  }}
+                                                  className="!w-[2px] !h-[2px] border-none"
+                                                  value={pmsr?.stroke ?? pmsr?.textColor}
+                                                  size='small' /> {pmsr?.projectName}
+                                              </span>
+                                              <span className='w-[10%] min-w-[42px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >
+                                                {takeOff?.pages?.find((pp: any) => pp?.pageId == pmsr?.pageId)?.pageNum ?? ''}
+                                              </span>
+                                              <span className='w-[9%] min-w-[37px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >{getText(pmsr)}</span>
+                                              <span className='w-[21%] min-w-[90px] text-[10px] font-bold flex items-center justify-start text-[#475467] gap-x-2 mx-1 py-1' ><Avatar size={'small'} icon={<UserOutlined />} /> {`${pmsr?.user?.name ?? pmsr?.user?.email}`?.slice(0, 10)}</span>
+                                              <span className='w-[13%] min-w-[58px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >{moment(new Date(pmsr?.dateTime)).format('DD.MM.yyyy')}</span>
+                                              <span className='w-[3%] min-w-[15px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >
+                                                <Popover
+                                                  content={
+                                                    <div className='flex flex-col'>
+                                                      <span className='font-bold cursor-pointer bg-red-600 bg-opacity-15 hover:bg-opacity-80 hover:!text-white p-2 rounded-lg px-2 flex justify-between mb-5'
+                                                        onClick={() => {
+                                                          deleteTableChangeInTakeOff(
+                                                            pmsr?.pageId,
+                                                            pmsr?.type,
+                                                            pmsr?.dateTime
+                                                          );
+                                                        }}
+                                                      >Delete <DeleteOutlined /></span>
+                                                      <h3 className='text-sm font-bold' >Edit WBS</h3>
+                                                      {Array.isArray(takeOff?.categories) &&
+                                                        takeOff.categories.length > 0 &&
+                                                        takeOff.categories.map((cat: string) => {
+                                                          return (
+                                                            <div key={cat}>
+                                                              <h3
+                                                                onClick={() => {
+                                                                  updateTableCategory(
+                                                                    pmsr?.pageId,
+                                                                    pmsr?.type,
+                                                                    pmsr?.dateTime,
+                                                                    cat,
+                                                                    null
+                                                                  );
+                                                                }}
+                                                                className={`font-bold my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 rounded-lg px-2 ${pmsr?.category == cat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}
+                                                              >
+                                                                {cat}
+                                                              </h3>
+                                                              {Array.isArray(takeOff?.subCategories) &&
+                                                                takeOff.subCategories
+                                                                  .filter((i: string) => i?.includes(cat))
+                                                                  .map((subcat: string) => {
+                                                                    return (
+                                                                      <li
+                                                                        key={subcat}
+                                                                        onClick={() => {
+                                                                          updateTableCategory(
+                                                                            pmsr?.pageId,
+                                                                            pmsr?.type,
+                                                                            pmsr?.dateTime,
+                                                                            cat,
+                                                                            subcat
+                                                                          );
+                                                                        }}
+                                                                        className={`list-disc my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 px-2 rounded-lg ${pmsr?.subcategory == subcat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}
+                                                                      >
+                                                                        {subcat?.split('-')[0]}
+                                                                      </li>
+                                                                    );
+                                                                  })}
+                                                            </div>
+                                                          );
+                                                        })}
+                                                    </div>
+                                                  }
+                                                  title="Actions"
+                                                  trigger="click"
+                                                >
+                                                  <MoreOutlined
+                                                    onClick={(e) => {
+                                                      e.stopPropagation();
+                                                    }}
+                                                    className="cursor-pointer text-[20px]"
+                                                  />
+                                                </Popover>
+                                              </span>
+                                            </div>
+                                          </>
+                                        })
+                                      }
+                                    </>
+                                  })
+                                }
+                                {
+                                  measurementsplanArray(takeOff, sideSearch).filter((gvl: any) => (gvl?.category == prct && !gvl?.subcategory)).map((pmsr: any, msrInd: number) => {
+                                    return <>
+                                    <div className='flex min-w-max border-b pl-2 hover:bg-[#475467] hover:bg-opacity-20 cursor-pointer'
+                                      onClick={() => {
+                                        if (pmsr?.type == 'count' || pmsr?.type == 'texts') {
+                                          return;
+                                        }
+                                        openShap(pmsr);
+                                        const pg = takeOff?.pages?.find(
+                                          (pgs: any) => pgs?.pageId == pmsr?.pageId
+                                        );
+                                        if (pg) {
+                                          if (
+                                            pmsr?.points &&
+                                            Array.isArray(pmsr?.points) &&
+                                            pmsr?.points?.length > 1
+                                          ) {
+                                            // setStageValues(record?.points[0]-100, record?.points[1]-100)
+                                          }
+                                          setselectedPage(pg);
+                                          setselectedTakeOffTab('page');
+                                          if (
+                                            !selectedPagesList?.find(
+                                              (i: any) => i?.pageId == pg?.pageId
+                                            )
+                                          ) {
+                                            //@ts-ignore
+                                            setselectedPagesList((ps: any) => [...ps, pg]);
+                                          }
+                                        }
+                                      }}
+                                    >
+                                      <span className='w-[40%] min-w-[197px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1 gap-x-2' >
+                                        <ColorPicker
+                                          onChangeComplete={(val) => {
+                                            updateTableChangeInTakeOff(
+                                              pmsr?.pageId,
+                                              pmsr?.type,
+                                              pmsr?.dateTime,
+                                              pmsr?.type == 'count' || pmsr?.type == 'texts'
+                                                ? 'textColor'
+                                                : 'stroke',
+                                              val.toHexString()
+                                            );
+                                          }}
+                                          className="!w-[2px] !h-[2px] border-none"
+                                          value={pmsr?.stroke ?? pmsr?.textColor}
+                                          size='small' /> {pmsr?.projectName}
+                                      </span>
+                                      <span className='w-[10%] min-w-[42px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >
+                                        {takeOff?.pages?.find((pp: any) => pp?.pageId == pmsr?.pageId)?.pageNum ?? ''}
+                                      </span>
+                                      <span className='w-[9%] min-w-[37px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >{getText(pmsr)}</span>
+                                      <span className='w-[21%] min-w-[90px] text-[10px] font-bold flex items-center justify-start text-[#475467] gap-x-2 mx-1 py-1' ><Avatar size={'small'} icon={<UserOutlined />} /> {`${pmsr?.user?.name ?? pmsr?.user?.email}`?.slice(0, 10)}</span>
+                                      <span className='w-[13%] min-w-[58px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >{moment(new Date(pmsr?.dateTime)).format('DD.MM.yyyy')}</span>
+                                      <span className='w-[3%] min-w-[15px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >
+                                        <Popover
+                                          content={
+                                            <div className='flex flex-col'>
+                                              <span className='font-bold cursor-pointer bg-red-600 bg-opacity-15 hover:bg-opacity-80 hover:!text-white p-2 rounded-lg px-2 flex justify-between mb-5'
+                                                onClick={() => {
+                                                  deleteTableChangeInTakeOff(
+                                                    pmsr?.pageId,
+                                                    pmsr?.type,
+                                                    pmsr?.dateTime
+                                                  );
+                                                }}
+                                              >Delete <DeleteOutlined /></span>
+                                              <h3 className='text-sm font-bold' >Edit WBS</h3>
+                                              {Array.isArray(takeOff?.categories) &&
+                                                takeOff.categories.length > 0 &&
+                                                takeOff.categories.map((cat: string) => {
+                                                  return (
+                                                    <div key={cat}>
+                                                      <h3
+                                                        onClick={() => {
+                                                          updateTableCategory(
+                                                            pmsr?.pageId,
+                                                            pmsr?.type,
+                                                            pmsr?.dateTime,
+                                                            cat,
+                                                            null
+                                                          );
+                                                        }}
+                                                        className={`font-bold my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 rounded-lg px-2 ${pmsr?.category == cat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}
+                                                      >
+                                                        {cat}
+                                                      </h3>
+                                                      {Array.isArray(takeOff?.subCategories) &&
+                                                        takeOff.subCategories
+                                                          .filter((i: string) => i?.includes(cat))
+                                                          .map((subcat: string) => {
+                                                            return (
+                                                              <li
+                                                                key={subcat}
+                                                                onClick={() => {
+                                                                  updateTableCategory(
+                                                                    pmsr?.pageId,
+                                                                    pmsr?.type,
+                                                                    pmsr?.dateTime,
+                                                                    cat,
+                                                                    subcat
+                                                                  );
+                                                                }}
+                                                                className={`list-disc my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 px-2 rounded-lg ${pmsr?.subcategory == subcat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}
+                                                              >
+                                                                {subcat?.split('-')[0]}
+                                                              </li>
+                                                            );
+                                                          })}
+                                                    </div>
+                                                  );
+                                                })}
+                                            </div>
+                                          }
+                                          title="Actions"
+                                          trigger="click"
+                                        >
+                                          <MoreOutlined
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                            }}
+                                            className="cursor-pointer text-[20px]"
+                                          />
+                                        </Popover>
+                                      </span>
+                                    </div>
+                                  </>
+                                  })
+                                }
+                              </>
+                            })
+                        }
+                      </div>
+                    </div>
+                    {/* <div className='flex flex-col min-w-max' >
+                      <div className='flex flex-col min-w-max' >
+                        <div className='min-w-max p-2 text-[#333E4F] bg-[#475467] bg-opacity-0 font-extrabold border-b text-[10px] w-[100%]'>Category</div>
+                        <div className='min-w-max p-2 pl-5 text-[#333E4F] bg-[#475467] bg-opacity-0 font-extrabold border-b text-[10px]'>Sub-Category</div>
+                        <div className='flex min-w-max border-b' >
+                          <span className='w-[40%] min-w-[197px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1 gap-x-2' >
+                            <ColorPicker size='small' /> Length measurements
+                          </span>
+                          <span className='w-[10%] min-w-[42px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >1</span>
+                          <span className='w-[9%] min-w-[37px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >5sf</span>
+                          <span className='w-[21%] min-w-[90px] text-[10px] font-bold flex items-center justify-start text-[#475467] gap-x-2 mx-1 py-1' ><Avatar size={'small'} icon={<UserOutlined />} /> kamransa...</span>
+                          <span className='w-[13%] min-w-[58px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >24.04.2024</span>
+                          <span className='w-[3%] min-w-[15px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >
+                            <Dropdown overlay={<div>kamran</div>} trigger={['click']}>
+                              <MoreOutlined
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
+                                className="cursor-pointer text-[20px]"
+                              />
+                            </Dropdown>
+                          </span>
+                        </div>
+                      </div>
+                    </div> */}
+                  </div>
                 </div>
               )}
               {sideTabs == 'WBS' && (
@@ -3656,17 +4051,17 @@ const TakeOffNewPage = () => {
                                               takeOff?.subCategories
                                             )
                                               ? takeOff.subCategories.map(
-                                                  (sit: string) => {
-                                                    if (sit.includes(categ)) {
-                                                      const [ls, lc] =
-                                                        sit.split('-');
-                                                      console.log(lc);
-                                                      return ls + '-' + vl;
-                                                    } else {
-                                                      return sit;
-                                                    }
+                                                (sit: string) => {
+                                                  if (sit.includes(categ)) {
+                                                    const [ls, lc] =
+                                                      sit.split('-');
+                                                    console.log(lc);
+                                                    return ls + '-' + vl;
+                                                  } else {
+                                                    return sit;
                                                   }
-                                                )
+                                                }
+                                              )
                                               : []),
                                           ]
                                         );
@@ -3751,19 +4146,19 @@ const TakeOffNewPage = () => {
                                                     takeOff?.subCategories
                                                   )
                                                     ? takeOff.subCategories.map(
-                                                        (sit: string) => {
-                                                          if (sit == subcateg) {
-                                                            const [ls, lc] =
-                                                              sit.split('-');
-                                                            console.log(ls);
-                                                            return (
-                                                              vl + '-' + lc
-                                                            );
-                                                          } else {
-                                                            return sit;
-                                                          }
+                                                      (sit: string) => {
+                                                        if (sit == subcateg) {
+                                                          const [ls, lc] =
+                                                            sit.split('-');
+                                                          console.log(ls);
+                                                          return (
+                                                            vl + '-' + lc
+                                                          );
+                                                        } else {
+                                                          return sit;
                                                         }
-                                                      )
+                                                      }
+                                                    )
                                                     : []),
                                                 ]
                                               );
@@ -3840,6 +4235,16 @@ const TakeOffNewPage = () => {
               className="z-50 absolute top-[25px] left-[-13px] cursor-pointer border-[2px] rounded-full flex justify-center items-center p-1 text-gray-600 bg-white"
               onClick={() => {
                 setleftOpened((ps) => !ps);
+                const child1 = document.getElementById('left-side');
+                const child2 = document.getElementById('right-side');
+                if (child1 && child2) {
+                  console.log("click event trigger here and logic runs here")
+                  // Set the new width for child1 and adjust child2 accordingly
+                  //@ts-ignore
+                  child1.style.width = '27%';
+                  //@ts-ignore
+                  child2.style.width = `71%`; // -2% accounts for the handle width
+                }
               }}
             >
               {leftOpened ? <LeftOutlined /> : <RightOutlined />}
@@ -4361,15 +4766,15 @@ const TakeOffNewPage = () => {
                                               {fileState.find(
                                                 (i) => i.name == it?.name
                                               )?.status != 'failed' && (
-                                                <Progress
-                                                  percent={
-                                                    fileState.find(
-                                                      (i) => i.name == it?.name
-                                                    )?.uploadProgress ?? 1
-                                                  }
-                                                  strokeColor={'#007AB6'}
-                                                />
-                                              )}
+                                                  <Progress
+                                                    percent={
+                                                      fileState.find(
+                                                        (i) => i.name == it?.name
+                                                      )?.uploadProgress ?? 1
+                                                    }
+                                                    strokeColor={'#007AB6'}
+                                                  />
+                                                )}
                                               <span className="text-sm text-gray-500">{`(${fileState.find((i) => i.name == it?.name)?.status})`}</span>
                                             </li>
                                           );
@@ -4384,6 +4789,7 @@ const TakeOffNewPage = () => {
                                 htmlFor="file-selector"
                               >
                                 <input
+                                  ref={fileInputRef}
                                   type="file"
                                   accept="application/pdf"
                                   id="file-selector"
@@ -4422,7 +4828,11 @@ const TakeOffNewPage = () => {
                                       Drag and Drop your files here
                                     </h4>
                                     <p className="text-gray-400">or</p>
-                                    <Button className="text-lavenderPurpleReplica font-bold border border-transparent bg-lavenderPurpleReplica bg-opacity-10 hover:!border-lavenderPurpleReplica hover:!text-lavenderPurpleReplica">
+                                    <Button
+                                      onClick={() => {
+                                        fileInputRef.current?.click();
+                                      }}
+                                      className="text-lavenderPurpleReplica font-bold border border-transparent bg-lavenderPurpleReplica bg-opacity-10 hover:!border-lavenderPurpleReplica hover:!text-lavenderPurpleReplica">
                                       Select file
                                     </Button>
                                   </div>
@@ -4500,7 +4910,7 @@ const TakeOffNewPage = () => {
                         </div>
                         <div
                           className="flex flex-row gap-2 items-center"
-                          // onClick={}
+                        // onClick={}
                         >
                           <label>Fill:</label>
                           {/* <NextImage src={'/selectedScale.svg'} alt={'zoomicon'} width={19.97} height={11.31} /> */}
@@ -4576,7 +4986,7 @@ const TakeOffNewPage = () => {
                     modalOpen={reportModal}
                   />
                 </ModalComponent>
-                <ModalComponent open={progressModalOpen} setOpen={() => {}}>
+                <ModalComponent open={progressModalOpen} setOpen={() => { }}>
                   <CreateProgressModal
                     setModalOpen={setprogressModalOpen}
                     files={selectedFiles}
