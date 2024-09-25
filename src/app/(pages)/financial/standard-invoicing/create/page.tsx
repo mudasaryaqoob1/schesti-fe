@@ -6,9 +6,6 @@ import { toast } from 'react-toastify';
 import { ConfigProvider, Divider } from 'antd';
 import Table, { type ColumnType } from 'antd/es/table';
 import { useSearchParams } from 'next/navigation';
-import { AppDispatch } from '@/redux/store';
-import { useDispatch } from 'react-redux';
-
 // module imports
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Button from '@/app/component/customButton/white';
@@ -26,7 +23,6 @@ import {
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
-import { fetchCompanySubcontractors } from '@/redux/company/company.thunk';
 import { ISubcontract } from '@/app/interfaces/companyEmployeeInterfaces/subcontractor.interface';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
@@ -97,7 +93,6 @@ type InvoiceDetail = {
 const CreateInvoice = () => {
   const router = useRouterHook();
   const searchParams = useSearchParams();
-  const dispatch = useDispatch<AppDispatch>();
   const currency = useCurrencyFormatter();
   const paramsSubContractId = searchParams.get('subcontractorId');
 

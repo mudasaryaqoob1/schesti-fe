@@ -31,7 +31,7 @@ import {
   ICrmContract,
 } from '@/app/interfaces/crm/crm-contract.interface';
 import { FileInterface } from '@/app/interfaces/file.interface';
-import { chooseRandomColor } from '../../crm/daily-work/utils';
+import { chooseRandomColor } from '../../daily-work/utils';
 
 const ValidationSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),

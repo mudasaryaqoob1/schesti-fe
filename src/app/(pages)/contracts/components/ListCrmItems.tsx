@@ -98,6 +98,7 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                   name: getItemName(item),
                   address: item.address,
                   phone: item.phone,
+                  pdf: ""
                 })
               }
             >
@@ -106,16 +107,16 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                   {' '}
                   <span className="text-schestiLightBlack">Name: </span>{' '}
                   {item.module === 'subcontractors' ||
-                  item.module === 'partners' ||
-                  item.module === 'contractors'
+                    item.module === 'partners' ||
+                    item.module === 'contractors'
                     ? item.companyRep
                     : `${item.firstName} ${item.lastName || ''}`}
                 </p>
                 <p>
                   <span className="text-schestiLightBlack">Company: </span>{' '}
                   {item.module === 'subcontractors' ||
-                  item.module === 'partners' ||
-                  item.module === 'contractors'
+                    item.module === 'partners' ||
+                    item.module === 'contractors'
                     ? item.name
                     : item.companyName}
                 </p>

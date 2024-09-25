@@ -12,7 +12,6 @@ import { LinkMessage } from './LinkMessage';
 import moment from 'moment';
 import Description from '@/app/component/description';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
-import { withAuth } from '@/app/hoc/withAuth';
 import { meetingService } from '@/app/services/meeting.service';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';

@@ -9,7 +9,7 @@ import {
   ICrmContract,
 } from '@/app/interfaces/crm/crm-contract.interface';
 import crmContractService from '@/app/services/crm/crm-contract.service';
-import { AxiosError, all } from 'axios';
+import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { Skeleton } from 'antd';
 import NoData from '@/app/component/noData';
