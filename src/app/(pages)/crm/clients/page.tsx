@@ -60,6 +60,10 @@ const activeClientMenuItems: MenuProps['items'] = [
     label: <p>Create Schedule</p>,
   },
   {
+    key: 'email',
+    label: <p>Email</p>,
+  },
+  {
     key: 'editClientDetail',
     label: <p>Edit Client Details</p>,
   },
@@ -70,10 +74,6 @@ const activeClientMenuItems: MenuProps['items'] = [
   {
     key: 'createNewTakeoff',
     label: <p>Create New Takeoff</p>,
-  },
-  {
-    key: 'email',
-    label: <p>Email</p>,
   },
   {
     key: 'deleteClient',
