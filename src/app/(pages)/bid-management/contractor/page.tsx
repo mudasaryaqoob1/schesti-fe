@@ -50,6 +50,8 @@ function ContractorScreen() {
     projectValue: number;
     page: number;
     limit: number;
+    country?: string;
+    state?: string;
   }>({
     trades: [],
     projectValue: 0,
@@ -91,6 +93,8 @@ function ContractorScreen() {
       filters.limit,
       filters.projectValue,
       filters.trades,
+      filters.country,
+      filters.state,
     ],
     fetchProjects
   );

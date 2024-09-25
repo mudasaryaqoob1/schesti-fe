@@ -226,7 +226,7 @@ function ViewSubcontractorInvoicePage() {
         <div className="flex items-center space-x-2">
           <QuaternaryHeading title="Taxes:" />
           <QuinaryHeading
-            title={`${invoiceData.taxes}%`}
+            title={`$${invoiceData.taxes}`}
             className="font-bold"
           />
         </div>

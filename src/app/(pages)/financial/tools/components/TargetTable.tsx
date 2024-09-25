@@ -116,11 +116,12 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
         str2Percent: true,
       })
       .saveAs(
-        `${'financial-tools' +
-        '-' +
-        moment().month() +
-        '-' +
-        new Date().getTime()
+        `${
+          'financial-tools' +
+          '-' +
+          moment().month() +
+          '-' +
+          new Date().getTime()
         }.xlsx`
       );
   };
@@ -154,9 +155,7 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
             text="Financial Statement"
             className="!w-fit !py-2"
             onClick={() => {
-              router.push(
-                `${Routes.Financial.Statement}`
-              )
+              router.push(`${Routes.Financial.Statement}`);
             }}
           />
         </div>

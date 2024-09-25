@@ -1,3 +1,4 @@
+import { ICrmItem } from './crm/crm.interface';
 import { FileInterface } from './file.interface';
 
 export type G7State = {
@@ -41,12 +42,15 @@ export type IAIAInvoice = {
   _id: string;
   createdAt: string;
   updatedAt: string;
-  clientName: string;
-  architectName: string;
+  client: string | ICrmItem;
+  architect: string | ICrmItem;
 
   lienWaiverFiles: FileInterface[];
   salesFiles: FileInterface[];
   federalPaperFiles: FileInterface[];
   materialsFiles: FileInterface[];
   otherFiles: FileInterface[];
+
+  isParent: boolean;
+  parent: string;
 } & G7State;

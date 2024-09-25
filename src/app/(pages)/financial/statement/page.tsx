@@ -10,41 +10,297 @@ import { AccumulatedDepreciationTable } from './components/assets/AccumulatedDep
 import { AssetTotal } from './components/assets/AssetTotal';
 import { CurrentLiabilitiesTable } from './components/liabilities/CurrentLiabilities';
 import { LongTermLiabilitiesTable } from './components/liabilities/LongTermLiabilities';
-import { TotalLiabilities } from './components/liabilities/TotalLiabilities';
 import { EquityTable } from './components/equity/EquityTable';
-import { TotalEquity } from './components/equity/TotalEquity';
 import { OperatingIncomeTable } from './components/income-statement/OperatingIncomeTable';
 import { DirectExpenseTable } from './components/income-statement/DirectExpenseTable';
-import { TotalExpense } from './components/income-statement/TotalExpense';
 import { OverheadExpenseTable } from './components/income-statement/OverheadExpense';
-import { TotalIndirectExpense } from './components/income-statement/TotalndirectExpense';
-import { DatePicker } from 'antd';
-import { IFinancialStatementState } from './types';
+import { DatePicker, Skeleton } from 'antd';
+import {
+  IFinancialStatementCalculatedValues,
+  IFinancialStatementState,
+} from './types';
 import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import financialStatement from '@/app/services/financial/financial-statement';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import dayjs from 'dayjs';
+import { IInvoice } from '@/app/interfaces/invoices.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IFinancialExpense } from '@/app/interfaces/financial/financial-expense.interface';
+import { IFinancialAsset } from '@/app/interfaces/financial/financial-asset.interface';
+import { getCashonBankFromAssets } from './utils';
+import _ from 'lodash';
+import { USCurrencyFormat } from '@/app/utils/format';
 
 function FinancialStatementPage() {
+  const [dates, setDates] = useState({
+    start: dayjs().startOf('month').toDate(),
+    end: dayjs().toDate(),
+  });
+
+  const [data, setData] = useState<{
+    standardInvoices: IInvoice[];
+    aiainvoices: IAIAInvoice[];
+    expenses: IFinancialExpense[];
+    assets: IFinancialAsset[];
+  }>({
+    aiainvoices: [],
+    standardInvoices: [],
+    expenses: [],
+    assets: [],
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getFinancialStatement();
+  }, [dates]);
+
+  async function getFinancialStatement() {
+    setLoading(true);
+    try {
+      const response = await financialStatement.httpGetAllFinancialStatements(
+        dates.start,
+        dates.end
+      );
+      if (response.data) {
+        setData(response.data);
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const formik = useFormik<IFinancialStatementState>({
     initialValues: {
       assets: {
-        firstCitizenBankPayables: 0.0,
-        firstCitizenBankRevenue: 0.0,
         cashClearing: 50.0,
         startUpInventory: 0.0,
 
         accumulatedDepreciationVehicle: 0.0,
-        totalAccumulatedDepreciation: 0.0,
+        totalAccumulatedDepreciationBuilding: 0.0,
       },
       liabilities: {
         healthInsurancePayable: 0.0,
         shareHoldersPayable: 0.0,
         totalLongTermLiabilities: 0.0,
         statePayrollTaxesPayable: 0.0,
-      }
-    },
-    onSubmit() {
+      },
 
+      equity: {
+        capitalStock: 0.0,
+        otherPaidInCapital: 0.0,
+        retainedEarnings: 0.0,
+      },
     },
-  })
+    onSubmit() {},
+  });
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-2 gap-3">
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+      </div>
+    );
+  }
+
+  function getCalculatedValues() {
+    // const aiaInvoicesReceiveables = data.aiainvoices.filter(invoice => invoice.isParent).map((invoice) => {
+    //   // get receivable amount
+    //   const receiveables = invoice.amountPaid;
+    //   return receiveables;
+    // });
+
+    const groupedApplications = _.groupBy(data.aiainvoices, (app) =>
+      app.isParent ? app._id : app.parent
+    );
+
+    const lastPhases = _.map(groupedApplications, (group) => {
+      return _.maxBy(group, 'createdAt'); // Select the last phase by createdAt
+    });
+
+    const totalRemainingAmount = _.sumBy(lastPhases, (app) =>
+      app ? app.totalAmount - app.amountPaid : 0
+    );
+
+    const values: IFinancialStatementCalculatedValues = {
+      assets: {
+        cashOnBank: getCashonBankFromAssets(data.assets).reduce(
+          (acc, curr) => acc + curr.totalPrice,
+          0
+        ),
+        totalStandardInvoices: data.standardInvoices.reduce(
+          (acc, curr) => acc + curr.amount,
+          0
+        ),
+        contractReceivable: totalRemainingAmount,
+        totalCurrentAssets: function () {
+          return (
+            this.cashOnBank +
+            this.totalStandardInvoices +
+            this.contractReceivable +
+            formik.values.assets.cashClearing +
+            formik.values.assets.startUpInventory
+          );
+        },
+      },
+      longTermAssets: {
+        totalLongTermAssets: data.assets.reduce(
+          (acc, curr) => acc + curr.totalPrice,
+          0
+        ),
+      },
+      accumalatedDepreciation: {
+        totalAccumulatedDepreciation: () => {
+          return (
+            formik.values.assets.totalAccumulatedDepreciationBuilding +
+            formik.values.assets.accumulatedDepreciationVehicle
+          );
+        },
+        netLongTermAssets: () => {
+          return (
+            values.longTermAssets.totalLongTermAssets -
+            values.accumalatedDepreciation.totalAccumulatedDepreciation()
+          );
+        },
+        totalAssets: () => {
+          return (
+            values.assets.totalCurrentAssets() +
+            values.accumalatedDepreciation.netLongTermAssets()
+          );
+        },
+      },
+      currentLiabilities: {
+        totalAccountsPayable: data.expenses
+          .filter((expense) => expense.expenseType === 'SubContract')
+          .reduce((acc, curr) => acc + curr.totalPrice, 0),
+        creditCards: data.expenses
+          .filter((expense) => expense.paymentMethod === 'Credit Card')
+          .reduce((acc, curr) => acc + curr.totalPrice, 0),
+        totalCurrentLiabilities() {
+          return (
+            this.totalAccountsPayable +
+            formik.values.liabilities.statePayrollTaxesPayable +
+            formik.values.liabilities.healthInsurancePayable +
+            this.creditCards
+          );
+        },
+      },
+      liabilities: {
+        totalLiabilities() {
+          return (
+            formik.values.liabilities.shareHoldersPayable +
+            formik.values.liabilities.totalLongTermLiabilities
+          );
+        },
+      },
+      equity: {
+        subTotalEquity() {
+          return (
+            formik.values.equity.capitalStock +
+            formik.values.equity.otherPaidInCapital +
+            formik.values.equity.retainedEarnings
+          );
+        },
+        totalEquity: () => {
+          return (
+            values.accumalatedDepreciation.totalAssets() -
+            values.liabilities.totalLiabilities()
+          );
+        },
+        totalLiabilitiesAndEquity: () => {
+          return (
+            values.liabilities.totalLiabilities() +
+            values.equity.subTotalEquity()
+          );
+        },
+      },
+
+      directExpense: {
+        materials: data.expenses
+          .filter((expense) => expense.expenseType === 'Material')
+          .reduce((acc, curr) => acc + curr.totalPrice, 0),
+        labourExpenses: data.expenses
+          .filter((expense) => expense.expenseType === 'Labour')
+          .reduce((acc, curr) => acc + curr.totalPrice, 0),
+        otherJobExpense: data.expenses
+          .filter((expense) => expense.expenseType === 'General Condition')
+          .reduce((acc, curr) => acc + curr.totalPrice, 0),
+        subcontractedExpense: data.expenses
+          .filter((expense) => expense.expenseType === 'SubContract')
+          .reduce((acc, curr) => acc + curr.totalPrice, 0),
+        totalDirectExpense() {
+          return (
+            this.materials +
+            this.labourExpenses +
+            this.otherJobExpense +
+            this.subcontractedExpense
+          );
+        },
+        grossProfit: () => {
+          return (
+            values.operatingIncome.totalOperatingIncome() -
+            values.directExpense.totalDirectExpense()
+          );
+        },
+      },
+      operatingIncome: {
+        contractIncome: () => {
+          return (
+            values.assets.contractReceivable +
+            values.assets.totalStandardInvoices
+          );
+        },
+        totalOperatingIncome() {
+          return this.contractIncome();
+        },
+      },
+      overheadExpense: {
+        overheadList: data.expenses.filter(
+          (expense) => expense.expenseType === 'Overhead'
+        ),
+        incomeFromOperations: () => {
+          return (
+            values.directExpense.grossProfit() +
+            values.overheadExpense.totalIndirectExpense()
+          );
+        },
+        totalIndirectExpense() {
+          return this.totalOverheadExpense();
+        },
+        totalOverheadExpense() {
+          return this.overheadList.reduce(
+            (acc, curr) => acc + curr.totalPrice,
+            0
+          );
+        },
+      },
+      netIncome: {
+        netIncomeBeforeTax: () => {
+          return values.overheadExpense.totalOverheadExpense();
+        },
+        totalNetIncome() {
+          return this.netIncomeBeforeTax();
+        },
+      },
+    };
+    return () => {
+      return values as IFinancialStatementCalculatedValues;
+    };
+  }
+
+  const calculatedValues = getCalculatedValues();
 
   return (
     <section className="mt-6  space-y-4 mb-[39px] mx-4 rounded-xl bg-white p-5">
@@ -53,7 +309,16 @@ function FinancialStatementPage() {
           <PrimaryHeading title="Financial Statement" className="text-[20px]" />
 
           <DatePicker.RangePicker
-            className='border-none'
+            className="border-none"
+            value={[dayjs(dates.start), dayjs(dates.end)]}
+            onChange={(value) => {
+              if (value && value[0] && value[1]) {
+                setDates({
+                  start: value[0].toDate(),
+                  end: value[1].toDate(),
+                });
+              }
+            }}
           />
         </div>
 
@@ -65,12 +330,14 @@ function FinancialStatementPage() {
         <TertiaryHeading title="Assets" />
         <CurrentAssetTable
           formik={formik}
+          calculatedValues={calculatedValues()}
         />
-        <LongTermAssetTable />
-        <AccumulatedDepreciationTable
-          formik={formik}
+        <LongTermAssetTable
+          calulatedValues={calculatedValues()}
+          assets={data.assets}
         />
-        <AssetTotal />
+        <AccumulatedDepreciationTable formik={formik} />
+        <AssetTotal calculatedValues={calculatedValues()} />
       </div>
 
       {/* LiabILITIES */}
@@ -80,16 +347,18 @@ function FinancialStatementPage() {
 
         <CurrentLiabilitiesTable
           formik={formik}
+          calculatedValues={calculatedValues()}
         />
-        <LongTermLiabilitiesTable />
-        <TotalLiabilities />
+        <LongTermLiabilitiesTable
+          calculatedValues={calculatedValues()}
+          formik={formik}
+        />
       </div>
 
       <div className="p-4 border space-y-2 rounded-md">
         <TertiaryHeading title="Equity" />
 
-        <EquityTable />
-        <TotalEquity />
+        <EquityTable calculatedValues={calculatedValues()} formik={formik} />
       </div>
 
       {/* Current  profit or loss */}
@@ -101,7 +370,12 @@ function FinancialStatementPage() {
               title="Current Profit (Loss)"
               className=" font-medium text-base"
             />
-            <TertiaryHeading title="$4000.12" className=" text-base" />
+            <TertiaryHeading
+              title={USCurrencyFormat.format(
+                calculatedValues().netIncome.totalNetIncome()
+              )}
+              className=" text-base"
+            />
           </div>
 
           <div className="grid grid-cols-5">
@@ -109,7 +383,12 @@ function FinancialStatementPage() {
               title="Total Equity/Capital"
               className=" font-medium text-base"
             />
-            <TertiaryHeading title="$4000.12" className=" text-base" />
+            <TertiaryHeading
+              title={USCurrencyFormat.format(
+                calculatedValues().equity.totalEquity()
+              )}
+              className=" text-base"
+            />
           </div>
 
           <div className="grid grid-cols-5">
@@ -117,7 +396,12 @@ function FinancialStatementPage() {
               title="Total Liabilities & Equity"
               className=" font-medium text-base"
             />
-            <TertiaryHeading title="$4000.12" className=" text-base" />
+            <TertiaryHeading
+              title={USCurrencyFormat.format(
+                calculatedValues().equity.totalLiabilitiesAndEquity()
+              )}
+              className=" text-base"
+            />
           </div>
         </div>
       </div>
@@ -125,12 +409,10 @@ function FinancialStatementPage() {
       {/* Income Statement */}
       <div className="p-4 border space-y-2 rounded-md">
         <TertiaryHeading title="Income Statement Jan-Jun 2023" />
-        <OperatingIncomeTable />
-        <DirectExpenseTable />
-        <TotalExpense />
+        <OperatingIncomeTable calculatedValues={calculatedValues()} />
+        <DirectExpenseTable calculatedValues={calculatedValues()} />
 
-        <OverheadExpenseTable />
-        <TotalIndirectExpense />
+        <OverheadExpenseTable calculatedValues={calculatedValues()} />
       </div>
 
       {/*  NET  Income  */}
@@ -141,7 +423,12 @@ function FinancialStatementPage() {
               title="Net Income  before Tax"
               className=" font-medium text-base"
             />
-            <TertiaryHeading title="$4000.12" className=" text-base" />
+            <TertiaryHeading
+              title={USCurrencyFormat.format(
+                calculatedValues().netIncome.netIncomeBeforeTax()
+              )}
+              className=" text-base"
+            />
           </div>
 
           <div className="grid grid-cols-5">
@@ -149,7 +436,12 @@ function FinancialStatementPage() {
               title="Net Income"
               className=" font-medium text-base"
             />
-            <TertiaryHeading title="$4000.12" className=" text-base" />
+            <TertiaryHeading
+              title={USCurrencyFormat.format(
+                calculatedValues().netIncome.netIncomeBeforeTax()
+              )}
+              className=" text-base"
+            />
           </div>
         </div>
       </div>

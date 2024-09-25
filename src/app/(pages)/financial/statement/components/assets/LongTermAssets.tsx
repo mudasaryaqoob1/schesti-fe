@@ -1,7 +1,14 @@
-import { NumberInputComponent } from "@/app/component/customInput/NumberInput";
+import { NumberInputComponent } from '@/app/component/customInput/NumberInput';
+import { IFinancialStatementCalculatedValues } from '../../types';
+import { USCurrencyFormat } from '@/app/utils/format';
+import { IFinancialAsset } from '@/app/interfaces/financial/financial-asset.interface';
+import _ from 'lodash';
 
-export function LongTermAssetTable() {
-
+type Props = {
+  calulatedValues: IFinancialStatementCalculatedValues;
+  assets: IFinancialAsset[];
+};
+export function LongTermAssetTable({ calulatedValues, assets }: Props) {
   return (
     <table className="w-full">
       <thead>
@@ -13,46 +20,47 @@ export function LongTermAssetTable() {
       </thead>
 
       <tbody className="text-sm">
-        <tr className="border-b border-border dark:border-border">
-          <td className="p-4">Vehicles</td>
-          <td className="p-4 text-center max-w-12">
-            <NumberInputComponent
-              label=""
-              name=""
-              prefix="$"
-              placeholder=""
-              field={{
-                className: "pointer-events-none",
-                value: 0.00,
-              }}
-            />
-          </td>
-          <td className="p-4"></td>
-        </tr>
-
-        <tr className="border-b border-border dark:border-border">
-          <td className="p-4">Lands</td>
-          <td className="p-4 text-center max-w-12">
-            <NumberInputComponent
-              label=""
-              name=""
-              prefix="$"
-              placeholder=""
-              field={{
-                className: "pointer-events-none",
-                value: 0.00,
-              }}
-            />
-          </td>
-          <td className="p-4"></td>
-        </tr>
+        {_(assets)
+          .groupBy('assetType') // Group by 'assetType'
+          .map((items, assetType) => ({
+            assetType,
+            totalPrice: _.sumBy(items, 'totalPrice'), // Sum 'totalPrice' for each assetType
+          }))
+          .value()
+          .map((asset) => {
+            return (
+              <tr
+                key={asset.assetType}
+                className="border-b border-border dark:border-border"
+              >
+                <td className="p-4">{asset.assetType}</td>
+                <td className="p-4 text-center max-w-12">
+                  <NumberInputComponent
+                    label=""
+                    name=""
+                    prefix="$"
+                    placeholder=""
+                    field={{
+                      className: 'pointer-events-none',
+                      value: asset.totalPrice,
+                    }}
+                  />
+                </td>
+                <td className="p-4"></td>
+              </tr>
+            );
+          })}
 
         {/* Footer */}
 
         <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Total Long Term Assets</td>
           <td className="p-4"></td>
-          <td className="p-4 font-bold text-center">$52,358.00</td>
+          <td className="p-4 font-bold text-center">
+            {USCurrencyFormat.format(
+              calulatedValues.longTermAssets.totalLongTermAssets
+            )}
+          </td>
         </tr>
       </tbody>
     </table>

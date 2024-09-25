@@ -25,7 +25,6 @@ export const Routes = {
     Partners: '/crm/partners',
     Architects: '/crm/architects',
     Vendors: '/crm/vendors',
-    Daily_Work: '/crm/daily-work',
     Contractors: '/crm/contractors',
   },
   Contracts: '/contracts',
@@ -49,7 +48,7 @@ export const Routes = {
   Meetings: '/meeting',
   Networking: '/networking',
   SocialMedia: '/social-media',
-
+  Daily_Work: '/daily-work',
 };
 
 export const OtherRoutes = {
@@ -69,6 +68,7 @@ export const OtherRoutes = {
   Upgrades: '/upgradeplans',
   Dashboard: '/dashboard',
   Contracts: '/contracts',
+  DailyWork: '/daily-work',
 };
 
 export const Plans = {
@@ -127,8 +127,12 @@ export const planFeatureOptions = [
       { label: 'Contractors', value: Routes.CRM.Contractors },
       { label: 'Architects', value: Routes.CRM.Architects },
       { label: 'Vendors', value: Routes.CRM.Vendors },
-      { label: 'Daily Work', value: Routes.CRM.Daily_Work },
     ],
+  },
+  {
+    Icon: ContractIcon,
+    label: 'Daily Work',
+    value: Routes.Daily_Work,
   },
   {
     Icon: ContractIcon,

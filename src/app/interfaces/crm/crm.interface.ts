@@ -15,6 +15,9 @@ type ICrmBase = {
   address: string;
   secondAddress: string;
   associatedCompany: string | IUserInterface;
+  state?: string;
+  zipCode?: string;
+  country?: string;
   _id: string;
   createdAt: string;
   updatedAt: string;

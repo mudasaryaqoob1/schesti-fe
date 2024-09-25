@@ -279,7 +279,6 @@ export function AssetForm({ item, onSuccess }: Props) {
                 label: 'Current Assets',
                 title: 'Current Assets',
                 options: [
-                  { label: 'Current Assets', value: 'Current Assets' },
                   { label: 'Cash on Bank', value: 'Cash on Bank' },
                   {
                     label: 'Contract Receivable',

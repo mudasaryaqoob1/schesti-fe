@@ -35,8 +35,9 @@ import { DisplayDailyWorkStatus } from './components/DisplayStatus';
 import ModalComponent from '@/app/component/modal';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import { Excel } from 'antd-table-saveas-excel';
-import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
+
 import moment from 'moment';
+import { PreviewCSVImportFileModal } from '../crm/components/PreviewCSVImportFileModal';
 
 const ValidationSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email'),

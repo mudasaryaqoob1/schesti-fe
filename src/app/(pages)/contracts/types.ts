@@ -32,6 +32,7 @@ export type ToolState = {
   position: { x: number; y: number };
   id: string;
   date?: string;
+  email?: string;
 } & (SignatureState | InitialsState | CommentState | DateState);
 
 export type PdfContractMode =

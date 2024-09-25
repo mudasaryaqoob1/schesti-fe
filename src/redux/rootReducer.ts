@@ -85,6 +85,6 @@ const rootReducer = combineReducers<RootState>({
   companyRoles: companyRolesReducer,
   crm: crmReducer,
   network: networkSlice,
-  socialMedia: socialMediaSlice
+  socialMedia: socialMediaSlice,
 });
 export default persistReducer(persistConfig, rootReducer);

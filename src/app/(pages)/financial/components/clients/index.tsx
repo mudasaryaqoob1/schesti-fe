@@ -30,11 +30,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { AIAInvoicePhasesTable } from '../../aia-invoicing/form/components/PhasesTable';
+import { ICrmItem } from '@/app/interfaces/crm/crm.interface';
+import { SelectComponent } from '@/app/component/customSelect/Select.component';
+import { getCrmItemsThunk } from '@/redux/crm/crm.thunk';
+import { AddCrmArchitectForm } from '@/app/(pages)/crm/architects/components/AddCrmArchitectForm';
+import { useSearchParams } from 'next/navigation';
 
 const ValidationSchema = Yup.object({
   invoiceName: Yup.string().required('Invoice name is required'),
-  clientName: Yup.string().required('Client name is required'),
-  architectName: Yup.string().required('Architect name is required'),
+  client: Yup.string().required('Client is required'),
+  architect: Yup.string().required('Architect is required'),
 });
 
 export function Clients() {
@@ -48,22 +53,37 @@ export function Clients() {
   const clientInvoices = useSelector(
     (state: RootState) => state.clientInvoices.data
   );
+  const crmState = useSelector((state: RootState) => state.crm);
   const clientInvoicesLoading = useSelector(
     (state: RootState) => state.clientInvoices.loading
   );
   const [search, setSearch] = useState('');
-  const formik = useFormik({
+  const searchParams = useSearchParams();
+
+  const clientId = searchParams.get('clientId');
+  const architectId = searchParams.get('architectId');
+
+  const formik = useFormik<{
+    invoiceName: string;
+    client: string | ICrmItem;
+    architect: string | ICrmItem;
+  }>({
     initialValues: {
       invoiceName: '',
-      clientName: '',
-      architectName: '',
+      client: clientId ? clientId : '',
+      architect: architectId ? architectId : '',
     },
+    enableReinitialize: clientId || architectId ? true : false,
     validationSchema: ValidationSchema,
     async onSubmit(values) {
       setIsLoading(true);
       try {
-        const response =
-          await clientInvoiceService.httpCreateInitialInvoice(values);
+        const response = await clientInvoiceService.httpCreateInitialInvoice({
+          ...values,
+          invoiceName: values.invoiceName,
+          architect: values.architect as string,
+          client: values.client as string,
+        });
         if (response.data && response.data.invoice) {
           router.push(
             `${Routes.Financial['AIA-Invoicing']}/form?id=${response.data.invoice._id}&mode=edit`
@@ -86,6 +106,10 @@ export function Clients() {
     fetchSubcontactorsInvoices();
   }, [fetchSubcontactorsInvoices]);
   const items: MenuProps['items'] = [
+    {
+      key: 'edit',
+      label: <p>Edit</p>,
+    },
     {
       key: 'createPhase',
       label: <p>Next Payable</p>,
@@ -141,7 +165,11 @@ export function Clients() {
           menu={{
             items,
             onClick: ({ key }) => {
-              if (key === 'createPhase') {
+              if (key === 'edit') {
+                router.push(
+                  `${Routes.Financial['AIA-Invoicing']}/form?id=${record._id}&mode=edit`
+                );
+              } else if (key === 'createPhase') {
                 router.push(
                   // `${Routes.Financial['AIA-Invoicing']}/invoice/${record._id}`
                   `${Routes.Financial['AIA-Invoicing']}/form?id=${record._id}&mode=phase`
@@ -235,10 +263,7 @@ export function Clients() {
                 onClose={() => setShowClientModal(false)}
                 onSuccess={(client) => {
                   if (client.module === 'clients') {
-                    formik.setFieldValue(
-                      'clientName',
-                      `${client.firstName} ${client.lastName}`
-                    );
+                    formik.setFieldValue('client', client._id);
                   }
                 }}
               />
@@ -254,14 +279,11 @@ export function Clients() {
               title="Add Architect"
               onClose={() => setShowArchitectModal(false)}
             >
-              <AddCrmClientForm
+              <AddCrmArchitectForm
                 onClose={() => setShowArchitectModal(false)}
                 onSuccess={(item) => {
                   if (item.module === 'architects') {
-                    formik.setFieldValue(
-                      'architectName',
-                      `${item.firstName} ${item.lastName}`
-                    );
+                    formik.setFieldValue('architect', item._id);
                   }
                 }}
               />
@@ -313,42 +335,53 @@ export function Clients() {
                 />
 
                 <div className="mt-2">
-                  <InputComponent
-                    label="Client Name"
-                    name="clientName"
-                    type="text"
-                    placeholder="Enter client name"
+                  <SelectComponent
+                    label="Client"
+                    name="client"
                     label2={
                       <div
-                        onClick={() => setShowClientModal(true)}
+                        onClick={() => {
+                          setShowClientModal(true);
+                        }}
                         className="text-schestiPrimary space-x-1 hover:cursor-pointer hover:underline flex items-center"
                       >
                         <PlusOutlined />
                         <span>Add New</span>
                       </div>
                     }
+                    placeholder="Select Client"
                     field={{
-                      value: formik.values.clientName,
-                      onChange: formik.handleChange,
+                      value: formik.values.client
+                        ? formik.values.client
+                        : undefined,
+                      onChange: (val) => formik.setFieldValue('client', val),
                       onBlur: formik.handleBlur,
+                      onFocus: () => {
+                        dispatch(getCrmItemsThunk({ module: 'clients' }));
+                      },
+                      loading: crmState.loading,
+                      options: crmState.data.map((item) => {
+                        const client = item as unknown as ICrmItem;
+                        return {
+                          label: `${client.firstName} ${client.lastName}`,
+                          value: client._id,
+                        };
+                      }),
                     }}
-                    hasError={
-                      formik.touched.clientName && !!formik.errors.clientName
-                    }
+                    hasError={formik.touched.client && !!formik.errors.client}
                     errorMessage={
-                      formik.touched.clientName && formik.errors.clientName
-                        ? formik.errors.clientName
+                      formik.touched.client && formik.errors.client
+                        ? formik.errors.client
                         : ''
                     }
                   />
                 </div>
 
                 <div className="mt-2">
-                  <InputComponent
-                    label="Architect Name"
-                    name="architectName"
-                    type="text"
-                    placeholder="Enter architect name"
+                  <SelectComponent
+                    label="Architect"
+                    name="architect"
+                    placeholder="Select architect"
                     label2={
                       <div
                         onClick={() => setShowArchitectModal(true)}
@@ -359,18 +392,29 @@ export function Clients() {
                       </div>
                     }
                     field={{
-                      value: formik.values.architectName,
-                      onChange: formik.handleChange,
+                      value: formik.values.architect
+                        ? formik.values.architect
+                        : undefined,
+                      onChange: (val) => formik.setFieldValue('architect', val),
                       onBlur: formik.handleBlur,
+                      onFocus: () => {
+                        dispatch(getCrmItemsThunk({ module: 'architects' }));
+                      },
+                      loading: crmState.loading,
+                      options: crmState.data.map((item) => {
+                        const architect = item as unknown as ICrmItem;
+                        return {
+                          label: `${architect.firstName} ${architect.lastName}`,
+                          value: architect._id,
+                        };
+                      }),
                     }}
                     hasError={
-                      formik.touched.architectName &&
-                      !!formik.errors.architectName
+                      formik.touched.architect && !!formik.errors.architect
                     }
                     errorMessage={
-                      formik.touched.architectName &&
-                      formik.errors.architectName
-                        ? formik.errors.architectName
+                      formik.touched.architect && formik.errors.architect
+                        ? formik.errors.architect
                         : ''
                     }
                   />

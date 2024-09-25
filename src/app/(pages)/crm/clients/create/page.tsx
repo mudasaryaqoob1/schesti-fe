@@ -41,7 +41,11 @@ const newClientSchema = Yup.object({
   address: Yup.string().required('Address is required!'),
   secondAddress: Yup.string(),
 });
-const initialValues: IClient = {
+const initialValues: IClient & {
+  country?: string;
+  state?: string;
+  zipCode?: string;
+} = {
   firstName: '',
   lastName: '',
   email: '',
@@ -49,6 +53,9 @@ const initialValues: IClient = {
   companyName: '',
   address: '',
   secondAddress: '',
+  country: '',
+  state: '',
+  zipCode: '',
 };
 
 const CreateClient = () => {
@@ -164,20 +171,40 @@ const CreateClient = () => {
                       placeholder="Enter Company Name"
                     />
                   </div>
-                  <FormControl
-                    control="input"
-                    label="Address"
-                    type="text"
-                    name="address"
-                    placeholder="Address"
-                  />
-                  <FormControl
-                    control="input"
-                    label="Address 2"
-                    type="text"
-                    name="secondAddress"
-                    placeholder="Address 2"
-                  />
+                  <div className="md:col-span-full">
+                    <FormControl
+                      control="input"
+                      label="Address"
+                      type="text"
+                      name="address"
+                      placeholder="Address"
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 gap-3 mt-2 md:col-span-full">
+                    <FormControl
+                      control="input"
+                      label="Country"
+                      type="text"
+                      name="country"
+                      placeholder="Enter Country"
+                    />
+
+                    <FormControl
+                      control="input"
+                      label="State"
+                      type="text"
+                      name="state"
+                      placeholder="Enter State"
+                    />
+
+                    <FormControl
+                      control="input"
+                      label="ZipCode"
+                      type="text"
+                      name="zipCode"
+                      placeholder="Enter ZipCode"
+                    />
+                  </div>
                 </div>
                 <div className="self-end flex justify-end items-center gap-5 md:mt-4 my-3">
                   <div>

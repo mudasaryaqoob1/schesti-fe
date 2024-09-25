@@ -47,10 +47,10 @@ import _ from 'lodash';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
 
 const items: MenuProps['items'] = [
-  {
-    key: 'createNewInvoice',
-    label: <p>Create Invoice</p>,
-  },
+  // {
+  //   key: 'createNewInvoice',
+  //   label: <p>Create Invoice</p>,
+  // },
   {
     key: 'createSchedule',
     label: <p>Create Schedule</p>,

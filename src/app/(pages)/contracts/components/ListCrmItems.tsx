@@ -98,6 +98,7 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                   name: getItemName(item),
                   address: item.address,
                   phone: item.phone,
+                  pdf: '',
                 })
               }
             >
