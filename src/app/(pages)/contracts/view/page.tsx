@@ -66,7 +66,9 @@ function ViewContract() {
   function mergeAllTools(receipts: ContractPartyType[]) {
     setTools(
       _.chain(receipts)
-        .map((receipt) => receipt.tools.map(tool => ({ ...tool, email: receipt.email })))
+        .map((receipt) =>
+          receipt.tools.map((tool) => ({ ...tool, email: receipt.email }))
+        )
         .flatten()
         .uniqBy('id')
         .value()
@@ -102,20 +104,21 @@ function ViewContract() {
 
     new Promise((resolve) => {
       if (contract) {
-        mergeAllTools(contract.receipts)
+        mergeAllTools(contract.receipts);
         resolve(null);
       }
       resolve(null);
-    }).then(() => {
-      contractPdfRef.current?.handleAction(() => {
-      });
-    }).finally(() => {
-      setTimeout(() => {
-        setIsDownloading(false);
-      }, 5000);
-      setTools(receipt?.tools ?? []);
-      setReceipt(clonedReceipt ?? null);
     })
+      .then(() => {
+        contractPdfRef.current?.handleAction(() => {});
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setIsDownloading(false);
+        }, 5000);
+        setTools(receipt?.tools ?? []);
+        setReceipt(clonedReceipt ?? null);
+      });
   }
 
   return (
@@ -156,7 +159,7 @@ function ViewContract() {
           className="!w-fit"
           onClick={handleDownload}
           isLoading={isDownloading}
-          loadingText={isDownloading ? 'Downloading...' : ""}
+          loadingText={isDownloading ? 'Downloading...' : ''}
         />
       </div>
 

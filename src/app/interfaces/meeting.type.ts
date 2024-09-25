@@ -1,24 +1,22 @@
-
-
 type DailyRecurrence = {
-  frequency: "daily";
+  frequency: 'daily';
 };
 
 type WeeklyRecurrence = {
-  frequency: "weekly";
+  frequency: 'weekly';
   days: string[];
 };
 
 type MonthlyRecurrence = {
-  frequency: "monthly";
+  frequency: 'monthly';
 };
 
 type CustomRecurrence = {
-  frequency: "custom";
+  frequency: 'custom';
   dates: Date[];
-  endsOn: "never" | "date";
+  endsOn: 'never' | 'date';
   endDate?: Date;
-}
+};
 
 export type IMeeting = {
   _id: string;
@@ -33,7 +31,12 @@ export type IMeeting = {
 
   recurrence?: {
     isChecked: boolean;
-  } & (DailyRecurrence | WeeklyRecurrence | MonthlyRecurrence | CustomRecurrence);
+  } & (
+    | DailyRecurrence
+    | WeeklyRecurrence
+    | MonthlyRecurrence
+    | CustomRecurrence
+  );
 
   createdAt: string;
   updatedAt: string;

@@ -7,7 +7,6 @@ export type IPaymentMethod =
   | 'Not Paid'
   | 'Other';
 
-
 export interface IInvoiceType {
   invoices: IInvoice[];
 }

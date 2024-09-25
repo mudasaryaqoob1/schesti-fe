@@ -6,11 +6,11 @@ export type StandardToolType = 'signature' | 'initials' | 'comment' | 'date';
 type SignatureState = {
   tool: 'signature';
   value?:
-  | {
-    font: ChooseFontType;
-    value: string;
-  }
-  | FileInterface;
+    | {
+        font: ChooseFontType;
+        value: string;
+      }
+    | FileInterface;
 };
 
 type InitialsState = {

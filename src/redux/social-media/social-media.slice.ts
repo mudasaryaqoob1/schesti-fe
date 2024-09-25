@@ -8,8 +8,10 @@ interface ISocialMedia {
   selectedPostId: string;
   commentId: string;
   postData: {
-    _id: string, description: string, mediaFiles: IMediaFile[]
-  } | null
+    _id: string;
+    description: string;
+    mediaFiles: IMediaFile[];
+  } | null;
 }
 
 const initialState: ISocialMedia = {
@@ -21,8 +23,8 @@ const initialState: ISocialMedia = {
   postData: {
     _id: '',
     description: '',
-    mediaFiles: []
-  }
+    mediaFiles: [],
+  },
 };
 
 const socialMediaSlice = createSlice({
@@ -46,7 +48,7 @@ const socialMediaSlice = createSlice({
     },
     setPostData: (state, { payload }) => {
       state.postData = payload;
-    }
+    },
   },
 });
 
@@ -56,6 +58,6 @@ export const {
   setCommentContent,
   setSelectedPostId,
   setCommentId,
-  setPostData
+  setPostData,
 } = socialMediaSlice.actions;
 export default socialMediaSlice.reducer;

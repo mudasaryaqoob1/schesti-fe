@@ -1,14 +1,16 @@
-import { NumberInputComponent } from "@/app/component/customInput/NumberInput";
-import { IFinancialStatementCalculatedValues, IFinancialStatementState } from "../../types";
-import type { FormikProps } from "formik";
-import { USCurrencyFormat } from "@/app/utils/format";
+import { NumberInputComponent } from '@/app/component/customInput/NumberInput';
+import {
+  IFinancialStatementCalculatedValues,
+  IFinancialStatementState,
+} from '../../types';
+import type { FormikProps } from 'formik';
+import { USCurrencyFormat } from '@/app/utils/format';
 
 type Props = {
   formik: FormikProps<IFinancialStatementState>;
   calculatedValues: IFinancialStatementCalculatedValues;
-}
+};
 export function CurrentAssetTable({ formik, calculatedValues }: Props) {
-
   return (
     <table className="w-full">
       <thead>
@@ -29,7 +31,7 @@ export function CurrentAssetTable({ formik, calculatedValues }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "pointer-events-none",
+                className: 'pointer-events-none',
                 value: calculatedValues.assets.cashOnBank,
               }}
             />
@@ -46,17 +48,19 @@ export function CurrentAssetTable({ formik, calculatedValues }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "",
+                className: '',
                 value: formik.values.assets.cashClearing,
-                onChange: val => {
-                  formik.setFieldValue('assets.cashClearing', Number(val) as number)
-                }
+                onChange: (val) => {
+                  formik.setFieldValue(
+                    'assets.cashClearing',
+                    Number(val) as number
+                  );
+                },
               }}
             />
           </td>
           <td className="p-4"></td>
         </tr>
-
 
         <tr className="border-b border-border dark:border-border">
           <td className="p-4">Contract Receivables</td>
@@ -67,8 +71,8 @@ export function CurrentAssetTable({ formik, calculatedValues }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "pointer-events-none",
-                value: calculatedValues.assets.contractReceivable
+                className: 'pointer-events-none',
+                value: calculatedValues.assets.contractReceivable,
               }}
             />
           </td>
@@ -84,8 +88,8 @@ export function CurrentAssetTable({ formik, calculatedValues }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "pointer-events-none",
-                value: calculatedValues.assets.totalStandardInvoices
+                className: 'pointer-events-none',
+                value: calculatedValues.assets.totalStandardInvoices,
               }}
             />
           </td>
@@ -101,11 +105,14 @@ export function CurrentAssetTable({ formik, calculatedValues }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "",
+                className: '',
                 value: formik.values.assets.startUpInventory,
-                onChange: val => {
-                  formik.setFieldValue('assets.startUpInventory', Number(val) as number)
-                }
+                onChange: (val) => {
+                  formik.setFieldValue(
+                    'assets.startUpInventory',
+                    Number(val) as number
+                  );
+                },
               }}
             />
           </td>
@@ -116,7 +123,11 @@ export function CurrentAssetTable({ formik, calculatedValues }: Props) {
         <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Total Current Assets</td>
           <td className="p-4"></td>
-          <td className="p-4 font-bold text-center">{USCurrencyFormat.format(calculatedValues.assets.totalCurrentAssets())}</td>
+          <td className="p-4 font-bold text-center">
+            {USCurrencyFormat.format(
+              calculatedValues.assets.totalCurrentAssets()
+            )}
+          </td>
         </tr>
       </tbody>
     </table>

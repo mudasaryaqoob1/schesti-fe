@@ -54,8 +54,8 @@ export function EventOnlineForm({ formik }: Props) {
             {/* @ts-ignore */}
             {formik.errors.preBiddingMeeting?.meeting ? (
               <div className="text-red-500 text-xs">
-                {/* @ts-ignore */}
-                *{formik.errors.preBiddingMeeting?.meeting as string}
+                {/* @ts-ignore */}*
+                {formik.errors.preBiddingMeeting?.meeting as string}
               </div>
             ) : null}
           </>

@@ -105,7 +105,10 @@ export default function SignPdfContract() {
             contractPdfRef.current?.handleAction(async (blob) => {
               try {
                 // Upload the blob to S3 and get the URL
-                pdfUrl = await new AwsS3(blob, 'documents/contracts/').getS3URL();
+                pdfUrl = await new AwsS3(
+                  blob,
+                  'documents/contracts/'
+                ).getS3URL();
                 console.log(pdfUrl);
                 resolve(pdfUrl); // Resolve the promise once the URL is received
               } catch (error) {
@@ -115,7 +118,10 @@ export default function SignPdfContract() {
             });
           });
         }
-        const response = await crmContractService.httpSignContract(id, { ...receipt, pdf: pdfUrl });
+        const response = await crmContractService.httpSignContract(id, {
+          ...receipt,
+          pdf: pdfUrl,
+        });
         if (response.data) {
           toast.success('Contract signed successfully');
           setContract(response.data);
@@ -156,9 +162,7 @@ export default function SignPdfContract() {
             text="Download"
             className="!w-fit"
             onClick={() => {
-              contractPdfRef.current?.handleAction(() => {
-
-              });
+              contractPdfRef.current?.handleAction(() => {});
             }}
           />
         )}

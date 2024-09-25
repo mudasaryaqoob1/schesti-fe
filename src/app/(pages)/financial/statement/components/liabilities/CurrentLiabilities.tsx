@@ -1,14 +1,16 @@
-import type { FormikProps } from "formik";
-import { IFinancialStatementCalculatedValues, IFinancialStatementState } from "../../types";
-import { NumberInputComponent } from "@/app/component/customInput/NumberInput";
-import { USCurrencyFormat } from "@/app/utils/format";
+import type { FormikProps } from 'formik';
+import {
+  IFinancialStatementCalculatedValues,
+  IFinancialStatementState,
+} from '../../types';
+import { NumberInputComponent } from '@/app/component/customInput/NumberInput';
+import { USCurrencyFormat } from '@/app/utils/format';
 
 type Props = {
   formik: FormikProps<IFinancialStatementState>;
   calculatedValues: IFinancialStatementCalculatedValues;
-}
+};
 export function CurrentLiabilitiesTable({ formik, calculatedValues }: Props) {
-
   return (
     <table className="w-full">
       <thead>
@@ -29,16 +31,13 @@ export function CurrentLiabilitiesTable({ formik, calculatedValues }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "pointer-events-none",
+                className: 'pointer-events-none',
                 value: calculatedValues.currentLiabilities.totalAccountsPayable,
-
               }}
             />
           </td>
           <td className="p-4"></td>
         </tr>
-
-
 
         <tr className="border-b border-border dark:border-border">
           <td className="p-4">State Payroll Taxes Payable</td>
@@ -49,18 +48,19 @@ export function CurrentLiabilitiesTable({ formik, calculatedValues }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "",
+                className: '',
                 value: formik.values.liabilities.statePayrollTaxesPayable,
-                onChange: val => {
-                  formik.setFieldValue('liabilities.statePayrollTaxesPayable', Number(val))
-                }
-
+                onChange: (val) => {
+                  formik.setFieldValue(
+                    'liabilities.statePayrollTaxesPayable',
+                    Number(val)
+                  );
+                },
               }}
             />
           </td>
           <td className="p-4"></td>
         </tr>
-
 
         <tr className="border-b border-border dark:border-border">
           <td className="p-4">Health Insurance Payable</td>
@@ -71,12 +71,14 @@ export function CurrentLiabilitiesTable({ formik, calculatedValues }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "",
+                className: '',
                 value: formik.values.liabilities.healthInsurancePayable,
-                onChange: val => {
-                  formik.setFieldValue('liabilities.healthInsurancePayable', Number(val))
-                }
-
+                onChange: (val) => {
+                  formik.setFieldValue(
+                    'liabilities.healthInsurancePayable',
+                    Number(val)
+                  );
+                },
               }}
             />
           </td>
@@ -92,9 +94,8 @@ export function CurrentLiabilitiesTable({ formik, calculatedValues }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "pointer-events-none",
+                className: 'pointer-events-none',
                 value: calculatedValues.currentLiabilities.creditCards,
-
               }}
             />
           </td>
@@ -105,7 +106,11 @@ export function CurrentLiabilitiesTable({ formik, calculatedValues }: Props) {
         <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Total Current Liabilities</td>
           <td className="p-4"></td>
-          <td className="p-4 font-bold text-center">{USCurrencyFormat.format(calculatedValues.currentLiabilities.totalCurrentLiabilities())}</td>
+          <td className="p-4 font-bold text-center">
+            {USCurrencyFormat.format(
+              calculatedValues.currentLiabilities.totalCurrentLiabilities()
+            )}
+          </td>
         </tr>
       </tbody>
     </table>

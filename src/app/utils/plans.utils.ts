@@ -49,7 +49,6 @@ export const Routes = {
   Networking: '/networking',
   SocialMedia: '/social-media',
   Daily_Work: '/daily-work',
-
 };
 
 export const OtherRoutes = {
@@ -69,7 +68,7 @@ export const OtherRoutes = {
   Upgrades: '/upgradeplans',
   Dashboard: '/dashboard',
   Contracts: '/contracts',
-  DailyWork: "/daily-work"
+  DailyWork: '/daily-work',
 };
 
 export const Plans = {

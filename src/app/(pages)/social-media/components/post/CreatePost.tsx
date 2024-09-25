@@ -179,7 +179,7 @@ const CreatePost = () => {
         ))}
         {files &&
           files.map((file, i) => (
-            <div className="relative" key={i} >
+            <div className="relative" key={i}>
               <CloseCircleOutlined
                 onClick={() =>
                   setFiles((prev) =>

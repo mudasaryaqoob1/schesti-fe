@@ -110,9 +110,7 @@ const CreateInvoice = () => {
     useState({});
 
   const fetchSubcontactors = useCallback(async () => {
-
     if (paramsSubContractId) {
-
       try {
         const response = await crmService.httpGetItemById(paramsSubContractId);
         if (response.data) {
@@ -126,11 +124,8 @@ const CreateInvoice = () => {
           });
         }
       } catch (error) {
-
-        toast.error("Unable to find subcontractor");
+        toast.error('Unable to find subcontractor');
       }
-
-
     }
   }, []);
 
@@ -393,7 +388,7 @@ const CreateInvoice = () => {
                     }
                     errorMessage={
                       touched.subContractorPhoneNumber &&
-                        errors.subContractorPhoneNumber
+                      errors.subContractorPhoneNumber
                         ? errors.subContractorPhoneNumber
                         : ''
                     }

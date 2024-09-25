@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect } from 'react'
-import CreatePost from './components/post/CreatePost'
-import Posts from './components/post'
+import React, { useEffect } from 'react';
+import CreatePost from './components/post/CreatePost';
+import Posts from './components/post';
 import { setPostData } from '@/redux/social-media/social-media.slice';
 import { useDispatch } from 'react-redux';
 import type { TabsProps } from 'antd';
@@ -10,33 +10,35 @@ import { Tabs } from 'antd';
 import MyPosts from './components/post/MyPosts';
 
 const SocialMedia = () => {
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(setPostData(null))
-    }, [])
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setPostData(null));
+  }, []);
 
-    const items: TabsProps['items'] = [
-        {
-            key: '1',
-            label: 'Schesti Feeds',
-            children: <>
-                <CreatePost />
-                <Posts />
-            </>,
-        },
-        {
-            key: '2',
-            label: 'My Feeds',
-            children: <MyPosts />,
-        }
-    ];
+  const items: TabsProps['items'] = [
+    {
+      key: '1',
+      label: 'Schesti Feeds',
+      children: (
+        <>
+          <CreatePost />
+          <Posts />
+        </>
+      ),
+    },
+    {
+      key: '2',
+      label: 'My Feeds',
+      children: <MyPosts />,
+    },
+  ];
 
-    return (
-        <section className="my-4 mx-8 px-4 gap-6">
-            <h6 className='text-lg font-semibold text-graphiteGray'>Social Media</h6>
-            <Tabs destroyInactiveTabPane defaultActiveKey="1" items={items} />
-        </section>
-    )
-}
+  return (
+    <section className="my-4 mx-8 px-4 gap-6">
+      <h6 className="text-lg font-semibold text-graphiteGray">Social Media</h6>
+      <Tabs destroyInactiveTabPane defaultActiveKey="1" items={items} />
+    </section>
+  );
+};
 
-export default SocialMedia
+export default SocialMedia;

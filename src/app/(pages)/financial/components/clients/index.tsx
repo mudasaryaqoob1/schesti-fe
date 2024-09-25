@@ -60,8 +60,8 @@ export function Clients() {
   const [search, setSearch] = useState('');
   const searchParams = useSearchParams();
 
-  const clientId = searchParams.get("clientId");
-  const architectId = searchParams.get("architectId");
+  const clientId = searchParams.get('clientId');
+  const architectId = searchParams.get('architectId');
 
   const formik = useFormik<{
     invoiceName: string;
@@ -73,18 +73,17 @@ export function Clients() {
       client: clientId ? clientId : '',
       architect: architectId ? architectId : '',
     },
-    enableReinitialize: (clientId || architectId) ? true : false,
+    enableReinitialize: clientId || architectId ? true : false,
     validationSchema: ValidationSchema,
     async onSubmit(values) {
       setIsLoading(true);
       try {
-        const response =
-          await clientInvoiceService.httpCreateInitialInvoice({
-            ...values,
-            invoiceName: values.invoiceName,
-            architect: values.architect as string,
-            client: values.client as string,
-          });
+        const response = await clientInvoiceService.httpCreateInitialInvoice({
+          ...values,
+          invoiceName: values.invoiceName,
+          architect: values.architect as string,
+          client: values.client as string,
+        });
         if (response.data && response.data.invoice) {
           router.push(
             `${Routes.Financial['AIA-Invoicing']}/form?id=${response.data.invoice._id}&mode=edit`
@@ -170,8 +169,7 @@ export function Clients() {
                 router.push(
                   `${Routes.Financial['AIA-Invoicing']}/form?id=${record._id}&mode=edit`
                 );
-              }
-              else if (key === 'createPhase') {
+              } else if (key === 'createPhase') {
                 router.push(
                   // `${Routes.Financial['AIA-Invoicing']}/invoice/${record._id}`
                   `${Routes.Financial['AIA-Invoicing']}/form?id=${record._id}&mode=phase`
@@ -187,7 +185,7 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
               } else if (key === 'view') {
                 router.push(
@@ -214,14 +212,14 @@ export function Clients() {
   const filteredClientInvoices =
     clientInvoices.length > 0
       ? clientInvoices.filter((invoice: any) => {
-        if (!search) {
-          return invoice;
-        }
-        return (
-          invoice.invoiceName === search ||
-          invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
-        );
-      })
+          if (!search) {
+            return invoice;
+          }
+          return (
+            invoice.invoiceName === search ||
+            invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
+          );
+        })
       : [];
 
   return (
@@ -265,10 +263,7 @@ export function Clients() {
                 onClose={() => setShowClientModal(false)}
                 onSuccess={(client) => {
                   if (client.module === 'clients') {
-                    formik.setFieldValue(
-                      'client',
-                      client._id
-                    );
+                    formik.setFieldValue('client', client._id);
                   }
                 }}
               />
@@ -288,10 +283,7 @@ export function Clients() {
                 onClose={() => setShowArchitectModal(false)}
                 onSuccess={(item) => {
                   if (item.module === 'architects') {
-                    formik.setFieldValue(
-                      'architect',
-                      item._id
-                    );
+                    formik.setFieldValue('architect', item._id);
                   }
                 }}
               />
@@ -346,19 +338,23 @@ export function Clients() {
                   <SelectComponent
                     label="Client"
                     name="client"
-                    label2={<div
-                      onClick={() => {
-                        setShowClientModal(true)
-                      }}
-                      className="text-schestiPrimary space-x-1 hover:cursor-pointer hover:underline flex items-center"
-                    >
-                      <PlusOutlined />
-                      <span>Add New</span>
-                    </div>}
+                    label2={
+                      <div
+                        onClick={() => {
+                          setShowClientModal(true);
+                        }}
+                        className="text-schestiPrimary space-x-1 hover:cursor-pointer hover:underline flex items-center"
+                      >
+                        <PlusOutlined />
+                        <span>Add New</span>
+                      </div>
+                    }
                     placeholder="Select Client"
                     field={{
-                      value: formik.values.client ? formik.values.client : undefined,
-                      onChange: val => formik.setFieldValue('client', val),
+                      value: formik.values.client
+                        ? formik.values.client
+                        : undefined,
+                      onChange: (val) => formik.setFieldValue('client', val),
                       onBlur: formik.handleBlur,
                       onFocus: () => {
                         dispatch(getCrmItemsThunk({ module: 'clients' }));
@@ -368,13 +364,11 @@ export function Clients() {
                         const client = item as unknown as ICrmItem;
                         return {
                           label: `${client.firstName} ${client.lastName}`,
-                          value: client._id
-                        }
-                      })
+                          value: client._id,
+                        };
+                      }),
                     }}
-                    hasError={
-                      formik.touched.client && !!formik.errors.client
-                    }
+                    hasError={formik.touched.client && !!formik.errors.client}
                     errorMessage={
                       formik.touched.client && formik.errors.client
                         ? formik.errors.client
@@ -388,16 +382,20 @@ export function Clients() {
                     label="Architect"
                     name="architect"
                     placeholder="Select architect"
-                    label2={<div
-                      onClick={() => setShowArchitectModal(true)}
-                      className="text-schestiPrimary space-x-1 hover:cursor-pointer hover:underline flex items-center"
-                    >
-                      <PlusOutlined />
-                      <span>Add New</span>
-                    </div>}
+                    label2={
+                      <div
+                        onClick={() => setShowArchitectModal(true)}
+                        className="text-schestiPrimary space-x-1 hover:cursor-pointer hover:underline flex items-center"
+                      >
+                        <PlusOutlined />
+                        <span>Add New</span>
+                      </div>
+                    }
                     field={{
-                      value: formik.values.architect ? formik.values.architect : undefined,
-                      onChange: val => formik.setFieldValue('architect', val),
+                      value: formik.values.architect
+                        ? formik.values.architect
+                        : undefined,
+                      onChange: (val) => formik.setFieldValue('architect', val),
                       onBlur: formik.handleBlur,
                       onFocus: () => {
                         dispatch(getCrmItemsThunk({ module: 'architects' }));
@@ -407,17 +405,15 @@ export function Clients() {
                         const architect = item as unknown as ICrmItem;
                         return {
                           label: `${architect.firstName} ${architect.lastName}`,
-                          value: architect._id
-                        }
-                      })
+                          value: architect._id,
+                        };
+                      }),
                     }}
                     hasError={
-                      formik.touched.architect &&
-                      !!formik.errors.architect
+                      formik.touched.architect && !!formik.errors.architect
                     }
                     errorMessage={
-                      formik.touched.architect &&
-                        formik.errors.architect
+                      formik.touched.architect && formik.errors.architect
                         ? formik.errors.architect
                         : ''
                     }

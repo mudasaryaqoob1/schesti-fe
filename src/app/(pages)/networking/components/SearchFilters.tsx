@@ -70,7 +70,7 @@ const SearchFilters = () => {
   const validationSchema = Yup.object({});
 
   // submit handler
-  const submitHandler = async () => { };
+  const submitHandler = async () => {};
 
   const tradesOptions = tradeCategoryFilters.map((parent) => {
     return {

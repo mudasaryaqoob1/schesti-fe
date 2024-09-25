@@ -147,7 +147,7 @@ export function AddCrmClientForm({ onClose, onSuccess }: Props) {
                   name="address"
                   placeholder="Address"
                 />
-                <div className='grid grid-cols-3 gap-3'>
+                <div className="grid grid-cols-3 gap-3">
                   <FormControl
                     control="input"
                     label="State"

@@ -1,14 +1,16 @@
-import type { FormikProps } from "formik";
-import { IFinancialStatementCalculatedValues, IFinancialStatementState } from "../../types";
-import { NumberInputComponent } from "@/app/component/customInput/NumberInput";
-import { USCurrencyFormat } from "@/app/utils/format";
+import type { FormikProps } from 'formik';
+import {
+  IFinancialStatementCalculatedValues,
+  IFinancialStatementState,
+} from '../../types';
+import { NumberInputComponent } from '@/app/component/customInput/NumberInput';
+import { USCurrencyFormat } from '@/app/utils/format';
 
 type Props = {
   formik: FormikProps<IFinancialStatementState>;
   calculatedValues: IFinancialStatementCalculatedValues;
-}
+};
 export function EquityTable({ formik, calculatedValues }: Props) {
-
   return (
     <table className="w-full">
       <thead>
@@ -29,11 +31,11 @@ export function EquityTable({ formik, calculatedValues }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "",
+                className: '',
                 value: formik.values.equity.capitalStock,
-                onChange: val => {
-                  formik.setFieldValue('equity.capitalStock', Number(val))
-                }
+                onChange: (val) => {
+                  formik.setFieldValue('equity.capitalStock', Number(val));
+                },
               }}
             />
           </td>
@@ -49,11 +51,14 @@ export function EquityTable({ formik, calculatedValues }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "",
+                className: '',
                 value: formik.values.equity.otherPaidInCapital,
-                onChange: val => {
-                  formik.setFieldValue('equity.otherPaidInCapital', Number(val))
-                }
+                onChange: (val) => {
+                  formik.setFieldValue(
+                    'equity.otherPaidInCapital',
+                    Number(val)
+                  );
+                },
               }}
             />
           </td>
@@ -69,11 +74,11 @@ export function EquityTable({ formik, calculatedValues }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "",
+                className: '',
                 value: formik.values.equity.retainedEarnings,
-                onChange: val => {
-                  formik.setFieldValue('equity.retainedEarnings', Number(val))
-                }
+                onChange: (val) => {
+                  formik.setFieldValue('equity.retainedEarnings', Number(val));
+                },
               }}
             />
           </td>
@@ -85,7 +90,9 @@ export function EquityTable({ formik, calculatedValues }: Props) {
         <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Subtotal Equity/Capital</td>
           <td className="p-4"></td>
-          <td className="p-4 font-bold text-center">{USCurrencyFormat.format(calculatedValues.equity.subTotalEquity())}</td>
+          <td className="p-4 font-bold text-center">
+            {USCurrencyFormat.format(calculatedValues.equity.subTotalEquity())}
+          </td>
         </tr>
       </tbody>
     </table>

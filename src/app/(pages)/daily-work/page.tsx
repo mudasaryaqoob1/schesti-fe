@@ -318,7 +318,7 @@ function DailyWorkPage() {
           },
           editing:
             priorityCellEditing.isEditing &&
-              priorityCellEditing.record?._id === record._id
+            priorityCellEditing.record?._id === record._id
               ? true
               : false,
           priorities: priorities,
@@ -374,7 +374,7 @@ function DailyWorkPage() {
           },
           editing:
             noteCellEditing.isEditing &&
-              noteCellEditing.record?._id === record._id
+            noteCellEditing.record?._id === record._id
               ? true
               : false,
           handleSave,
@@ -405,7 +405,7 @@ function DailyWorkPage() {
           },
           editing:
             statusCellEditing.isEditing &&
-              statusCellEditing.record?._id === record._id
+            statusCellEditing.record?._id === record._id
               ? true
               : false,
           statuses: statuses,
@@ -895,29 +895,29 @@ function EditableCell(props: EditableCellProps) {
               ? props.priorities.length === 0
                 ? 'No Priority'
                 : props.priorities.map((priority: IDailyWorkPriorty) => (
-                  <DisplayPriority
-                    onClick={(e) => {
-                      console.log('Priority Clicked');
-                      e.stopPropagation();
-                      handleSave('priority', priority._id, record);
-                    }}
-                    key={priority._id}
-                    item={priority}
-                  />
-                ))
+                    <DisplayPriority
+                      onClick={(e) => {
+                        console.log('Priority Clicked');
+                        e.stopPropagation();
+                        handleSave('priority', priority._id, record);
+                      }}
+                      key={priority._id}
+                      item={priority}
+                    />
+                  ))
               : inputType === 'status'
                 ? props.statuses.length === 0
                   ? 'No Stauses'
                   : props.statuses.map((status: IDailyWorkStatus) => (
-                    <DisplayDailyWorkStatus
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSave('status', status._id, record);
-                      }}
-                      key={status._id}
-                      item={status}
-                    />
-                  ))
+                      <DisplayDailyWorkStatus
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSave('status', status._id, record);
+                        }}
+                        key={status._id}
+                        item={status}
+                      />
+                    ))
                 : null}
           </div>
         </div>

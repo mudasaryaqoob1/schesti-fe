@@ -116,9 +116,7 @@ const ArchitectPage = () => {
       router.push(`/financial/aia-invoicing?architectId=${architect._id}`);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
-    } else if (
-      key == 'createContract'
-    ) {
+    } else if (key == 'createContract') {
       router.push(`${Routes.Contracts}/create?receiver=${architect._id}`);
     } else if (key == 'delete') {
       setSelectedItem(architect);

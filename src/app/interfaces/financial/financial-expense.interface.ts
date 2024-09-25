@@ -2,8 +2,12 @@ import { FileInterface } from '../file.interface';
 import { IPaymentMethod } from '../invoices.interface';
 import { IUserInterface } from '../user.interface';
 
-
-type ExpenseType = 'Labour' | 'Material' | 'SubContract' | 'General Condition' | 'Overhead';
+type ExpenseType =
+  | 'Labour'
+  | 'Material'
+  | 'SubContract'
+  | 'General Condition'
+  | 'Overhead';
 
 export interface IFinancialExpense {
   _id: string;

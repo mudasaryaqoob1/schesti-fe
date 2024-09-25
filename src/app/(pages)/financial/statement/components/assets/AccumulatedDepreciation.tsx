@@ -1,13 +1,11 @@
-import { NumberInputComponent } from "@/app/component/customInput/NumberInput";
-import { IFinancialStatementState } from "../../types";
-import type { FormikProps } from "formik";
-
+import { NumberInputComponent } from '@/app/component/customInput/NumberInput';
+import { IFinancialStatementState } from '../../types';
+import type { FormikProps } from 'formik';
 
 type Props = {
-  formik: FormikProps<IFinancialStatementState>
-}
+  formik: FormikProps<IFinancialStatementState>;
+};
 export function AccumulatedDepreciationTable({ formik }: Props) {
-
   return (
     <table className="w-full">
       <thead>
@@ -28,13 +26,16 @@ export function AccumulatedDepreciationTable({ formik }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "",
+                className: '',
                 value: formik.values.assets.accumulatedDepreciationVehicle,
-                onChange: val => {
-                  formik.setFieldValue('assets.accumulatedDepreciationVehicle', Number(val) as number)
+                onChange: (val) => {
+                  formik.setFieldValue(
+                    'assets.accumulatedDepreciationVehicle',
+                    Number(val) as number
+                  );
                 },
                 formatter(value) {
-                  return `(${value})`
+                  return `(${value})`;
                 },
               }}
             />
@@ -51,13 +52,17 @@ export function AccumulatedDepreciationTable({ formik }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "",
-                value: formik.values.assets.totalAccumulatedDepreciationBuilding,
-                onChange: val => {
-                  formik.setFieldValue('assets.totalAccumulatedDepreciationBuilding', Number(val) as number)
+                className: '',
+                value:
+                  formik.values.assets.totalAccumulatedDepreciationBuilding,
+                onChange: (val) => {
+                  formik.setFieldValue(
+                    'assets.totalAccumulatedDepreciationBuilding',
+                    Number(val) as number
+                  );
                 },
                 formatter(value) {
-                  return `(${value})`
+                  return `(${value})`;
                 },
               }}
             />

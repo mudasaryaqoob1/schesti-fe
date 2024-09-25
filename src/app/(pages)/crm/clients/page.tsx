@@ -121,8 +121,7 @@ const ClientTable = () => {
     } else if (key === 'email') {
       setShowEmailModal(true);
       setSelectedItem(client);
-    }
-    else if (key === 'createNewInvoice') {
+    } else if (key === 'createNewInvoice') {
       router.push(`/financial/aia-invoicing?clientId=${client._id}`);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
@@ -154,7 +153,11 @@ const ClientTable = () => {
     {
       title: 'Client Name',
       dataIndex: 'firstName',
-      render: (_, value) => <>{value?.firstName} {value?.lastName}</>,
+      render: (_, value) => (
+        <>
+          {value?.firstName} {value?.lastName}
+        </>
+      ),
     },
     {
       title: 'Company',

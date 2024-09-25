@@ -171,8 +171,7 @@ const CreateClient = () => {
                       placeholder="Enter Company Name"
                     />
                   </div>
-                  <div className='md:col-span-full'>
-
+                  <div className="md:col-span-full">
                     <FormControl
                       control="input"
                       label="Address"
@@ -181,7 +180,7 @@ const CreateClient = () => {
                       placeholder="Address"
                     />
                   </div>
-                  <div className='grid grid-cols-3 gap-3 mt-2 md:col-span-full'>
+                  <div className="grid grid-cols-3 gap-3 mt-2 md:col-span-full">
                     <FormControl
                       control="input"
                       label="Country"

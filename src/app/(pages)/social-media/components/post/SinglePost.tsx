@@ -61,9 +61,9 @@ const SinglePost = ({
 
   const getPostHandler = async () => {
     try {
-    //   const {
-    //     data: { post },
-    //   } = await socialMediaService.httpGetPost({ id: _id });
+      //   const {
+      //     data: { post },
+      //   } = await socialMediaService.httpGetPost({ id: _id });
     } catch (error) {
       const err = error as AxiosError<{ messsage: string }>;
       toast.error(err.response?.data.messsage);

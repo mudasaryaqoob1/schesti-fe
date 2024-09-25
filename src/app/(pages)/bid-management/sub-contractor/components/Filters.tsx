@@ -24,7 +24,7 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
     limit: number;
 
     country?: string;
-    state?: string
+    state?: string;
   }>({
     trades: [],
     projectValue: 0,
@@ -109,9 +109,9 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
         />
 
         <SelectComponent
-          label='Country'
-          name='country'
-          placeholder='Choose your country'
+          label="Country"
+          name="country"
+          placeholder="Choose your country"
           field={{
             allowClear: true,
             value: filters.country,
@@ -119,20 +119,20 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
               setFilters({
                 ...filters,
                 trades: filters.trades,
-                country: value
-              })
+                country: value,
+              });
             },
             options: Country.getAllCountries().map((country) => ({
               label: country.name,
-              value: country.isoCode
-            }))
+              value: country.isoCode,
+            })),
           }}
         />
 
         <SelectComponent
-          label='State'
-          name='state'
-          placeholder='Choose your state'
+          label="State"
+          name="state"
+          placeholder="Choose your state"
           field={{
             allowClear: true,
             value: filters.state,
@@ -140,13 +140,13 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
               setFilters({
                 ...filters,
                 trades: filters.trades,
-                state: value
-              })
+                state: value,
+              });
             },
             options: State.getStatesOfCountry(filters.country).map((state) => ({
               label: state.name,
-              value: state.isoCode
-            }))
+              value: state.isoCode,
+            })),
           }}
         />
       </div>

@@ -23,14 +23,15 @@ export function SelectComponent({
   errorMessage = '',
   hasError,
   label2,
-  label2Style
+  label2Style,
 }: Props) {
   return (
     <div>
       <label
         className={twMerge(
           clsx(
-            `text-graphiteGray ${label2 ? 'flex justify-between' : 'block'
+            `text-graphiteGray ${
+              label2 ? 'flex justify-between' : 'block'
             } text-sm font-medium leading-6 capitalize`,
             labelStyle
           )
@@ -59,7 +60,8 @@ export function SelectComponent({
         {...field}
         className={twMerge(
           clsx(
-            ` p-0 h-full border ${hasError ? 'border-red-500' : 'border-gray-100'
+            ` p-0 h-full border ${
+              hasError ? 'border-red-500' : 'border-gray-100'
             } !w-full !rounded-lg focus:border-blue-500  ${field?.className}`
           )
         )}
