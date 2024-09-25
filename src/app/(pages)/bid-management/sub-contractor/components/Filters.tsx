@@ -7,6 +7,7 @@ import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { useTrades } from '@/app/hooks/useTrades';
 import { useState } from 'react';
+import { Country, State } from 'country-state-city';
 
 type Props = {
   onCancel?: () => void;
@@ -21,11 +22,16 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
     projectValue: number;
     page: number;
     limit: number;
+
+    country?: string;
+    state?: string
   }>({
     trades: [],
     projectValue: 0,
     page: 1,
     limit: 10,
+    country: undefined,
+    state: undefined,
   });
 
   if (!isVisible) return null;
@@ -99,6 +105,48 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
                 projectValue: parseInt(e.target.value),
               });
             },
+          }}
+        />
+
+        <SelectComponent
+          label='Country'
+          name='country'
+          placeholder='Choose your country'
+          field={{
+            allowClear: true,
+            value: filters.country,
+            onChange: (value) => {
+              setFilters({
+                ...filters,
+                trades: filters.trades,
+                country: value
+              })
+            },
+            options: Country.getAllCountries().map((country) => ({
+              label: country.name,
+              value: country.isoCode
+            }))
+          }}
+        />
+
+        <SelectComponent
+          label='State'
+          name='state'
+          placeholder='Choose your state'
+          field={{
+            allowClear: true,
+            value: filters.state,
+            onChange: (value) => {
+              setFilters({
+                ...filters,
+                trades: filters.trades,
+                state: value
+              })
+            },
+            options: State.getStatesOfCountry(filters.country).map((state) => ({
+              label: state.name,
+              value: state.isoCode
+            }))
           }}
         />
       </div>
