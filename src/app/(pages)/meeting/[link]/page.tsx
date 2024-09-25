@@ -90,7 +90,7 @@ function JoinMeeting() {
           isMeetingNotStarted(meeting) ? (
             <ModalComponent
               open={!isMeetingActive(meeting)}
-              setOpen={() => {}}
+              setOpen={() => { }}
               title="Meeting link is not active"
               width="40%"
             >
@@ -130,4 +130,5 @@ function JoinMeeting() {
   );
 }
 
-export default withAuth(JoinMeeting);
+// export default withAuth(JoinMeeting);
+export default JoinMeeting;
