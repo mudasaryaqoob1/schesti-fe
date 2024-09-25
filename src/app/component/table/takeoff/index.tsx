@@ -52,7 +52,7 @@ export interface ITableProps {
   search: any;
 }
 const Index: React.FC<ITableProps> = ({
-  handleEditClick,
+  // handleEditClick,
   handleEditDetailsClick,
   handleDownloadClick,
   search,
@@ -73,11 +73,11 @@ const Index: React.FC<ITableProps> = ({
       // Handle delete action
       console.log('View Details action', record);
       handleEditDetailsClick(record);
-    } else if (e.key === 'download' || 'view_estimate') {
+    } else if (e.key === 'download' || e.key === 'view_estimate') {
       // Handle delete action
       console.log('Download action', record);
       handleDownloadClick(record?._id ?? null);
-    }
+    } 
   };
 
   const menu = (it: any) => (

@@ -3535,16 +3535,16 @@ const TakeOffNewPage = () => {
                           </div>
                         }
                         {
-                          [...(Array.isArray(takeOff?.categories) ? takeOff?.categories : []), 'Length Measurement', 'Arc Measurement', 'Area Measurement', 'Volume Measurement', 'Curve Measurement', 'Count Measurement', 'Text Measurement', 'Dynamic Measurement', 'Perimeter Measurement']
-                            .filter((ct: string) => (measurementsplanArray(takeOff, sideSearch).some((m: any) => (m?.category == ct)))).map((prct: string, ctind: number) => {
+                          [...(Array.isArray(takeOff?.categories) ? takeOff.categories : []), 'Length Measurement', 'Arc Measurement', 'Area Measurement', 'Volume Measurement', 'Curve Measurement', 'Count Measurement', 'Text Measurement', 'Dynamic Measurement', 'Perimeter Measurement']
+                            .filter((ct: string) => (measurementsplanArray(takeOff, sideSearch).some((m: any) => (m?.category == ct)))).map((prct: string) => {
                               return <>
                                 <div className='min-w-max p-2 text-[#333E4F] bg-[#475467] bg-opacity-0 font-extrabold border-b text-[10px] w-[100%]'>{prct}</div>
                                 {
-                                  [...(Array.isArray(takeOff?.subCategories) ? takeOff?.subCategories : [])].filter((sct: string) => (measurementsplanArray(takeOff, sideSearch).some((m: any) => (m?.subcategory == sct)) && sct?.includes(prct))).map((prsct: string, sctInd) => {
+                                  [...(Array.isArray(takeOff?.subCategories) ? takeOff.subCategories : [])].filter((sct: string) => (measurementsplanArray(takeOff, sideSearch).some((m: any) => (m?.subcategory == sct)) && sct?.includes(prct))).map((prsct: string) => {
                                     return <>
                                       <div className='min-w-max p-2 pl-5 text-[#333E4F] bg-[#475467] bg-opacity-0 font-extrabold border-b text-[10px]'>{prsct}</div>
                                       {
-                                        measurementsplanArray(takeOff, sideSearch).filter((gvl: any) => (gvl?.subcategory == prsct)).map((pmsr: any, msrInd: number) => {
+                                        measurementsplanArray(takeOff, sideSearch).filter((gvl: any) => (gvl?.subcategory == prsct)).map((pmsr: any) => {
                                           return <>
                                             <div className='flex min-w-max border-b pl-6 hover:bg-[#475467] hover:bg-opacity-20 cursor-pointer'
                                               onClick={() => {
@@ -3678,7 +3678,7 @@ const TakeOffNewPage = () => {
                                   })
                                 }
                                 {
-                                  measurementsplanArray(takeOff, sideSearch).filter((gvl: any) => (gvl?.category == prct && !gvl?.subcategory)).map((pmsr: any, msrInd: number) => {
+                                  measurementsplanArray(takeOff, sideSearch).filter((gvl: any) => (gvl?.category == prct && !gvl?.subcategory)).map((pmsr: any) => {
                                     return <>
                                     <div className='flex min-w-max border-b pl-2 hover:bg-[#475467] hover:bg-opacity-20 cursor-pointer'
                                       onClick={() => {
