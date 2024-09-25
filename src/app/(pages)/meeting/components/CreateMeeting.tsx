@@ -231,10 +231,10 @@ export function CreateMeeting({
   }
 
   console.log('Recurrence', formik.errors.recurrence);
-  const recurrenceTouched = formik.touched.recurrence as FormikTouched<
+  const recurrenceTouched : any = formik.touched.recurrence as FormikTouched<
     IMeeting['recurrence']
   >;
-  const recurrenceError = formik.errors.recurrence as FormikErrors<
+  const recurrenceError  : any= formik.errors.recurrence as FormikErrors<
     IMeeting['recurrence']
   >;
   return (
