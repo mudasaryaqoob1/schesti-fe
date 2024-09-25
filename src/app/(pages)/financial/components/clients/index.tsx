@@ -61,6 +61,7 @@ export function Clients() {
   const searchParams = useSearchParams();
 
   const clientId = searchParams.get("clientId");
+  const architectId = searchParams.get("architectId");
 
   const formik = useFormik<{
     invoiceName: string;
@@ -70,9 +71,9 @@ export function Clients() {
     initialValues: {
       invoiceName: '',
       client: clientId ? clientId : '',
-      architect: '',
+      architect: architectId ? architectId : '',
     },
-    enableReinitialize: clientId ? true : false,
+    enableReinitialize: (clientId || architectId) ? true : false,
     validationSchema: ValidationSchema,
     async onSubmit(values) {
       setIsLoading(true);

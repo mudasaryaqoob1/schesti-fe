@@ -68,10 +68,10 @@ const activeMenuItems: MenuProps['items'] = [
     key: 'createNewTakeoff',
     label: <p>Create New Takeoff</p>,
   },
-  {
-    key: 'email',
-    label: <p>Email</p>,
-  },
+  // {
+  //   key: 'email',
+  //   label: <p>Email</p>,
+  // },
   {
     key: 'delete',
     label: <p>Delete</p>,
@@ -113,9 +113,13 @@ const ArchitectPage = () => {
     if (key === 'createEstimateRequest') {
       router.push(`/estimates/requests/create?clientId=${architect._id}`);
     } else if (key === 'createNewInvoice') {
-      router.push(`/financial/aia-invoicing`);
+      router.push(`/financial/aia-invoicing?architectId=${architect._id}`);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
+    } else if (
+      key == 'createContract'
+    ) {
+      router.push(`${Routes.Contracts}/create?receiver=${architect._id}`);
     } else if (key == 'delete') {
       setSelectedItem(architect);
       setShowDeleteModal(true);
