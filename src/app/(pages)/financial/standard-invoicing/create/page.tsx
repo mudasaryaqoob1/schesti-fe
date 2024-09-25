@@ -31,6 +31,7 @@ import { ISubcontract } from '@/app/interfaces/companyEmployeeInterfaces/subcont
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { ListCrmItems } from '@/app/(pages)/contracts/components/ListCrmItems';
+import crmService from '@/app/services/crm/crm.service';
 
 const subcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -114,23 +115,27 @@ const CreateInvoice = () => {
     useState({});
 
   const fetchSubcontactors = useCallback(async () => {
-    let { payload }: any = await dispatch(
-      fetchCompanySubcontractors({ page: 1, limit: 10 })
-    );
-    if (paramsSubContractId) {
-      const extractSubcontractorDetail = payload?.data?.subcontractors;
-      let selectedSubcontractor = extractSubcontractorDetail.find(
-        (subcontractor: ISubcontract) =>
-          subcontractor._id === paramsSubContractId
-      );
 
-      setSelectedSubcontractorDetail({
-        subContractorAddress: selectedSubcontractor.address,
-        subContractorCompanyName: selectedSubcontractor.name,
-        subContractorEmail: selectedSubcontractor.email,
-        subContractorPhoneNumber: selectedSubcontractor.phone,
-        companyRep: selectedSubcontractor.companyRep,
-      });
+    if (paramsSubContractId) {
+
+      try {
+        const response = await crmService.httpGetItemById(paramsSubContractId);
+        if (response.data) {
+          const subcontractor = response.data as ISubcontract;
+          setSelectedSubcontractorDetail({
+            subContractorAddress: subcontractor.address,
+            subContractorCompanyName: subcontractor.name,
+            subContractorEmail: subcontractor.email,
+            subContractorPhoneNumber: subcontractor.phone,
+            companyRep: subcontractor.companyRep,
+          });
+        }
+      } catch (error) {
+
+        toast.error("Unable to find subcontractor");
+      }
+
+
     }
   }, []);
 
