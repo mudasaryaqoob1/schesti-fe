@@ -357,7 +357,7 @@ const CreateInvoice = () => {
                     className="text-graphiteGray"
                   />
                   <Button
-                    text="Add Existing Subcontractor"
+                    text="Add Existing Reciepient"
                     className="!w-auto "
                     icon="/plusblack.svg"
                     iconwidth={20}
