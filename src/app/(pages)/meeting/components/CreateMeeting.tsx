@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import WhiteButton from '@/app/component/customButton/white';
 import CustomButton from '@/app/component/customButton/button';
-import { useFormik } from 'formik';
+import { type FormikErrors, type FormikTouched, useFormik } from 'formik';
 import ModalComponent from '@/app/component/modal';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { CloseOutlined } from '@ant-design/icons';
@@ -25,6 +25,8 @@ import TimezoneSelect, {
 } from 'react-timezone-select';
 import { IMeeting } from '@/app/interfaces/meeting.type';
 import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
+import { Checkbox } from 'antd';
+import dj from 'dayjs';
 
 type Props = {
   showModal: boolean;
@@ -35,6 +37,56 @@ type Props = {
 };
 
 // let timezones = Intl.supportedValuesOf('timeZone');
+
+const dateValidation = Yup.date().required('Date is required');
+
+const recurrenceSchema = Yup.object().shape({
+  isChecked: Yup.boolean(),
+  frequency: Yup.mixed()
+    .oneOf(['daily', 'weekly', 'monthly', 'custom'], 'Invalid frequency type')
+    .when('isChecked', {
+      is: true,
+      then: () => Yup.string().required('Recurrence frequency is required'),
+      otherwise: () => Yup.string().notRequired(),
+    }),
+  days: Yup.array()
+    .of(Yup.string().required('Day is required'))
+    .min(1, 'At least one day is required')
+    .when('frequency', {
+      is: 'weekly',
+      then: () =>
+        Yup.array()
+          .required()
+          .min(1, 'Select at least one day')
+          .required('Days are required'),
+      otherwise: () => Yup.array().notRequired(),
+    }),
+  dates: Yup.array()
+    .of(dateValidation)
+    .when('frequency', {
+      is: 'custom',
+      then: () =>
+        Yup.array()
+          .of(dateValidation)
+          .min(1, 'At least one custom date is required')
+          .required('Dates are required'),
+      otherwise: () => Yup.array().notRequired(),
+    }),
+  endsOn: Yup.string()
+    .oneOf(['never', 'date'], 'Invalid end option')
+    .when('frequency', {
+      is: 'custom',
+      then: () =>
+        Yup.string().required('End option is required for custom recurrence'),
+      otherwise: () => Yup.string().notRequired(),
+    }),
+  endDate: Yup.date().when('endsOn', {
+    is: 'date',
+    then: () => dateValidation.required('End date is required'),
+    otherwise: () => Yup.date().notRequired(),
+  }),
+});
+
 export function CreateMeeting({
   showModal,
   setShowModal,
@@ -66,6 +118,12 @@ export function CreateMeeting({
           )
           .required('Email is required'),
     startDate: Yup.date().required('Start Time is required'),
+    recurrence: Yup.lazy((value) => {
+      if (!value || !value.isChecked) {
+        return Yup.mixed().notRequired();
+      }
+      return recurrenceSchema;
+    }),
   });
 
   useEffect(() => {
@@ -89,6 +147,9 @@ export function CreateMeeting({
           startDate: dayjs()
             .tz((timezone as ITimezoneOption).value)
             .format('YYYY-MM-DDTHH:mm:ss'),
+          recurrence: {
+            isChecked: false,
+          } as IMeeting['recurrence'],
         },
     validationSchema: CreateMeetingSchema,
     enableReinitialize: meeting ? true : false,
@@ -106,6 +167,7 @@ export function CreateMeeting({
             roomName: meeting.roomName,
             timezone: getTimeZoneValue(timezone),
             topic: values.topic,
+            recurrence: values.recurrence,
           })
           .then((response) => {
             if (response.data) {
@@ -135,6 +197,7 @@ export function CreateMeeting({
             link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
             topic: values.topic,
             timezone: getTimeZoneValue(timezone),
+            recurrence: values.recurrence,
           })
           .then((response) => {
             if (response.data) {
@@ -167,6 +230,13 @@ export function CreateMeeting({
     formik.resetForm();
   }
 
+  console.log('Recurrence', formik.errors.recurrence);
+  const recurrenceTouched : any = formik.touched.recurrence as FormikTouched<
+    IMeeting['recurrence']
+  >;
+  const recurrenceError  : any= formik.errors.recurrence as FormikErrors<
+    IMeeting['recurrence']
+  >;
   return (
     <ModalComponent
       width="50%"
@@ -213,16 +283,16 @@ export function CreateMeeting({
               name="email"
               hasError={formik.touched.email && Boolean(formik.errors.email)}
               errorMessage={
-                formik.touched.email &&
-                Boolean(formik.errors.email) &&
-                Array.isArray(formik.errors.email)
-                  ? formik.errors.email
-                      .map(
-                        (item: string, idx) =>
-                          `'${formik.values.email![idx]}' ${item}`
-                      )
-                      .toString()
-                  : (formik.errors.email as string)
+                formik.touched.email && Boolean(formik.errors.email)
+                  ? Array.isArray(formik.errors.email)
+                    ? formik.errors.email
+                        .map(
+                          (item: string, idx) =>
+                            `'${formik.values.email![idx]}' ${item}`
+                        )
+                        .toString()
+                    : (formik.errors.email as string)
+                  : ''
               }
               field={{
                 mode: 'tags',
@@ -235,6 +305,203 @@ export function CreateMeeting({
                     : undefined,
               }}
             />
+
+            {/* Recurrence */}
+            <div>
+              <Checkbox
+                value={formik.values.recurrence?.isChecked}
+                onChange={(e) => {
+                  formik.setFieldValue(
+                    'recurrence.isChecked',
+                    e.target.checked
+                  );
+                }}
+              >
+                <span className="text-graphiteGray">Add Recurrence</span>
+              </Checkbox>
+
+              {formik.values.recurrence?.isChecked ? (
+                <>
+                  <SelectComponent
+                    label="Recurrence Type"
+                    name="recurrence.frequency"
+                    placeholder="Select Recurrence Type"
+                    field={{
+                      value: formik.values.recurrence?.frequency,
+                      options: [
+                        { label: 'Daily', value: 'daily' },
+                        { label: 'Weekly', value: 'weekly' },
+                        { label: 'Monthly', value: 'monthly' },
+                        { label: 'Custom', value: 'custom' },
+                      ],
+                      onChange: (value) => {
+                        formik.setFieldValue('recurrence.frequency', value);
+                      },
+                      onBlur: formik.handleBlur,
+                    }}
+                    hasError={
+                      recurrenceTouched &&
+                      recurrenceError &&
+                      recurrenceTouched.frequency &&
+                      Boolean(recurrenceError.frequency)
+                    }
+                    errorMessage={
+                      recurrenceError && Boolean(recurrenceError.frequency)
+                        ? recurrenceError.frequency
+                        : undefined
+                    }
+                  />
+
+                  {formik.values.recurrence?.frequency === 'weekly' ? (
+                    <>
+                      <SelectComponent
+                        label="Select Days"
+                        name="recurrence.days"
+                        placeholder="Select Days"
+                        field={{
+                          value: formik.values.recurrence?.days,
+                          options: [
+                            { label: 'Monday', value: 1 },
+                            { label: 'Tuesday', value: 2 },
+                            { label: 'Wednesday', value: 3 },
+                            { label: 'Thursday', value: 4 },
+                            { label: 'Friday', value: 5 },
+                            { label: 'Saturday', value: 6 },
+                            { label: 'Sunday', value: 0 },
+                          ],
+                          mode: 'multiple',
+                          onChange: (value) => {
+                            formik.setFieldValue('recurrence.days', value);
+                          },
+                          onBlur: formik.handleBlur,
+                        }}
+                        // @ts-ignore
+                        hasError={
+                          recurrenceTouched &&
+                          recurrenceError &&
+                          recurrenceTouched.days &&
+                          Boolean(recurrenceError.days)
+                        }
+                        // @ts-ignore
+                        errorMessage={
+                          recurrenceError && Boolean(recurrenceError.days)
+                            ? recurrenceError.days
+                            : undefined
+                        }
+                      />
+                    </>
+                  ) : null}
+
+                  {formik.values.recurrence?.frequency === 'custom' ? (
+                    <>
+                      <DateInputComponent
+                        label="Select Date"
+                        name="recurrence.dates"
+                        fieldProps={{
+                          // @ts-ignore
+                          value:
+                            'dates' in formik.values.recurrence
+                              ? formik.values.recurrence?.dates.map((date) =>
+                                  dj(date)
+                                )
+                              : undefined,
+                          multiple: true,
+                          maxTagCount: 'responsive',
+                          onChange(date, dateString) {
+                            formik.setFieldValue(
+                              'recurrence.dates',
+                              dateString
+                            );
+                          },
+                          format: 'MM/DD/YYYY',
+                        }}
+                        // @ts-ignore
+                        hasError={
+                          recurrenceTouched &&
+                          recurrenceError &&
+                          recurrenceTouched.dates &&
+                          Boolean(recurrenceError.dates)
+                        }
+                        // @ts-ignore
+                        errorMessage={
+                          recurrenceError && Boolean(recurrenceError.dates)
+                            ? recurrenceError.dates
+                            : undefined
+                        }
+                      />
+
+                      <SelectComponent
+                        label="Ends On"
+                        name="recurrence.endsOn"
+                        placeholder="Select Ends On"
+                        field={{
+                          value: formik.values.recurrence?.endsOn,
+                          options: [
+                            { label: 'Never', value: 'never' },
+                            { label: 'Date', value: 'date' },
+                          ],
+                          onChange: (value) => {
+                            formik.setFieldValue('recurrence.endsOn', value);
+                          },
+                          onBlur: formik.handleBlur,
+                        }}
+                        // @ts-ignore
+                        hasError={
+                          recurrenceTouched &&
+                          recurrenceError &&
+                          recurrenceTouched.endsOn &&
+                          Boolean(recurrenceError.endsOn)
+                        }
+                        // @ts-ignore
+                        errorMessage={
+                          recurrenceError && Boolean(recurrenceError.endsOn)
+                            ? recurrenceError.endsOn
+                            : undefined
+                        }
+                      />
+
+                      {formik.values.recurrence?.endsOn === 'date' ? (
+                        <>
+                          <DateInputComponent
+                            label="Select Date"
+                            name="recurrence.endDate"
+                            fieldProps={{
+                              value:
+                                'endDate' in formik.values.recurrence
+                                  ? dj(formik.values.recurrence?.endDate)
+                                  : undefined,
+                              onChange(date, dateString) {
+                                formik.setFieldValue(
+                                  'recurrence.endDate',
+                                  dateString
+                                );
+                              },
+                              format: 'MM/DD/YYYY',
+                              onBlur: formik.handleBlur,
+                            }}
+                            // @ts-ignore
+                            hasError={
+                              recurrenceTouched &&
+                              recurrenceError &&
+                              recurrenceTouched.endDate &&
+                              Boolean(recurrenceError.endDate)
+                            }
+                            // @ts-ignore
+                            errorMessage={
+                              recurrenceError && recurrenceError.endDate
+                                ? recurrenceError.endDate
+                                : undefined
+                            }
+                          />
+                        </>
+                      ) : null}
+                    </>
+                  ) : null}
+                </>
+              ) : null}
+            </div>
+            {/* END Recurrence */}
+
             <DateInputComponent
               label="Schedule Start Date"
               name="startDate"

@@ -1,12 +1,16 @@
-import type { FormikProps } from "formik";
-import { IFinancialStatementState } from "../../types";
-import { NumberInputComponent } from "@/app/component/customInput/NumberInput";
+import type { FormikProps } from 'formik';
+import {
+  IFinancialStatementCalculatedValues,
+  IFinancialStatementState,
+} from '../../types';
+import { NumberInputComponent } from '@/app/component/customInput/NumberInput';
+import { USCurrencyFormat } from '@/app/utils/format';
 
 type Props = {
-  formik: FormikProps<IFinancialStatementState>
-}
-export function CurrentLiabilitiesTable({ formik }: Props) {
-
+  formik: FormikProps<IFinancialStatementState>;
+  calculatedValues: IFinancialStatementCalculatedValues;
+};
+export function CurrentLiabilitiesTable({ formik, calculatedValues }: Props) {
   return (
     <table className="w-full">
       <thead>
@@ -27,16 +31,13 @@ export function CurrentLiabilitiesTable({ formik }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "pointer-events-none",
-                value: 0.00,
-
+                className: 'pointer-events-none',
+                value: calculatedValues.currentLiabilities.totalAccountsPayable,
               }}
             />
           </td>
           <td className="p-4"></td>
         </tr>
-
-
 
         <tr className="border-b border-border dark:border-border">
           <td className="p-4">State Payroll Taxes Payable</td>
@@ -47,18 +48,19 @@ export function CurrentLiabilitiesTable({ formik }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "",
-                value: formik.values.liabilities.statePayrollTaxesPayable ? formik.values.liabilities.statePayrollTaxesPayable : undefined,
-                onChange: val => {
-                  formik.setFieldValue('liabilities.statePayrollTaxesPayable', val as number)
-                }
-
+                className: '',
+                value: formik.values.liabilities.statePayrollTaxesPayable,
+                onChange: (val) => {
+                  formik.setFieldValue(
+                    'liabilities.statePayrollTaxesPayable',
+                    Number(val)
+                  );
+                },
               }}
             />
           </td>
           <td className="p-4"></td>
         </tr>
-
 
         <tr className="border-b border-border dark:border-border">
           <td className="p-4">Health Insurance Payable</td>
@@ -69,12 +71,14 @@ export function CurrentLiabilitiesTable({ formik }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "",
-                value: formik.values.liabilities.healthInsurancePayable ? formik.values.liabilities.healthInsurancePayable : undefined,
-                onChange: val => {
-                  formik.setFieldValue('liabilities.healthInsurancePayable', val as number)
-                }
-
+                className: '',
+                value: formik.values.liabilities.healthInsurancePayable,
+                onChange: (val) => {
+                  formik.setFieldValue(
+                    'liabilities.healthInsurancePayable',
+                    Number(val)
+                  );
+                },
               }}
             />
           </td>
@@ -90,9 +94,8 @@ export function CurrentLiabilitiesTable({ formik }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "pointer-events-none",
-                value: 0.00,
-
+                className: 'pointer-events-none',
+                value: calculatedValues.currentLiabilities.creditCards,
               }}
             />
           </td>
@@ -103,7 +106,11 @@ export function CurrentLiabilitiesTable({ formik }: Props) {
         <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Total Current Liabilities</td>
           <td className="p-4"></td>
-          <td className="p-4 font-bold text-center">$52,358.00</td>
+          <td className="p-4 font-bold text-center">
+            {USCurrencyFormat.format(
+              calculatedValues.currentLiabilities.totalCurrentLiabilities()
+            )}
+          </td>
         </tr>
       </tbody>
     </table>

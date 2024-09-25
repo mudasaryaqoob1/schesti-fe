@@ -384,8 +384,9 @@ export const AiaInvoicingForm = forwardRef<
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${tab === type ? 'text-schestiPrimary' : 'text-black'
-                      }`}
+                    className={`${
+                      tab === type ? 'text-schestiPrimary' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: type,
@@ -457,7 +458,7 @@ export const AiaInvoicingForm = forwardRef<
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full fixed top-0 -left-[2500px] border p-6"
-      // className="space-y-5 w-full border p-6"
+        // className="space-y-5 w-full border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">
@@ -533,4 +534,4 @@ export const AiaInvoicingForm = forwardRef<
   );
 });
 
-AiaInvoicingForm.displayName = "Invoicing Form"
+AiaInvoicingForm.displayName = 'Invoicing Form';

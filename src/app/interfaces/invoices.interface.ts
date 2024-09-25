@@ -1,3 +1,12 @@
+export type IPaymentMethod =
+  | 'Cash'
+  | 'Check'
+  | 'Credit Card'
+  | 'Debit Card'
+  | 'Bank Transfer'
+  | 'Not Paid'
+  | 'Other';
+
 export interface IInvoiceType {
   invoices: IInvoice[];
 }
@@ -27,7 +36,7 @@ export interface IInvoice {
 
   status: 'paid' | 'unpaid';
   amount: number;
-  paymentMethod: string;
+  paymentMethod: IPaymentMethod;
   transactionDate: string;
   additionalDetails: string;
 }

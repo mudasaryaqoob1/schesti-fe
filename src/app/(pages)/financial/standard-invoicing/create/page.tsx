@@ -6,9 +6,6 @@ import { toast } from 'react-toastify';
 import { ConfigProvider, Divider } from 'antd';
 import Table, { type ColumnType } from 'antd/es/table';
 import { useSearchParams } from 'next/navigation';
-import { AppDispatch } from '@/redux/store';
-import { useDispatch } from 'react-redux';
-
 // module imports
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Button from '@/app/component/customButton/white';
@@ -26,11 +23,11 @@ import {
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
-import { fetchCompanySubcontractors } from '@/redux/company/company.thunk';
 import { ISubcontract } from '@/app/interfaces/companyEmployeeInterfaces/subcontractor.interface';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { ListCrmItems } from '@/app/(pages)/contracts/components/ListCrmItems';
+import crmService from '@/app/services/crm/crm.service';
 
 const subcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -96,7 +93,6 @@ type InvoiceDetail = {
 const CreateInvoice = () => {
   const router = useRouterHook();
   const searchParams = useSearchParams();
-  const dispatch = useDispatch<AppDispatch>();
   const currency = useCurrencyFormatter();
   const paramsSubContractId = searchParams.get('subcontractorId');
 
@@ -114,23 +110,22 @@ const CreateInvoice = () => {
     useState({});
 
   const fetchSubcontactors = useCallback(async () => {
-    let { payload }: any = await dispatch(
-      fetchCompanySubcontractors({ page: 1, limit: 10 })
-    );
     if (paramsSubContractId) {
-      const extractSubcontractorDetail = payload?.data?.subcontractors;
-      let selectedSubcontractor = extractSubcontractorDetail.find(
-        (subcontractor: ISubcontract) =>
-          subcontractor._id === paramsSubContractId
-      );
-
-      setSelectedSubcontractorDetail({
-        subContractorAddress: selectedSubcontractor.address,
-        subContractorCompanyName: selectedSubcontractor.name,
-        subContractorEmail: selectedSubcontractor.email,
-        subContractorPhoneNumber: selectedSubcontractor.phone,
-        companyRep: selectedSubcontractor.companyRep,
-      });
+      try {
+        const response = await crmService.httpGetItemById(paramsSubContractId);
+        if (response.data) {
+          const subcontractor = response.data as ISubcontract;
+          setSelectedSubcontractorDetail({
+            subContractorAddress: subcontractor.address,
+            subContractorCompanyName: subcontractor.name,
+            subContractorEmail: subcontractor.email,
+            subContractorPhoneNumber: subcontractor.phone,
+            companyRep: subcontractor.companyRep,
+          });
+        }
+      } catch (error) {
+        toast.error('Unable to find subcontractor');
+      }
     }
   }, []);
 
@@ -352,7 +347,7 @@ const CreateInvoice = () => {
                     className="text-graphiteGray"
                   />
                   <Button
-                    text="Add Existing Subcontractor"
+                    text="Add Existing Reciepient"
                     className="!w-auto "
                     icon="/plusblack.svg"
                     iconwidth={20}
@@ -393,7 +388,7 @@ const CreateInvoice = () => {
                     }
                     errorMessage={
                       touched.subContractorPhoneNumber &&
-                        errors.subContractorPhoneNumber
+                      errors.subContractorPhoneNumber
                         ? errors.subContractorPhoneNumber
                         : ''
                     }

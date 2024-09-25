@@ -42,6 +42,9 @@ import {
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
+import CustomEmailTemplate from '@/app/component/customEmailTemplete';
+import emailService from '@/app/services/email.service';
+import { AxiosError } from 'axios';
 
 const activeClientMenuItems: MenuProps['items'] = [
   {
@@ -57,6 +60,10 @@ const activeClientMenuItems: MenuProps['items'] = [
     label: <p>Create Schedule</p>,
   },
   {
+    key: 'email',
+    label: <p>Email</p>,
+  },
+  {
     key: 'editClientDetail',
     label: <p>Edit Client Details</p>,
   },
@@ -67,10 +74,6 @@ const activeClientMenuItems: MenuProps['items'] = [
   {
     key: 'createNewTakeoff',
     label: <p>Create New Takeoff</p>,
-  },
-  {
-    key: 'email',
-    label: <p>Email</p>,
   },
   {
     key: 'deleteClient',
@@ -105,6 +108,9 @@ const ClientTable = () => {
   const [duplicates, setDuplicates] = useState<CommonCrmType[]>([]);
   const [isSavingMany, setIsSavingMany] = useState(false);
 
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+
   useEffect(() => {
     dispatch(getCrmItemsThunk({ module: 'clients' }));
   }, []);
@@ -112,8 +118,11 @@ const ClientTable = () => {
   const handleDropdownItemClick = async (key: string, client: any) => {
     if (key === 'createEstimateRequest') {
       router.push(`/estimates/requests/create?clientId=${client._id}`);
+    } else if (key === 'email') {
+      setShowEmailModal(true);
+      setSelectedItem(client);
     } else if (key === 'createNewInvoice') {
-      router.push(`/financial/aia-invoicing`);
+      router.push(`/financial/aia-invoicing?clientId=${client._id}`);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
     } else if (key == 'deleteClient') {
@@ -144,6 +153,11 @@ const ClientTable = () => {
     {
       title: 'Client Name',
       dataIndex: 'firstName',
+      render: (_, value) => (
+        <>
+          {value?.firstName} {value?.lastName}
+        </>
+      ),
     },
     {
       title: 'Company',
@@ -264,6 +278,31 @@ const ClientTable = () => {
 
   return (
     <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
+      {selectedItem && showEmailModal ? (
+        <ModalComponent open={showEmailModal} setOpen={setShowEmailModal}>
+          <CustomEmailTemplate
+            isFileUploadShow={false}
+            setEmailModal={setShowEmailModal}
+            submitHandler={async (formData) => {
+              setIsSubmittingEmail(true);
+              try {
+                const response = await emailService.httpSendEmail(formData);
+                if (response.statusCode === 200) {
+                  toast.success('Email sent successfully');
+                  setShowEmailModal(false);
+                }
+              } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data.message);
+              } finally {
+                setIsSubmittingEmail(false);
+              }
+            }}
+            to={selectedItem.email}
+            isSubmitting={isSubmittingEmail}
+          />
+        </ModalComponent>
+      ) : null}
       {selectedItem && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}

@@ -12,7 +12,10 @@ import DraggableItem from './DraggableItem';
 import { StandardToolItem } from './standard-tools-items';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import DraggableTool from './DraggableTool';
-import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import {
+  ContractPartyType,
+  ICrmContract,
+} from '@/app/interfaces/crm/crm-contract.interface';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { toast } from 'react-toastify';
@@ -34,10 +37,17 @@ type Props = {
   tools: ToolState[];
   setTools: React.Dispatch<React.SetStateAction<ToolState[]>>;
   color?: string;
+  receipt: ContractPartyType | null;
 };
 
-export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
-  ({ mode, pdfFile, tools, setTools, contract, color = '#007ab6' }, ref) => {
+export const ContractPdf = forwardRef<
+  { handleAction: (cb: (_blob: Blob) => void) => void },
+  Props
+>(
+  (
+    { mode, pdfFile, tools, setTools, contract, receipt, color = '#007ab6' },
+    ref
+  ) => {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
     const { PDFJs } = usePDFJS(async () => {});
@@ -58,7 +68,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
     // })
 
     useImperativeHandle(ref, () => ({
-      handleAction: () => handleDownload(),
+      handleAction: (cb) => handleDownload(cb),
     }));
 
     useEffect(() => {
@@ -158,7 +168,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
       }
     }
 
-    function handleDownload() {
+    function handleDownload(cb: (blob: Blob) => void) {
       const container = containerRef.current!;
       container.style.height = 'auto'; // Temporarily expand the container
 
@@ -167,7 +177,6 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
         const pdf = new jsPDF('p', 'mm', 'a4');
         const imgWidth = pdf.internal.pageSize.getWidth();
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
         let positionY = 0;
         const pageHeight = pdf.internal.pageSize.height;
 
@@ -178,6 +187,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
             pdf.addPage();
           }
         }
+        cb(pdf.output('blob'));
         pdf.save(`${contract.title}.pdf`);
 
         // Restore the original height
@@ -231,6 +241,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                       contract={contract}
                       color={color}
                       tools={tools}
+                      receipt={receipt}
                     />
                   ) : mode === 'edit-fields' ? (
                     <DraggableItem type={item.tool} key={item.id} data={item}>
@@ -242,6 +253,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                         key={item.id}
                         onDelete={() => handleRemoveTool(item)}
                         contract={contract}
+                        receipt={null}
                       />
                     </DraggableItem>
                   ) : mode === 'view-fields' || mode === 'view-values' ? (
@@ -255,6 +267,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                       item={item}
                       key={item.id}
                       contract={contract}
+                      receipt={receipt}
                     />
                   ) : null;
                 })}

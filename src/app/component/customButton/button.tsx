@@ -33,14 +33,18 @@ const CustomButton = ({
   iconwidth,
   iconheight,
   isLoading = false,
-  onClick = () => { },
+  onClick = () => {},
 }: PropsBtn) => {
   return (
     <button
       type={type}
       disabled={disabled || isLoading}
       className={twMerge(
-        clsx(btnStyle, isLoading && 'disabled', icon && 'flex gap-3 justify-between items-center', className && className
+        clsx(
+          btnStyle,
+          isLoading && 'disabled',
+          icon && 'flex gap-3 justify-between items-center',
+          className && className
         )
       )}
       onClick={onClick}

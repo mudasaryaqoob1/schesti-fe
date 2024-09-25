@@ -78,7 +78,7 @@ export default {
         monsoon: '#84818A',
         rangoonGreen: '#1C1C1C',
         osloGrey: '#848C9D',
-        stormGrey: "#67727E",
+        stormGrey: '#67727E',
         // Schesti Color Palette
         schestiPrimary: '#007AB6',
         schestiLightPrimary: '#E6F2F8',
@@ -89,7 +89,7 @@ export default {
         schestiLightBlack: '#667085',
         schestiLightGray: '#EAECF0',
         schestiPrimaryBG: '#F8F8F8',
-        mercury: '#E1E5EA'
+        mercury: '#E1E5EA',
       },
       boxShadow: {
         // Soft Glow for Primary Element

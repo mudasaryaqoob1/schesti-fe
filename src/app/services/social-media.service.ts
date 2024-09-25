@@ -24,7 +24,7 @@ class SocialMediaService extends HttpService {
     page = 0,
     limit = 9,
   }: {
-    id: string,
+    id: string;
     searchText?: string;
     page?: number;
     limit?: number;
@@ -42,9 +42,7 @@ class SocialMediaService extends HttpService {
     page?: number;
     limit?: number;
   }): Promise<IResponseInterface> =>
-    this.get(
-      `${this.prefix}/getPost/${id}?page=${page}&limit=${limit}`
-    );
+    this.get(`${this.prefix}/getPost/${id}?page=${page}&limit=${limit}`);
 
   httpGetPostComments = ({
     id,
@@ -80,33 +78,62 @@ class SocialMediaService extends HttpService {
   httpUpdatePost = (id: string, data: any): Promise<IResponseInterface> =>
     this.put(`${this.prefix}/updatePost/${id}`, data);
 
-  httpAddPostReaction = ({ id, body }: { id: string, body: { type: string } }): Promise<IResponseInterface> =>
+  httpAddPostReaction = ({
+    id,
+    body,
+  }: {
+    id: string;
+    body: { type: string };
+  }): Promise<IResponseInterface> =>
     this.put(`${this.prefix}/addPostReaction/${id}`, body);
 
-  httpAddReport = ({ id, body }: {
-    id: string, body: {
-      reason: string,
+  httpAddReport = ({
+    id,
+    body,
+  }: {
+    id: string;
+    body: {
+      reason: string;
       description: string;
       reportedBy: string;
-      commentId?: string
-    }
+      commentId?: string;
+    };
   }): Promise<IResponseInterface> =>
     this.put(`${this.prefix}/addReport/${id}`, body);
 
   httpDeletePost = (id: string): Promise<IResponseInterface> =>
     this.delete(`${this.prefix}/deletePost/${id}`);
 
-  httpAddPostComment = ({ id, content, type = 'post' }: { id: string, content: string, type?: string }): Promise<IResponseInterface> =>
+  httpAddPostComment = ({
+    id,
+    content,
+    type = 'post',
+  }: {
+    id: string;
+    content: string;
+    type?: string;
+  }): Promise<IResponseInterface> =>
     this.post(`${this.prefix}/addPostComment/${id}`, { content, type });
 
-  httpUpdatePostComment = ({ id, content }: { id: string, content: string }): Promise<IResponseInterface> =>
+  httpUpdatePostComment = ({
+    id,
+    content,
+  }: {
+    id: string;
+    content: string;
+  }): Promise<IResponseInterface> =>
     this.put(`${this.prefix}/updatePostComment/${id}`, { content });
 
-  httpReplyComment = ({ id, body }: { id: string, body: { parentCommentId: string, content: string } }): Promise<IResponseInterface> =>
+  httpReplyComment = ({
+    id,
+    body,
+  }: {
+    id: string;
+    body: { parentCommentId: string; content: string };
+  }): Promise<IResponseInterface> =>
     this.post(`${this.prefix}/addReplyComment/${id}`, body);
 
   httpDeletePostComment = (id: string): Promise<IResponseInterface> =>
     this.delete(`${this.prefix}/deletePostComment/${id}`);
-
 }
 export const socialMediaService = new SocialMediaService();

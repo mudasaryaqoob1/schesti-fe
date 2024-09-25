@@ -13,6 +13,7 @@ export type ContractPartyType = {
   tools: ToolState[];
   color: string;
   _id?: string;
+  pdf: string;
 };
 
 export interface ICrmContract {
