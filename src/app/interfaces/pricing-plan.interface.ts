@@ -1,4 +1,5 @@
-export interface IPricingPlan {
+
+type IBasePricing = {
   _id: string;
   type: string;
   planName: string;
@@ -13,4 +14,7 @@ export interface IPricingPlan {
   __v: number;
   stripePriceId: string;
   stripeProductId: string;
+  isInternal?: boolean;
 }
+
+export type IPricingPlan = IBasePricing;

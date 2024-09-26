@@ -76,6 +76,9 @@ const PaymentPlans = () => {
     }
   }, []);
 
+  const internalPlans = pricingPlansData.filter(plan => plan.isInternal === true);
+  const otherPlans = pricingPlansData.filter(plan => plan.isInternal !== true).filter((plan) => plan.duration === isDuration);
+
   const handlePlanDuration = (event: ChangeEvent<HTMLInputElement>) => {
     const currentPlanDuration = event.target.checked ? 'yearly' : 'monthly';
     const newPlansData = plansData.pricingPlans.filter(
@@ -101,8 +104,7 @@ const PaymentPlans = () => {
         <p>Something Went Wrong</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-5">
-          {pricingPlansData
-            .filter((plan) => plan.duration === isDuration)
+          {internalPlans.concat(otherPlans)
             ?.map((plan: IPricingPlan, index: React.Key | null | undefined) => {
               return (
                 <SinglePlan

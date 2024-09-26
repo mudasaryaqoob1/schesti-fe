@@ -14,7 +14,7 @@ import { getLoggedInUserDetails } from '@/redux/authSlices/auth.thunk';
 import { AppDispatch } from '@/redux/store';
 import { AxiosError } from 'axios';
 import Image from 'next/image';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -27,12 +27,30 @@ type Props = {
 const SinglePlan = (props: Props) => {
   const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
+  const [isFreePlanloading, setIsFreePlanloading] = useState(false);
 
   const { planName, price, planDescription, features, duration, _id } = props;
 
-  const pricingPackageSelectionHandler = () => {
-    localStorage.setItem('pricingPlan', JSON.stringify(props));
-    router.push(`/payment`);
+  const pricingPackageSelectionHandler = async (props: Props) => {
+    if (props.isInternal) {
+      setIsFreePlanloading(true);
+      try {
+        const response = await authService.httpSubscribeToFreePlan(props._id);
+        if (response.data) {
+          toast.success('Plan subscribed successfully');
+          // dispatch(getLoggedInUserDetails({}));
+          router.push(`/congratulation`);
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data?.message || err.message);
+      } finally {
+        setIsFreePlanloading(false);
+      }
+    } else {
+      localStorage.setItem('pricingPlan', JSON.stringify(props));
+      router.push(`/payment`);
+    }
   };
 
   const stripeUpgradeMutation = useMutation(
@@ -58,9 +76,9 @@ const SinglePlan = (props: Props) => {
 
   const BTN =
     props.user &&
-    props.user.subscription &&
-    props.user.subscription.planId &&
-    props.user.subscription.status === 'active' ? (
+      props.user.subscription &&
+      props.user.subscription.planId &&
+      props.user.subscription.status === 'active' ? (
       <Button
         text={
           (props.user.subscription.planId as IPricingPlan)._id === _id
@@ -82,7 +100,8 @@ const SinglePlan = (props: Props) => {
       <Button
         text={'Buy'}
         className="text-white self-stretch w-full"
-        onClick={pricingPackageSelectionHandler}
+        onClick={() => pricingPackageSelectionHandler(props)}
+        isLoading={isFreePlanloading}
       />
     );
 
