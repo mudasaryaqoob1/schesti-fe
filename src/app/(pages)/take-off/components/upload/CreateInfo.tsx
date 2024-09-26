@@ -745,9 +745,9 @@ const CreateInfo = () => {
                         name="createdate"
                         placeholder="Select Start Date"
                         value={
-                          new Date(projectData.createdate)
+                          projectData.createdate ? new Date(projectData.createdate)
                             ?.toISOString()
-                            ?.split('T')[0]
+                            ?.split('T')[0] : ''
                         }
                         onChange={handleChange}
                       />
@@ -758,9 +758,9 @@ const CreateInfo = () => {
                         name="deadline"
                         placeholder="Select Deadline"
                         value={
-                          new Date(projectData.deadline)
+                          projectData.deadline ? new Date(projectData.deadline)
                             ?.toISOString()
-                            ?.split('T')[0]
+                            ?.split('T')[0] : ''
                         }
                         onChange={handleChange}
                       />
