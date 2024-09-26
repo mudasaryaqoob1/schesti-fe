@@ -1,6 +1,8 @@
 'use client';
 // import Button from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { useUser } from '@/app/hooks/useUser';
+import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import { IStripeBaseSubscription } from '@/app/interfaces/stripe.interface';
 import { userService } from '@/app/services/user.service';
 import { getPlanFeatureKeyByValue } from '@/app/utils/plans.utils';
@@ -28,15 +30,11 @@ type Props = {
 
 const MySubscription = ({ onUpgradeClick }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [userData, setUserData] = useState<any>(null);
-  const [subscription, setSubscription] =
-    useState<IStripeBaseSubscription | null>(null);
+  const userData = useUser();
   const getUserDetail = useCallback(async () => {
     setIsLoading(true);
     try {
       let { data } = await userService.httpGetCompanyDetail();
-      setUserData(data.user.planId);
-      setSubscription(data.subscription);
     } catch (error) {
       console.log(error);
     } finally {
@@ -48,10 +46,13 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
     getUserDetail();
   }, []);
 
-  let features = userData ? userData.features.split(',') : [];
 
-  const remainingDays = subscription
-    ? moment.unix(subscription.current_period_end).diff(moment(), 'days')
+  const plan = userData ? (userData.subscription!.planId as IPricingPlan) : null;
+
+  let features = plan ? plan.features.split(',') : [];
+
+  const remainingDays = userData
+    ? moment.unix(userData.subscription!.currentPeriodEnd).diff(moment(), 'days')
     : 0;
   return (
     <>
@@ -67,18 +68,18 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
               <div className=" flex flex-col h-full gap-3 items-start w-full">
                 <div className="space-y-2">
                   <h2 className={`${tertiaryHeading} text-graphiteGray`}>
-                    {userData?.planName}
+                    {plan?.planName}
                   </h2>
                   <div className="flex items-center w-full">
                     <span className="tracking-[-0.72px] font-semibold text-[42px] leading-[46px] !text-schestiWarning">
-                      ${userData?.price}
+                      ${plan?.price}
                     </span>
                     <p className={`${minHeading} text-lightdark  font-normal`}>
-                      /{userData?.duration}
+                      /{plan?.duration}
                     </p>
                   </div>
                   <p className={`${quinaryHeading} text-lightdark2`}>
-                    {userData?.planDescription}
+                    {plan?.planDescription}
                   </p>
                 </div>
 
@@ -95,9 +96,8 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
 
                   <div className="flex mt-5 justify-end w-full">
                     {remainingDays ? (
-                      <p className="font-semibold text-[14px]  text-[#EC2224]">{`Expires in ${remainingDays} day${
-                        remainingDays !== 1 ? 's' : ''
-                      }`}</p>
+                      <p className="font-semibold text-[14px]  text-[#EC2224]">{`Expires in ${remainingDays} day${remainingDays !== 1 ? 's' : ''
+                        }`}</p>
                     ) : null}
                   </div>
                 </div>
