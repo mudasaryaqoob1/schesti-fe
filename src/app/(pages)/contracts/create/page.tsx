@@ -495,10 +495,14 @@ function CreateContractPage() {
                   <div key={index} className="space-y-2 border-b p-1">
                     <div className="flex justify-end">
                       <CustomButton
-                        text="Delete"
-                        className="!w-fit !px-4 !py-1 !bg-transparent !border-red-500 !text-red-500"
+                        text=""
+                        className="!w-fit !px-4 !py-1 !bg-transparent !border-none  !shadow-none !text-red-500"
                         onClick={() => removeSenderAndReceivers(index)}
+                        icon="/trash-2.svg"
+                        iconwidth={20}
+                        iconheight={20}
                       />
+
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <InputComponent
@@ -640,9 +644,12 @@ function CreateContractPage() {
                   <div key={index} className="space-y-2 border-b p-1">
                     <div className="flex justify-end">
                       <CustomButton
-                        text="Delete"
-                        className="!w-fit !px-4 !py-1 !bg-transparent !border-red-500 !text-red-500"
+                        text=""
+                        className="!w-fit !px-4 !py-1 !bg-transparent !border-none  !shadow-none !text-red-500"
                         onClick={() => removeSenderAndReceivers(index)}
+                        icon="/trash-2.svg"
+                        iconwidth={20}
+                        iconheight={20}
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
