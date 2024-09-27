@@ -47,8 +47,8 @@ const clientInfoSchema: any = Yup.object().shape({
   leadSource: Yup.string().required('Lead Source is required!'),
   projectValue: Yup.string().required('Project Value is required!'),
   projectInformation: Yup.string().required('Project Information is required!'),
-  salePerson: Yup.string().required('Sale person is required!'),
-  estimator: Yup.string().required('Estimator is required!'),
+  salePerson: Yup.string(),
+  estimator: Yup.string(),
 });
 
 const initialValues: IEstimateRequest = {
@@ -88,8 +88,8 @@ const EditEstimateRequest = () => {
       );
       setEstimateRequestData({
         ...estimateRequest,
-        estimator: estimateRequest.estimator._id,
-        salePerson: estimateRequest.salePerson._id,
+        estimator: estimateRequest.estimator ? estimateRequest.estimator._id : '',
+        salePerson: estimateRequest.salePerson ? estimateRequest.salePerson._id : '',
       });
       setTakeOffReports(estimateRequest);
       setDrawingsDocuments(estimateRequest.drawingsDocuments);

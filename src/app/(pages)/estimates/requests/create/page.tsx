@@ -48,8 +48,8 @@ const clientInfoSchema: any = Yup.object({
   leadSource: Yup.string().required('Lead source is required!'),
   projectValue: Yup.number().required('Project value is required!'),
   projectInformation: Yup.string().required('Project info is required!'),
-  salePerson: Yup.string().required('Sale person is required!'),
-  estimator: Yup.string().required('Estimator is required!'),
+  salePerson: Yup.string(),
+  estimator: Yup.string(),
   // architectureDocuments: Yup.array(
   //   Yup.object({
   //     name: Yup.string().required(),
