@@ -150,7 +150,7 @@ const EditSubcontractor = () => {
           }) => {
             return (
               <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
-                <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
                   <FormControl
                     control="input"
                     label="Company Name"
@@ -211,7 +211,7 @@ const EditSubcontractor = () => {
                     />
                   </div>
                 </div>
-                <div className="self-end flex justify-end items-center gap-5 md:mt-4 my-3">
+                <div className="flex items-center justify-end gap-4 mt-4">
                   <div>
                     <CustomButton
                       className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"

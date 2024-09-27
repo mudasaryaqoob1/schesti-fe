@@ -28,7 +28,7 @@ export function PhoneNumberInputWithLable({
         {...props}
       />
       {errorMessage ? (
-        <p className="text-sm text-red-500">{errorMessage}</p>
+        <p className="text-xs text-red-500">{errorMessage}</p>
       ) : null}
     </div>
   );
