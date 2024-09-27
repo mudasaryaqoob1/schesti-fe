@@ -22,6 +22,7 @@ import { findCrmItemById } from '../../../utils';
 import crmService from '@/app/services/crm/crm.service';
 import { Skeleton } from 'antd';
 import { NoDataComponent } from '@/app/component/noData/NoDataComponent';
+import { SelectTrades } from '@/app/component/customSelect/SelectTrades';
 
 const editSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -43,6 +44,8 @@ const initialValues = {
   phone: '',
   address: '',
   secondAddress: '',
+  trades: [],
+  module: 'subcontractors',
 };
 
 const EditSubcontractor = () => {
@@ -131,7 +134,7 @@ const EditSubcontractor = () => {
         />
         <Formik
           initialValues={
-            item ? item : (initialValues as ICrmSubcontractorModule)
+            item ? item : (initialValues as any)
           }
           enableReinitialize={true}
           validationSchema={editSubcontractorSchema}
@@ -192,13 +195,21 @@ const EditSubcontractor = () => {
                     name="address"
                     placeholder="Address"
                   />
-                  <FormControl
-                    control="input"
-                    label="Address 2"
-                    type="text"
-                    name="address2"
-                    placeholder="Address 2"
-                  />
+                  <div className='mt-2'>
+                    <SelectTrades
+                      mode='multiple'
+                      name='trades'
+                      label='Trades'
+                      hasError={touched.trades && Boolean(errors.trades)}
+                      errorMessage={touched.trades && errors.trades ? errors.trades.toString() : ''}
+                      onChange={val => {
+                        setFieldValue('trades', val);
+                      }}
+
+                      onBlur={() => setFieldTouched('trades', true)}
+                      value={values.trades}
+                    />
+                  </div>
                 </div>
                 <div className="self-end flex justify-end items-center gap-5 md:mt-4 my-3">
                   <div>

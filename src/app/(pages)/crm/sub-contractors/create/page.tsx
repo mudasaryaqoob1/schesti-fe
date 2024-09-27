@@ -18,6 +18,7 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import crmService from '@/app/services/crm/crm.service';
 import { AxiosError } from 'axios';
+import { SelectTrades } from '@/app/component/customSelect/SelectTrades';
 
 const newSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -39,6 +40,8 @@ const initialValues = {
   phone: '',
   address: '',
   secondAddress: '',
+  trades: [],
+  module: "subcontractors"
 };
 
 const CreateSubcontractor = () => {
@@ -52,7 +55,6 @@ const CreateSubcontractor = () => {
     try {
       const response = await crmService.httpCreate({
         ...values,
-        trades: [],
         status: true,
         module: 'subcontractors',
       });
@@ -162,13 +164,21 @@ const CreateSubcontractor = () => {
                     name="address"
                     placeholder="Address"
                   />
-                  <FormControl
-                    control="input"
-                    label="Address 2"
-                    type="text"
-                    name="address2"
-                    placeholder="Address 2"
-                  />
+                  <div className='mt-2'>
+                    <SelectTrades
+                      mode='multiple'
+                      name='trades'
+                      label='Trades'
+                      hasError={touched.trades && Boolean(errors.trades)}
+                      errorMessage={touched.trades && errors.trades ? errors.trades.toString() : ''}
+                      onChange={val => {
+                        setFieldValue('trades', val);
+                      }}
+
+                      onBlur={() => setFieldTouched('trades', true)}
+                      value={values.trades}
+                    />
+                  </div>
                 </div>
                 <div className="self-end flex justify-end items-center gap-5 md:mt-4 my-3">
                   <div>
