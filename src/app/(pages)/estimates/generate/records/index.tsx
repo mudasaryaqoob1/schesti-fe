@@ -155,7 +155,8 @@ const EstimateRequestTable: React.FC = () => {
       title: 'Status',
       dataIndex: 'status',
       render: (text, record) => {
-        if (record.status === 'won') {
+        console.log(record.status);
+        if (record.status === 'won' || record.status === 'active') {
           return <span className="capitalize text-emeraldGreen bg-schestiLightSuccess px-2 py-1 rounded-full">{record.status}</span>
         } else if (record.status === 'proposed') {
           return <span className="capitalize text-blue-600 bg-blue-100 px-2 py-1 rounded-full">{record.status}</span>

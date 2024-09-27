@@ -132,6 +132,7 @@ const Scope = ({ setPrevNext }: IProps) => {
 
   const { generateEstimateDetail } = useSelector(selectGeneratedEstimateDetail);
 
+  const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
   const [categories, setCategories] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
   const [viewPlansModel, setViewPlansModel] = useState(false);
@@ -143,6 +144,7 @@ const Scope = ({ setPrevNext }: IProps) => {
     scopeItemId: '',
   });
   const [planDocuments, setPlanDocuments] = useState<Object[]>([]);
+  const [isAddingNewSubCategory, setIsAddingNewSubCategory] = useState(false);
   const [subCategories, setSubCategories] = useState<Object[]>([]);
   const [selectedSubCategory, setSelectedSubCategory] = useState('');
   const [estimateDescriptions, setEstimateDescriptions] = useState<any>([]);
@@ -345,15 +347,13 @@ const Scope = ({ setPrevNext }: IProps) => {
       (cat: any) => cat.value === estimateTableItemValues.subCategory
     );
 
-    let selectedCategory = `${
-      selectedCategoryName?.label
+    let selectedCategory = `${selectedCategoryName?.label
         ? selectedCategoryName?.label
         : estimateTableItemValues?.category
-    } ${
-      selctedSubCategoryName?.label
+      } ${selctedSubCategoryName?.label
         ? selctedSubCategoryName?.label
         : estimateTableItemValues.subCategory
-    }`;
+      }`;
 
     if (editConfirmItem) {
       const updateConfirmEstimateArray: any = confirmEstimates.map(
@@ -655,9 +655,9 @@ const Scope = ({ setPrevNext }: IProps) => {
       let modifyArray = confirmEstimates.map((item, i) =>
         i === index
           ? {
-              ...item,
-              scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
-            }
+            ...item,
+            scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
+          }
           : item
       );
       setConfirmEstimates(modifyArray);
@@ -773,6 +773,26 @@ const Scope = ({ setPrevNext }: IProps) => {
                     className="w-full h-10"
                     setCustomState={setSelectedCategory}
                     disabled={editConfirmItem}
+                    onItemAdd={(newCategory: string) => {
+                      setIsAddingNewCategory(true);
+                      categoriesService.httpAddNewCategory({
+                        categoryId: categories.length.toString(),
+                        name: newCategory
+                      }).then((response) => {
+                        fetchCategories();
+                        if (response.data) {
+                          setSelectedCategory(response.data._id as string);
+                        }
+                      })
+                        .catch((err) => {
+                          const error = err as AxiosError<{ message: string }>;
+                          toast.error(error.response?.data.message);
+                        })
+                        .finally(() => {
+                          setIsAddingNewCategory(false);
+                        })
+                    }}
+                    onItemAddloading={isAddingNewCategory}
                   />
                   <FormControl
                     control="inputselect"
@@ -786,6 +806,28 @@ const Scope = ({ setPrevNext }: IProps) => {
                     className="w-full h-10"
                     setCustomState={setSelectedSubCategory}
                     disabled={editConfirmItem}
+                    onItemAddloading={isAddingNewSubCategory}
+                    onItemAdd={(newSubCategory: string) => {
+                      if (selectedCategory) {
+                        categoriesService.httpAddNewSubcategory({
+                          category: selectedCategory,
+                          name: newSubCategory,
+                          price: 0
+                        }).then((response) => {
+                          if (response.data) {
+                            fetchSubCategories();
+                            setSelectedSubCategory(response.data._id as string);
+                          }
+                        })
+                          .catch((err) => {
+                            const error = err as AxiosError<{ message: string }>;
+                            toast.error(error.response?.data.message);
+                          })
+                          .finally(() => {
+                            setIsAddingNewSubCategory(false);
+                          })
+                      }
+                    }}
                   />
                 </div>
                 <div className="bg-graylighty h-px w-full my-5"></div>
@@ -963,36 +1005,36 @@ const Scope = ({ setPrevNext }: IProps) => {
               <div>
                 {confirmEstimates.length
                   ? confirmEstimates.map((estimate) => (
-                      <div
-                        key={estimate.title}
-                        className={`${bg_style} p-5 mt-3`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <QuaternaryHeading
-                              title={estimate.categoryName}
-                              className="font-semibold"
-                            />
-                            <QuaternaryHeading
-                              title={estimate.subCategoryName}
-                              className="!font=[#344054] font-light"
-                            />
-                          </div>
-                        </div>
-                        <div className="estimateTable_container">
-                          <Table
-                            className="mt-2"
-                            loading={false}
-                            columns={confirmColumns}
-                            dataSource={
-                              estimate.scopeItems as IEstimateScopeInitialValue[]
-                            }
-                            pagination={false}
-                            scroll={{ x: 1000 }}
+                    <div
+                      key={estimate.title}
+                      className={`${bg_style} p-5 mt-3`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <QuaternaryHeading
+                            title={estimate.categoryName}
+                            className="font-semibold"
+                          />
+                          <QuaternaryHeading
+                            title={estimate.subCategoryName}
+                            className="!font=[#344054] font-light"
                           />
                         </div>
                       </div>
-                    ))
+                      <div className="estimateTable_container">
+                        <Table
+                          className="mt-2"
+                          loading={false}
+                          columns={confirmColumns}
+                          dataSource={
+                            estimate.scopeItems as IEstimateScopeInitialValue[]
+                          }
+                          pagination={false}
+                          scroll={{ x: 1000 }}
+                        />
+                      </div>
+                    </div>
+                  ))
                   : null}
               </div>
             </>
