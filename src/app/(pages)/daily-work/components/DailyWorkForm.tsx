@@ -187,7 +187,7 @@ export function DailyWorkForm({
           }
         />
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-end space-x-3">
           <WhiteButton onClick={onClose} text="Cancel" className="!w-40" />
           <CustomButton
             text={'Save'}
