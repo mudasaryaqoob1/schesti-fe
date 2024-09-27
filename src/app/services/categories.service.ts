@@ -19,7 +19,7 @@ class CategoriesService extends HttpService {
   // category
   httpAddNewCategory = (
     data: CategoryInitTypes
-  ): Promise<IResponseInterface<{ token: IToken }>> =>
+  ): Promise<IResponseInterface<ICategory>> =>
     this.post(`${this.prefix}/addNewCategory`, data);
 
   httpGetAllCategories = (
@@ -40,7 +40,7 @@ class CategoriesService extends HttpService {
   // sub category
   httpAddNewSubcategory = (
     data: SubcategoryInitValues
-  ): Promise<IResponseInterface<{ token: IToken }>> =>
+  ): Promise<IResponseInterface> =>
     this.post(`${this.prefix}/addNewSubcategory`, data);
 
   httpGetAllSubcategories = (

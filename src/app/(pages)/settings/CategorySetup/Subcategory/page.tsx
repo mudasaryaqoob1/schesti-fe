@@ -32,7 +32,7 @@ import { UploadSubCategoriesModal } from './UploadSubCategoriesModal';
 
 export type SubcategoryInitValues = {
   name: string;
-  price: string;
+  price: number;
   category: string;
 };
 export interface DataType {
@@ -113,9 +113,9 @@ const AddSubcategory = () => {
 
   const options = categoriesReduxData
     ? categoriesReduxData.map(({ name, _id }: ICategory) => ({
-        label: name,
-        value: _id,
-      }))
+      label: name,
+      value: _id,
+    }))
     : [];
 
   return (
@@ -288,7 +288,7 @@ const AddSubcategory = () => {
           onEdit={() => {
             setShowForm(true);
           }}
-          onDelete={() => {}}
+          onDelete={() => { }}
         />
       </div>
     </>
