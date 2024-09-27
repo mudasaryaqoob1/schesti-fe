@@ -103,9 +103,8 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
           </div>
         </div>
         <div
-          className={`mt-4 md:grid-cols-4 md:grid-rows-2 gap-y-6 ${
-            showEstimateDetails ? 'grid' : 'hidden'
-          }`}
+          className={`mt-4 md:grid-cols-4 md:grid-rows-2 gap-y-6 ${showEstimateDetails ? 'grid' : 'hidden'
+            }`}
         >
           <div>
             <MinDesc
@@ -167,7 +166,7 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
               className="font-popin font-normal text-base text-lightyGray"
             />
             <MinDesc
-              title={`${estimateRequestDetail?.salePerson?.firstName} ${estimateRequestDetail?.salePerson?.lastName}`}
+              title={estimateRequestDetail?.salePerson ? `${estimateRequestDetail?.salePerson?.firstName} ${estimateRequestDetail?.salePerson?.lastName}` : "N/A"}
               className="font-popin text-base text-midnightBlue mt-2"
             />
           </div>
@@ -178,7 +177,7 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
               className="font-popin  font-normal text-base text-lightyGray"
             />
             <MinDesc
-              title={`${estimateRequestDetail?.estimator?.firstName} ${estimateRequestDetail?.estimator?.lastName}`}
+              title={estimateRequestDetail?.estimator ? `${estimateRequestDetail?.estimator?.firstName} ${estimateRequestDetail?.estimator?.lastName}` : "N/A"}
               className="font-popin text-base text-midnightBlue mt-2"
             />
           </div>

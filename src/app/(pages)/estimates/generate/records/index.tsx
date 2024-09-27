@@ -138,11 +138,25 @@ const EstimateRequestTable: React.FC = () => {
     {
       title: 'Sale Person',
       dataIndex: 'salePerson',
+      render(value,) {
+        if (!value) {
+          return "N/A"
+        }
+
+        return value
+      },
     },
 
     {
       title: 'Estimator',
       dataIndex: 'estimator',
+      render(value,) {
+        if (!value) {
+          return "N/A"
+        }
+
+        return value
+      },
     },
     {
       title: 'Total Cost',
