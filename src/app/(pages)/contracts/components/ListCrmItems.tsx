@@ -4,7 +4,7 @@ import { CrmModuleType, CrmType } from '@/app/interfaces/crm/crm.interface';
 import crmService from '@/app/services/crm/crm.service';
 import { Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
-import { formatCrmModuleType } from '../../crm/utils';
+import { formatCrmModuleType, getCrmItemCompany, getCrmItemName } from '../../crm/utils';
 import { ContractPartyType } from '@/app/interfaces/crm/crm-contract.interface';
 import { NoDataComponent } from '@/app/component/noData/NoDataComponent';
 
@@ -33,27 +33,6 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
     setIsLoading(false);
   }
 
-  function getItemName(item: CrmType) {
-    if (
-      item.module === 'partners' ||
-      item.module === 'subcontractors' ||
-      item.module === 'contractors'
-    ) {
-      return `${item.companyRep}`;
-    }
-    return `${item.firstName} ${item.lastName || ''}`;
-  }
-
-  function getItemCompany(item: CrmType) {
-    if (
-      item.module === 'partners' ||
-      item.module === 'subcontractors' ||
-      item.module === 'contractors'
-    ) {
-      return `${item.name}`;
-    }
-    return `${item.companyName}`;
-  }
 
   return (
     <Popups title={title} onClose={onClose}>
@@ -93,9 +72,9 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
               className="p-3 my-1 border-b hover:bg-schestiPrimaryBG cursor-pointer hover:rounded-md"
               onClick={() =>
                 onItemClick({
-                  companyName: getItemCompany(item),
+                  companyName: getCrmItemCompany(item),
                   email: item.email,
-                  name: getItemName(item),
+                  name: getCrmItemName(item),
                   address: item.address,
                   phone: item.phone,
                   pdf: '',
@@ -107,16 +86,16 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                   {' '}
                   <span className="text-schestiLightBlack">Name: </span>{' '}
                   {item.module === 'subcontractors' ||
-                  item.module === 'partners' ||
-                  item.module === 'contractors'
+                    item.module === 'partners' ||
+                    item.module === 'contractors'
                     ? item.companyRep
                     : `${item.firstName} ${item.lastName || ''}`}
                 </p>
                 <p>
                   <span className="text-schestiLightBlack">Company: </span>{' '}
                   {item.module === 'subcontractors' ||
-                  item.module === 'partners' ||
-                  item.module === 'contractors'
+                    item.module === 'partners' ||
+                    item.module === 'contractors'
                     ? item.name
                     : item.companyName}
                 </p>

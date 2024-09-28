@@ -28,6 +28,7 @@ import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { ListCrmItems } from '@/app/(pages)/contracts/components/ListCrmItems';
 import crmService from '@/app/services/crm/crm.service';
+import { getCrmItemCompany, getCrmItemName } from '@/app/(pages)/crm/utils';
 
 const subcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -94,7 +95,7 @@ const CreateInvoice = () => {
   const router = useRouterHook();
   const searchParams = useSearchParams();
   const currency = useCurrencyFormatter();
-  const paramsSubContractId = searchParams.get('subcontractorId');
+  const crmitemid = searchParams.get('id');
 
   const [details, setDetails] = useState<InvoiceDetail[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -110,24 +111,26 @@ const CreateInvoice = () => {
     useState({});
 
   const fetchSubcontactors = useCallback(async () => {
-    if (paramsSubContractId) {
+    if (crmitemid) {
       try {
-        const response = await crmService.httpGetItemById(paramsSubContractId);
+        const response = await crmService.httpGetItemById(crmitemid);
         if (response.data) {
-          const subcontractor = response.data as ISubcontract;
+          const crmItem = response.data;
+
+          // I am not changing the fields because of further refactoring
           setSelectedSubcontractorDetail({
-            subContractorAddress: subcontractor.address,
-            subContractorCompanyName: subcontractor.name,
-            subContractorEmail: subcontractor.email,
-            subContractorPhoneNumber: subcontractor.phone,
-            companyRep: subcontractor.companyRep,
+            subContractorAddress: crmItem.address,
+            subContractorCompanyName: getCrmItemCompany(crmItem),
+            subContractorEmail: crmItem.email,
+            subContractorPhoneNumber: crmItem.phone,
+            companyRep: getCrmItemName(crmItem),
           });
         }
       } catch (error) {
         toast.error('Unable to find subcontractor');
       }
     }
-  }, []);
+  }, [crmitemid]);
 
   useEffect(() => {
     fetchSubcontactors();
@@ -388,7 +391,7 @@ const CreateInvoice = () => {
                     }
                     errorMessage={
                       touched.subContractorPhoneNumber &&
-                      errors.subContractorPhoneNumber
+                        errors.subContractorPhoneNumber
                         ? errors.subContractorPhoneNumber
                         : ''
                     }
