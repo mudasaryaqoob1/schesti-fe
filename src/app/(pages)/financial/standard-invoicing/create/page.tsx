@@ -127,7 +127,7 @@ const CreateInvoice = () => {
           });
         }
       } catch (error) {
-        toast.error('Unable to find subcontractor');
+        toast.error('Unable to find entry');
       }
     }
   }, [crmitemid]);
@@ -346,7 +346,7 @@ const CreateInvoice = () => {
               >
                 <div className="flex justify-between items-center mb-4">
                   <TertiaryHeading
-                    title="Subcontractor"
+                    title="Receipt"
                     className="text-graphiteGray"
                   />
                   <Button

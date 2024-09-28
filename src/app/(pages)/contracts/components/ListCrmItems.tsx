@@ -51,6 +51,7 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                 label: formatCrmModuleType('subcontractors'),
                 value: 'subcontractors',
               },
+              { label: "Contractors", value: "contractors" },
             ] as { label: string; value: CrmModuleType }[],
             onChange(value) {
               setModule(value as CrmModuleType);
