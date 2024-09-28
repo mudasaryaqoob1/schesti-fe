@@ -45,7 +45,6 @@ import { CrmStatusFilter } from '../components/CrmStatusFilter';
 import CustomEmailTemplate from '@/app/component/customEmailTemplete';
 import emailService from '@/app/services/email.service';
 import { AxiosError } from 'axios';
-import { Popups } from '../../bid-management/components/Popups';
 import { SelectInvoiceType } from '../components/SelectInvoiceType';
 
 const activeClientMenuItems: MenuProps['items'] = [
@@ -63,7 +62,7 @@ const activeClientMenuItems: MenuProps['items'] = [
   },
   {
     key: 'email',
-    label: <p>Email</p>,
+    label: <p>Send Email</p>,
   },
   {
     key: 'editClientDetail',
@@ -73,10 +72,10 @@ const activeClientMenuItems: MenuProps['items'] = [
     key: 'createContract',
     label: <p>Create Contract</p>,
   },
-  {
-    key: 'createNewTakeoff',
-    label: <p>Create New Takeoff</p>,
-  },
+  // {
+  //   key: 'createNewTakeoff',
+  //   label: <p>Create New Takeoff</p>,
+  // },
   {
     key: 'deleteClient',
     label: <p>Delete</p>,

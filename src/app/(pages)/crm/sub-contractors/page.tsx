@@ -45,6 +45,9 @@ import {
 import _ from 'lodash';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
 import { SelectInvoiceType } from '../components/SelectInvoiceType';
+import CustomEmailTemplate from '@/app/component/customEmailTemplete';
+import emailService from '@/app/services/email.service';
+import { AxiosError } from 'axios';
 
 export interface DataType {
   company: string;
@@ -77,14 +80,17 @@ const activeMenuItems: MenuProps['items'] = [
     key: 'createContract',
     label: <p>Create Contract</p>,
   },
-  {
-    key: 'createNewTakeoff',
-    label: <p>Create New Takeoff</p>,
-  },
   // {
-  //   key: 'email',
-  //   label: <p>Email</p>,
+  //   key: 'createNewTakeoff',
+  //   label: <p>Create New Takeoff</p>,
   // },
+  {/* The above code appears to be a comment block in a TypeScript React file. It includes
+  commented-out code that defines an object with a key 'email' and a label that contains an HTML
+  paragraph element. The code is currently commented out and not active in the program. */
+
+    key: 'email',
+    label: <p>Send Email</p>,
+  },
   {
     key: 'delete',
     label: <p>Delete</p>,
@@ -122,6 +128,9 @@ const SubcontractTable = () => {
   const [isSavingMany, setIsSavingMany] = useState(false);
   const [showInvoicePopup, setShowInvoicePopup] = useState(false);
 
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+
   useEffect(() => {
     dispatch(getCrmItemsThunk({ module: 'subcontractors' }));
   }, []);
@@ -136,6 +145,11 @@ const SubcontractTable = () => {
       router.push(`/schedule`);
     } else if (key == 'edit') {
       router.push(`${Routes.CRM['Sub-Contractors']}/edit/${subcontractor._id}`);
+    } else if (key === 'createContract') {
+      router.push(`${Routes.Contracts}/create?receiver=${subcontractor._id}`);
+    } else if (key === 'email') {
+      setShowEmailModal(true);
+      setSelectedItem(subcontractor);
     } else if (key == 'delete') {
       setSelectedItem(subcontractor);
       setShowDeleteModal(true);
@@ -273,6 +287,33 @@ const SubcontractTable = () => {
         }}
 
       />
+
+      {selectedItem && showEmailModal ? (
+        <ModalComponent open={showEmailModal} setOpen={setShowEmailModal}>
+          <CustomEmailTemplate
+            isFileUploadShow={false}
+            setEmailModal={setShowEmailModal}
+            submitHandler={async (formData) => {
+              setIsSubmittingEmail(true);
+              try {
+                const response = await emailService.httpSendEmail(formData);
+                if (response.statusCode === 200) {
+                  toast.success('Email sent successfully');
+                  setShowEmailModal(false);
+                }
+              } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data.message);
+              } finally {
+                setIsSubmittingEmail(false);
+              }
+            }}
+            to={selectedItem.email}
+            isSubmitting={isSubmittingEmail}
+          />
+        </ModalComponent>
+      ) : null}
+
       {selectedItem && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}
