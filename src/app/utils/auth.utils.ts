@@ -59,7 +59,7 @@ function navigateBusiness(user: IUserInterface) {
       return `${ContractorPages.CompanyDetails}/${user._id}`;
     }
 
-    const haveTrades = user.selectedTrades && user.selectedTrades.length == 0;
+    const haveTrades = user.selectedTrades && user.selectedTrades.length != 0;
 
     if (user.userRole == USER_ROLES_ENUM.SUBCONTRACTOR && !haveTrades) {
       return SubContractorPages.Trades;
@@ -101,7 +101,7 @@ function navigateEducational(user: IUserInterface) {
     console.log('Subcontractor', havePlan);
     return SubContractorPages.Plans;
   }
-  return null;
+  return '/dashboard';
 }
 
 function navigateOwner(user: IUserInterface) {
