@@ -46,6 +46,9 @@ import _ from 'lodash';
 
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
 import { SelectInvoiceType } from '../components/SelectInvoiceType';
+import CustomEmailTemplate from '@/app/component/customEmailTemplete';
+import emailService from '@/app/services/email.service';
+import { AxiosError } from 'axios';
 
 const activeMenuItems: MenuProps['items'] = [
   {
@@ -68,14 +71,14 @@ const activeMenuItems: MenuProps['items'] = [
     key: 'createContract',
     label: <p>Create Contract</p>,
   },
-  {
-    key: 'createNewTakeoff',
-    label: <p>Create New Takeoff</p>,
-  },
   // {
-  //   key: 'email',
-  //   label: <p>Email</p>,
+  //   key: 'createNewTakeoff',
+  //   label: <p>Create New Takeoff</p>,
   // },
+  {
+    key: 'email',
+    label: <p>Send Email</p>,
+  },
   {
     key: 'delete',
     label: <p>Delete</p>,
@@ -110,6 +113,9 @@ const PartnerTable = () => {
   const [isSavingMany, setIsSavingMany] = useState(false);
   const [showInvoicePopup, setShowInvoicePopup] = useState(false);
 
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+
   useEffect(() => {
     dispatch(getCrmItemsThunk({ module: 'partners' }));
   }, []);
@@ -117,11 +123,16 @@ const PartnerTable = () => {
   const handleDropdownItemClick = async (key: string, partner: any) => {
     if (key === 'createEstimateRequest') {
       router.push(`/estimates/requests/create`);
+    } else if (key === 'email') {
+      setShowEmailModal(true);
+      setSelectedItem(partner);
     } else if (key === 'createNewInvoice') {
       setShowInvoicePopup(true);
       setSelectedItem(partner);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
+    } else if (key === 'createContract') {
+      router.push(`${Routes.Contracts}/create?receiver=${partner._id}`);
     } else if (key == 'delete') {
       setSelectedItem(partner);
       setShowDeleteModal(true);
@@ -253,6 +264,32 @@ const PartnerTable = () => {
         }}
 
       />
+
+      {selectedItem && showEmailModal ? (
+        <ModalComponent open={showEmailModal} setOpen={setShowEmailModal}>
+          <CustomEmailTemplate
+            isFileUploadShow={false}
+            setEmailModal={setShowEmailModal}
+            submitHandler={async (formData) => {
+              setIsSubmittingEmail(true);
+              try {
+                const response = await emailService.httpSendEmail(formData);
+                if (response.statusCode === 200) {
+                  toast.success('Email sent successfully');
+                  setShowEmailModal(false);
+                }
+              } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data.message);
+              } finally {
+                setIsSubmittingEmail(false);
+              }
+            }}
+            to={selectedItem.email}
+            isSubmitting={isSubmittingEmail}
+          />
+        </ModalComponent>
+      ) : null}
 
       {selectedItem && showDeleteModal ? (
         <ModalComponent
