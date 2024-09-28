@@ -39,12 +39,37 @@ import {
   uploadAndParseCSVData,
 } from '../utils';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
+import { SelectInvoiceType } from '../components/SelectInvoiceType';
 
-const items: MenuProps['items'] = [
+const activeMenuItems: MenuProps['items'] = [
+  {
+    key: 'createEstimateRequest',
+    label: <p>Create Estimate Request</p>,
+  },
+  {
+    key: 'createNewInvoice',
+    label: <p>Create Invoice</p>,
+  },
+  {
+    key: 'createSchedule',
+    label: <p>Create Schedule</p>,
+  },
   {
     key: 'edit',
-    label: <p>Edit Vendor Details</p>,
+    label: <p>Edit Details</p>,
   },
+  {
+    key: 'createContract',
+    label: <p>Create Contract</p>,
+  },
+  {
+    key: 'createNewTakeoff',
+    label: <p>Create New Takeoff</p>,
+  },
+  // {
+  //   key: 'email',
+  //   label: <p>Email</p>,
+  // },
   {
     key: 'delete',
     label: <p>Delete</p>,
@@ -75,13 +100,22 @@ function VendorsPage() {
   const [parseData, setParseData] = useState<CommonCrmType[]>([]);
   const [duplicates, setDuplicates] = useState<CommonCrmType[]>([]);
   const [isSavingMany, setIsSavingMany] = useState(false);
+  const [showInvoicePopup, setShowInvoicePopup] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<ICrmItem | null>(null);
 
   useEffect(() => {
     dispatch(getCrmItemsThunk({ module: 'vendors' }));
   }, []);
 
   function handleMenuItemClick(key: string, record: ICrmItem) {
-    if (key === 'edit') {
+    if (key === 'createEstimateRequest') {
+      router.push(`/estimates/requests/create`);
+    } else if (key === 'createNewInvoice') {
+      setShowInvoicePopup(true);
+      setSelectedItem(record);
+    } else if (key === 'createSchedule') {
+      router.push(`/schedule`);
+    } else if (key === 'edit') {
       router.push(`${Routes.CRM.Vendors}/edit/${record._id}`);
     } else if (key === 'delete') {
       setSelectedVendor(record);
@@ -155,7 +189,8 @@ function VendorsPage() {
         return (
           <Dropdown
             menu={{
-              items: record.status ? items : inactiveItems,
+              items: record.status ? activeMenuItems : inactiveItems,
+
               onClick({ key }) {
                 handleMenuItemClick(key, record);
               },
@@ -205,6 +240,23 @@ function VendorsPage() {
 
   return (
     <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
+
+      <SelectInvoiceType
+        show={showInvoicePopup && selectedItem !== null}
+        setShow={val => {
+          setShowInvoicePopup(val);
+          setSelectedItem(null);
+        }}
+        onChange={val => {
+          if (val === 'aia') {
+            router.push(`/financial/aia-invoicing`);
+          } else if (val === 'standard') {
+            router.push(`${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`);
+          }
+        }}
+
+      />
+
       {selectedVendor && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}

@@ -45,12 +45,37 @@ import {
 import _ from 'lodash';
 
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
+import { SelectInvoiceType } from '../components/SelectInvoiceType';
 
-const items: MenuProps['items'] = [
+const activeMenuItems: MenuProps['items'] = [
   {
-    key: 'editDetails',
-    label: <p>Edit details</p>,
+    key: 'createEstimateRequest',
+    label: <p>Create Estimate Request</p>,
   },
+  {
+    key: 'createNewInvoice',
+    label: <p>Create Invoice</p>,
+  },
+  {
+    key: 'createSchedule',
+    label: <p>Create Schedule</p>,
+  },
+  {
+    key: 'edit',
+    label: <p>Edit Details</p>,
+  },
+  {
+    key: 'createContract',
+    label: <p>Create Contract</p>,
+  },
+  {
+    key: 'createNewTakeoff',
+    label: <p>Create New Takeoff</p>,
+  },
+  // {
+  //   key: 'email',
+  //   label: <p>Email</p>,
+  // },
   {
     key: 'delete',
     label: <p>Delete</p>,
@@ -83,16 +108,27 @@ const ContractorsPage = () => {
   const [parseData, setParseData] = useState<CrmContractorParsedType[]>([]);
   const [duplicates, setDuplicates] = useState<CrmContractorParsedType[]>([]);
   const [isSavingMany, setIsSavingMany] = useState(false);
+  const [showInvoicePopup, setShowInvoicePopup] = useState(false);
 
   useEffect(() => {
     dispatch(getCrmItemsThunk({ module: 'contractors' }));
   }, []);
 
   const handleDropdownItemClick = async (key: string, item: any) => {
-    if (key == 'delete') {
+    if (key === 'createEstimateRequest') {
+      router.push(`/estimates/requests/create?clientId=${item._id}`);
+    } else if (key === 'createNewInvoice') {
+      // router.push(`/financial/aia-invoicing?architectId=${architect._id}`);
+      setShowInvoicePopup(true);
+      setSelectedItem(item);
+    } else if (key === 'createSchedule') {
+      router.push(`/schedule`);
+    } else if (key == 'createContract') {
+      router.push(`${Routes.Contracts}/create?receiver=${item._id}`);
+    } else if (key == 'delete') {
       setSelectedItem(item);
       setShowDeleteModal(true);
-    } else if (key == 'editDetails') {
+    } else if (key == 'edit') {
       router.push(`${Routes.CRM.Contractors}/edit/${item._id}`);
     } else if (key == 'inactive') {
       dispatch(
@@ -160,7 +196,7 @@ const ContractorsPage = () => {
       render: (text, record) => (
         <Dropdown
           menu={{
-            items: record.status ? items : inactiveMenuItems,
+            items: record.status ? activeMenuItems : inactiveMenuItems,
             onClick: (event) => {
               const { key } = event;
               handleDropdownItemClick(key, record);
@@ -204,6 +240,21 @@ const ContractorsPage = () => {
 
   return (
     <section className="mt-6 mb-[39px] mx-4 rounded-xl ">
+      <SelectInvoiceType
+        show={showInvoicePopup && selectedItem !== null}
+        setShow={val => {
+          setShowInvoicePopup(val);
+          setSelectedItem(null);
+        }}
+        onChange={val => {
+          if (val === 'aia') {
+            router.push(`/financial/aia-invoicing`);
+          } else if (val === 'standard') {
+            router.push(`${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`);
+          }
+        }}
+
+      />
       {selectedItem && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}

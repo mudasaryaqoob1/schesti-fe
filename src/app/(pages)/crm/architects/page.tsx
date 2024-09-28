@@ -42,6 +42,7 @@ import {
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
+import { SelectInvoiceType } from '../components/SelectInvoiceType';
 
 const activeMenuItems: MenuProps['items'] = [
   {
@@ -105,6 +106,8 @@ const ArchitectPage = () => {
   const [duplicates, setDuplicates] = useState<CommonCrmType[]>([]);
   const [isSavingMany, setIsSavingMany] = useState(false);
 
+  const [showInvoicePopup, setShowInvoicePopup] = useState(false);
+
   useEffect(() => {
     dispatch(getCrmItemsThunk({ module: 'architects' }));
   }, []);
@@ -113,7 +116,9 @@ const ArchitectPage = () => {
     if (key === 'createEstimateRequest') {
       router.push(`/estimates/requests/create?clientId=${architect._id}`);
     } else if (key === 'createNewInvoice') {
-      router.push(`/financial/aia-invoicing?architectId=${architect._id}`);
+      // router.push(`/financial/aia-invoicing?architectId=${architect._id}`);
+      setShowInvoicePopup(true);
+      setSelectedItem(architect);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
     } else if (key == 'createContract') {
@@ -264,6 +269,21 @@ const ArchitectPage = () => {
 
   return (
     <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
+      <SelectInvoiceType
+        show={showInvoicePopup && selectedItem !== null}
+        setShow={val => {
+          setShowInvoicePopup(val);
+          setSelectedItem(null);
+        }}
+        onChange={val => {
+          if (val === 'aia') {
+            router.push(`/financial/aia-invoicing?architectId=${selectedItem?._id}`);
+          } else if (val === 'standard') {
+            router.push(`${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`);
+          }
+        }}
+
+      />
       {selectedItem && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}

@@ -44,6 +44,7 @@ import {
 } from '../utils';
 import _ from 'lodash';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
+import { SelectInvoiceType } from '../components/SelectInvoiceType';
 
 export interface DataType {
   company: string;
@@ -55,7 +56,11 @@ export interface DataType {
   action: string;
 }
 
-const items: MenuProps['items'] = [
+const activeMenuItems: MenuProps['items'] = [
+  {
+    key: 'createEstimateRequest',
+    label: <p>Create Estimate Request</p>,
+  },
   {
     key: 'createNewInvoice',
     label: <p>Create Invoice</p>,
@@ -65,11 +70,23 @@ const items: MenuProps['items'] = [
     label: <p>Create Schedule</p>,
   },
   {
-    key: 'editSubcontractor',
-    label: <p>Edit Subcontractor Detail</p>,
+    key: 'edit',
+    label: <p>Edit Details</p>,
   },
   {
-    key: 'deleteSubcontractor',
+    key: 'createContract',
+    label: <p>Create Contract</p>,
+  },
+  {
+    key: 'createNewTakeoff',
+    label: <p>Create New Takeoff</p>,
+  },
+  // {
+  //   key: 'email',
+  //   label: <p>Email</p>,
+  // },
+  {
+    key: 'delete',
     label: <p>Delete</p>,
   },
   {
@@ -103,6 +120,7 @@ const SubcontractTable = () => {
     []
   );
   const [isSavingMany, setIsSavingMany] = useState(false);
+  const [showInvoicePopup, setShowInvoicePopup] = useState(false);
 
   useEffect(() => {
     dispatch(getCrmItemsThunk({ module: 'subcontractors' }));
@@ -112,14 +130,13 @@ const SubcontractTable = () => {
     if (key === 'createEstimateRequest') {
       router.push(`/estimates/requests/create`);
     } else if (key === 'createNewInvoice') {
-      router.push(
-        `/financial/standard-invoicing/create?subcontractorId=${subcontractor._id}`
-      );
+      setShowInvoicePopup(true);
+      setSelectedItem(subcontractor);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
-    } else if (key == 'editSubcontractor') {
+    } else if (key == 'edit') {
       router.push(`${Routes.CRM['Sub-Contractors']}/edit/${subcontractor._id}`);
-    } else if (key == 'deleteSubcontractor') {
+    } else if (key == 'delete') {
       setSelectedItem(subcontractor);
       setShowDeleteModal(true);
     } else if (key === 'active') {
@@ -188,7 +205,7 @@ const SubcontractTable = () => {
       render: (text, record) => (
         <Dropdown
           menu={{
-            items: record.status ? items : inactiveMenuItems,
+            items: record.status ? activeMenuItems : inactiveMenuItems,
             onClick: (event) => {
               const { key } = event;
               handleDropdownItemClick(key, record);
@@ -241,6 +258,21 @@ const SubcontractTable = () => {
       <Head>
         <title>Schesti - Subcontractor</title>
       </Head>
+      <SelectInvoiceType
+        show={showInvoicePopup && selectedItem !== null}
+        setShow={val => {
+          setShowInvoicePopup(val);
+          setSelectedItem(null);
+        }}
+        onChange={val => {
+          if (val === 'aia') {
+            router.push(`/financial/aia-invoicing`);
+          } else if (val === 'standard') {
+            router.push(`${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`);
+          }
+        }}
+
+      />
       {selectedItem && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}

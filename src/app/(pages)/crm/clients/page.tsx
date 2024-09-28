@@ -45,6 +45,8 @@ import { CrmStatusFilter } from '../components/CrmStatusFilter';
 import CustomEmailTemplate from '@/app/component/customEmailTemplete';
 import emailService from '@/app/services/email.service';
 import { AxiosError } from 'axios';
+import { Popups } from '../../bid-management/components/Popups';
+import { SelectInvoiceType } from '../components/SelectInvoiceType';
 
 const activeClientMenuItems: MenuProps['items'] = [
   {
@@ -111,6 +113,8 @@ const ClientTable = () => {
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
 
+  const [showInvoicePopup, setShowInvoicePopup] = useState(false);
+
   useEffect(() => {
     dispatch(getCrmItemsThunk({ module: 'clients' }));
   }, []);
@@ -122,7 +126,9 @@ const ClientTable = () => {
       setShowEmailModal(true);
       setSelectedItem(client);
     } else if (key === 'createNewInvoice') {
-      router.push(`/financial/aia-invoicing?clientId=${client._id}`);
+      setShowInvoicePopup(true);
+      setSelectedItem(client);
+      // router.push(`/financial/aia-invoicing?clientId=${client._id}`);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
     } else if (key == 'deleteClient') {
@@ -278,6 +284,21 @@ const ClientTable = () => {
 
   return (
     <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
+      <SelectInvoiceType
+        show={showInvoicePopup && selectedItem !== null}
+        setShow={val => {
+          setShowInvoicePopup(val);
+          setSelectedItem(null);
+        }}
+        onChange={val => {
+          if (val === 'aia') {
+            router.push(`/financial/aia-invoicing?clientId=${selectedItem?._id}`);
+          } else if (val === 'standard') {
+            router.push(`${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`);
+          }
+        }}
+
+      />
       {selectedItem && showEmailModal ? (
         <ModalComponent open={showEmailModal} setOpen={setShowEmailModal}>
           <CustomEmailTemplate
