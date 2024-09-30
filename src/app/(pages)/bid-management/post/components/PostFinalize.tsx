@@ -507,7 +507,7 @@ export function PostFinalize({ formik, children }: Props) {
               onBlur: formik.handleBlur,
               status:
                 formik.touched.selectedTeamMembers &&
-                Boolean(formik.errors.selectedTeamMembers)
+                  Boolean(formik.errors.selectedTeamMembers)
                   ? 'error'
                   : undefined,
             }}
@@ -517,14 +517,14 @@ export function PostFinalize({ formik, children }: Props) {
             }
             errorMessage={
               formik.touched.selectedTeamMembers &&
-              Boolean(formik.errors.selectedTeamMembers) &&
-              Array.isArray(formik.errors.selectedTeamMembers)
+                Boolean(formik.errors.selectedTeamMembers) &&
+                Array.isArray(formik.errors.selectedTeamMembers)
                 ? formik.errors.selectedTeamMembers
-                    .map(
-                      (item: string, idx) =>
-                        `'${formik.values.selectedTeamMembers![idx]}' ${item}`
-                    )
-                    .toString()
+                  .map(
+                    (item: string, idx) =>
+                      `'${formik.values.selectedTeamMembers![idx]}' ${item}`
+                  )
+                  .toString()
                 : (formik.errors.selectedTeamMembers as string)
             }
           />
@@ -537,9 +537,9 @@ export function PostFinalize({ formik, children }: Props) {
             <div className="space-y-2">
               <Checkbox
                 checked={formik.values.isMatchingWithTrades}
-                // onChange={(e) => {
-                //   formik.setFieldValue('isMatchingWithTrades', e.target.checked);
-                // }}
+              // onChange={(e) => {
+              //   formik.setFieldValue('isMatchingWithTrades', e.target.checked);
+              // }}
               >
                 <SenaryHeading
                   title="Schesti members with matching trades and region"
@@ -547,7 +547,9 @@ export function PostFinalize({ formik, children }: Props) {
                 />
               </Checkbox>
 
-              <Checkbox disabled>
+              <Checkbox checked={formik.values.sendInMyNetwork} onChange={(e) => {
+                formik.setFieldValue('sendInMyNetwork', e.target.checked);
+              }}>
                 <SenaryHeading
                   title="My In-Network members (Sends only to those with matching trades and regions)"
                   className="text-[#667085] font-normal leading-7 text-[14px] !w-fit"
@@ -576,7 +578,7 @@ export function PostFinalize({ formik, children }: Props) {
                 onBlur: formik.handleBlur,
                 status:
                   formik.touched.invitedMembers &&
-                  Boolean(formik.errors.invitedMembers)
+                    Boolean(formik.errors.invitedMembers)
                     ? 'error'
                     : undefined,
                 dropdownStyle: {
@@ -589,14 +591,14 @@ export function PostFinalize({ formik, children }: Props) {
               }
               errorMessage={
                 formik.touched.invitedMembers &&
-                Boolean(formik.errors.invitedMembers) &&
-                Array.isArray(formik.errors.invitedMembers)
+                  Boolean(formik.errors.invitedMembers) &&
+                  Array.isArray(formik.errors.invitedMembers)
                   ? formik.errors.invitedMembers
-                      .map(
-                        (item: string, idx) =>
-                          `'${formik.values.invitedMembers![idx]}' ${item}`
-                      )
-                      .toString()
+                    .map(
+                      (item: string, idx) =>
+                        `'${formik.values.invitedMembers![idx]}' ${item}`
+                    )
+                    .toString()
                   : (formik.errors.invitedMembers as string)
               }
             />

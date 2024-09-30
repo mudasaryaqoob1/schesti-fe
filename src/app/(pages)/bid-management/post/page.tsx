@@ -178,6 +178,7 @@ const FinalizeProjectSchema = Yup.object().shape({
   isMatchingWithTrades: Yup.boolean().required(
     'Matching with trades is required'
   ),
+  sendInMyNetwork: Yup.boolean().required('Send in my network is required'),
   invitedMembers: Yup.array().of(Yup.string().email('is invalid email')),
   invitedMembersAssets: Yup.array().of(
     Yup.object().shape({
@@ -358,18 +359,18 @@ function CreatePost() {
   const basicInformationFormik = useFormik({
     initialValues: postProjectState.project
       ? {
-          ...postProjectState.project,
-        }
+        ...postProjectState.project,
+      }
       : {
-          projectName: '',
-          country: 'US',
-          city: '',
-          zipCode: '',
-          state: '',
-          constructionTypes: [] as string[],
-          address: '',
-          status: 'draft' as CreateOwnerPostProjectType['status'],
-        },
+        projectName: '',
+        country: 'US',
+        city: '',
+        zipCode: '',
+        state: '',
+        constructionTypes: [] as string[],
+        address: '',
+        status: 'draft' as CreateOwnerPostProjectType['status'],
+      },
     onSubmit(values) {
       if (postProjectState.project) {
         updateProjectMutation.mutate(values);
