@@ -84,12 +84,16 @@ const EstimateRequestTable: React.FC = () => {
           projectName: estimate?.estimateRequestIdDetail?.projectName,
           clientName: estimate?.estimateRequestIdDetail?.clientName,
           clientEmail: estimate?.estimateRequestIdDetail?.email,
-          salePerson: `${
-            estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''
-          } ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`,
-          estimator: `${
-            estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''
-          } ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`,
+          salePerson: estimate?.estimateRequestIdDetail?.salePerson
+            ? `${
+                estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''
+              } ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`
+            : 'N/A',
+          estimator: estimate?.estimateRequestIdDetail?.estimator
+            ? `${
+                estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''
+              } ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`
+            : 'N/A',
           estimateRequestIdDetail: estimate.estimateRequestIdDetail?._id,
         };
       }
@@ -140,11 +144,17 @@ const EstimateRequestTable: React.FC = () => {
     {
       title: 'Sale Person',
       dataIndex: 'salePerson',
+      render(value) {
+        return value;
+      },
     },
 
     {
       title: 'Estimator',
       dataIndex: 'estimator',
+      render(value) {
+        return value;
+      },
     },
     {
       title: 'Total Cost',
@@ -156,13 +166,27 @@ const EstimateRequestTable: React.FC = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render: (text, record) => (
-        <span
-          className={`capitalize ${record.status === 'lost' ? 'text-red-600 bg-red-100' : record.status === 'proposed' ? ' text-blue-600 bg-blue-100' : 'text-emeraldGreen bg-schestiLightSuccess'}  px-2 py-1 rounded-full`}
-        >
-          {record.status}
-        </span>
-      ),
+      render: (text, record) => {
+        if (record.status === 'won' || record.status === 'active') {
+          return (
+            <span className="capitalize text-emeraldGreen bg-schestiLightSuccess px-2 py-1 rounded-full">
+              {record.status}
+            </span>
+          );
+        } else if (record.status === 'proposed') {
+          return (
+            <span className="capitalize text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+              {record.status}
+            </span>
+          );
+        } else {
+          return (
+            <span className="capitalize text-red-600 bg-red-100 px-2 py-1 rounded-full">
+              {record.status}
+            </span>
+          );
+        }
+      },
     },
     {
       title: 'Action',

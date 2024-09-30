@@ -32,6 +32,8 @@ import {
 } from '@/app/interfaces/crm/crm-contract.interface';
 import { FileInterface } from '@/app/interfaces/file.interface';
 import { chooseRandomColor } from '../../daily-work/utils';
+import crmService from '@/app/services/crm/crm.service';
+import { getCrmItemCompany, getCrmItemName } from '../../crm/utils';
 
 const ValidationSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),
@@ -63,6 +65,7 @@ function CreateContractPage() {
 
   const contractId = searchParams.get('id');
   const isEdit = searchParams.get('edit');
+  const receiverId = searchParams.get('receiver');
 
   const formik = useFormik<
     Omit<CreateContractData, 'status'> | Omit<UpdateContractData, 'status'>
@@ -197,6 +200,12 @@ function CreateContractPage() {
     }
   }, [contractId, isEdit]);
 
+  useEffect(() => {
+    if (receiverId) {
+      getCrmItemById(receiverId);
+    }
+  }, [receiverId]);
+
   async function getContractById(id: string) {
     setIsFetchingItem(true);
     try {
@@ -214,7 +223,35 @@ function CreateContractPage() {
     }
   }
 
-  console.log(formik.errors.receipts);
+  async function getCrmItemById(id: string) {
+    try {
+      const response = await crmService.httpGetItemById(id);
+      if (response.data) {
+        const crmItem = response.data;
+        formik.setFieldValue('receipts', [
+          {
+            color: chooseRandomColor(),
+            companyName: '',
+            email: '',
+            name: '',
+            tools: [],
+            type: 'sender',
+          },
+          {
+            color: chooseRandomColor(),
+            companyName: getCrmItemCompany(crmItem),
+            email: crmItem.email,
+            name: getCrmItemName(crmItem),
+            tools: [],
+            type: 'receiver',
+          },
+        ]);
+      }
+    } catch (error) {
+      toast.error('Unable to find entry');
+    }
+  }
+
   function addSenderAndReceivers(type: 'sender' | 'receiver') {
     formik.setFieldValue('receipts', [
       ...formik.values.receipts,
@@ -486,7 +523,7 @@ function CreateContractPage() {
               Sender Information
             </p>
 
-            <div>
+            <div className="mt-6">
               {formik.values.receipts.map((sender, index) => {
                 if (sender.type === 'receiver') {
                   return null;
@@ -495,9 +532,12 @@ function CreateContractPage() {
                   <div key={index} className="space-y-2 border-b p-1">
                     <div className="flex justify-end">
                       <CustomButton
-                        text="Delete"
-                        className="!w-fit !px-4 !py-1 !bg-transparent !border-red-500 !text-red-500"
+                        text=""
+                        className="!w-fit !px-4 !py-1 !bg-transparent !border-none  !shadow-none !text-red-500"
                         onClick={() => removeSenderAndReceivers(index)}
+                        icon="/trash-2.svg"
+                        iconwidth={20}
+                        iconheight={20}
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
@@ -625,6 +665,9 @@ function CreateContractPage() {
                 onClick={() => {
                   setShowList(true);
                 }}
+                icon="/uploadcloudcyan.svg"
+                iconwidth={20}
+                iconheight={20}
               />
             </div>
             <div className="mt-2">
@@ -636,9 +679,12 @@ function CreateContractPage() {
                   <div key={index} className="space-y-2 border-b p-1">
                     <div className="flex justify-end">
                       <CustomButton
-                        text="Delete"
-                        className="!w-fit !px-4 !py-1 !bg-transparent !border-red-500 !text-red-500"
+                        text=""
+                        className="!w-fit !px-4 !py-1 !bg-transparent !border-none  !shadow-none !text-red-500"
                         onClick={() => removeSenderAndReceivers(index)}
+                        icon="/trash-2.svg"
+                        iconwidth={20}
+                        iconheight={20}
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-2">

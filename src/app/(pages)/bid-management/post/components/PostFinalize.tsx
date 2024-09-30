@@ -547,7 +547,12 @@ export function PostFinalize({ formik, children }: Props) {
                 />
               </Checkbox>
 
-              <Checkbox disabled>
+              <Checkbox
+                checked={formik.values.sendInMyNetwork}
+                onChange={(e) => {
+                  formik.setFieldValue('sendInMyNetwork', e.target.checked);
+                }}
+              >
                 <SenaryHeading
                   title="My In-Network members (Sends only to those with matching trades and regions)"
                   className="text-[#667085] font-normal leading-7 text-[14px] !w-fit"

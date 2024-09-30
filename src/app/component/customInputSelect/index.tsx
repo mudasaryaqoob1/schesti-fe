@@ -18,6 +18,8 @@ const CustomInputSelect: React.FC = (props: any) => {
     className,
     disabled,
     setCustomState = () => {},
+    onItemAdd = () => {},
+    onItemAddloading = false,
   } = props;
 
   const [items, setItems] =
@@ -39,6 +41,7 @@ const CustomInputSelect: React.FC = (props: any) => {
     e.preventDefault();
     setItems([{ label: newOption, value: newOption }, ...items]);
     setNewOption('');
+    onItemAdd(newOption);
     setTimeout(() => {
       inputRef.current?.focus();
     }, 0);
@@ -102,6 +105,7 @@ const CustomInputSelect: React.FC = (props: any) => {
                         icon={<PlusOutlined />}
                         onClick={addItem}
                         disabled={newOption === ''}
+                        loading={onItemAddloading}
                       >
                         Add New
                       </Button>

@@ -85,6 +85,8 @@ export interface IBidManagement {
   preBiddingMeeting?: IPreBiddingMeetingOnSite | IPreBiddingMeetingOnline;
   siteWalkthrough?: ISiteWalkthrough;
   rfiDeadline?: IRFIDeadline;
+
+  sendInMyNetwork?: boolean;
 }
 
 export interface IBidManagementResponse {

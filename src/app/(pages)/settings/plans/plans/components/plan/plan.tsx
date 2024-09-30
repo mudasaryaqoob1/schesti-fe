@@ -1,5 +1,8 @@
 'use client';
+import { usePricing } from '@/app/(pages)/(auth)/usePricing';
 import Button from '@/app/component/customButton/button';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { useUser } from '@/app/hooks/useUser';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import { authService } from '@/app/services/auth.service';
@@ -31,15 +34,18 @@ const SinglePlan = (props: Props) => {
     features,
     duration,
     setSelectedPlan,
-    user,
     _id,
   } = props;
   const dispatch = useDispatch<AppDispatch>();
 
+  const user = useUser();
+  const pricingHook = usePricing();
+  const router = useRouterHook();
+
   const stripeUpgradeMutation = useMutation(
     ['upgradePlan'],
-    async (planId: string) => {
-      return authService.httpUpgradeStripeMutation({ planId });
+    async (data: IPricingPlan) => {
+      return authService.httpUpgradeStripeMutation({ planId: data._id });
     },
     {
       onSuccess() {
@@ -59,7 +65,12 @@ const SinglePlan = (props: Props) => {
         className={`text-white ${user?.planId === _id ? '!bg-schestiLightPrimary !text-schestiPrimaryBlack !border-schestiLightPrimary' : ''} self-stretch w-full`}
         onClick={() => {
           if (_id && props.user?.planId !== _id) {
-            stripeUpgradeMutation.mutate(_id);
+            if (!user.subscription!.subscriptionId) {
+              pricingHook.setValueToStorage(props);
+              router.push('/payment');
+            } else {
+              stripeUpgradeMutation.mutate(props);
+            }
           } else {
             toast.success('You are already on this plan');
           }

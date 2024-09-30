@@ -12,6 +12,6 @@ export type ISubriptionHistory = {
   additionalPeriodEnd: Date;
   expiredAt: Date;
   canceledAt: Date;
-  currentPeriodStart: Date;
-  currentPeriodEnd: Date;
+  currentPeriodStart: number;
+  currentPeriodEnd: number;
 };

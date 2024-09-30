@@ -154,3 +154,25 @@ export function formatCrmModuleType(module: CrmModuleType | undefined): string {
       throw new Error('Invalid crm module type');
   }
 }
+
+export function getCrmItemName(item: CrmType) {
+  if (
+    item.module === 'partners' ||
+    item.module === 'subcontractors' ||
+    item.module === 'contractors'
+  ) {
+    return `${item.companyRep}`;
+  }
+  return `${item.firstName} ${item.lastName || ''}`;
+}
+
+export function getCrmItemCompany(item: CrmType) {
+  if (
+    item.module === 'partners' ||
+    item.module === 'subcontractors' ||
+    item.module === 'contractors'
+  ) {
+    return `${item.name}`;
+  }
+  return `${item.companyName}`;
+}
