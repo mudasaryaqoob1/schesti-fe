@@ -22,6 +22,8 @@ import { RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
 import Profile from './Profile';
 import { postOptions, myPostOptions } from './Options';
+import LightBox from '../Lightbox';
+import { useUser } from '@/app/hooks/useUser';
 
 type Props = {
   myFeed?: boolean;
@@ -47,16 +49,18 @@ const SinglePost = ({
   const [refetchPost, setRefetchPost] = useState(false);
   const [seeMore, setSeeMore] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
-  const [showComments, setShowComments] = useState(true);
+  const [showComments, setShowComments] = useState(false);
   const dispatch = useDispatch();
-  const { user } = useSelector((state: RootState) => state.auth.user);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingPost, setIsDeletingPost] = useState(false);
   const fullName = name || companyName || organizationName;
   const from = companyName || university || name;
   const router = useRouter();
+  const [openLightbox, setOpenLightbox] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0)
+  const user = useUser();
 
-  const isPostOwner = postOwnerId === user._id;
+  const isPostOwner = postOwnerId === user?._id;
   const isAdmin = postOwnerRole === ('admin' as any);
 
   const getPostHandler = async () => {
@@ -97,6 +101,10 @@ const SinglePost = ({
     }
   };
 
+  const handleLightbox = (i: number) => {
+    setLightboxIndex(i)
+    setOpenLightbox(true);
+  }
   return (
     <section className="w-full my-3.5 shadow relative rounded-xl p-6 bg-white">
       <WarningModal
@@ -132,6 +140,7 @@ const SinglePost = ({
         name={fullName}
         feeling={feeling}
         date={createdAt}
+        avatar={user?.avatar}
         onClick={() => router.push(`/user/${postOwnerId}`)}
         from={isAdmin ? '' : from}
       />
@@ -149,24 +158,33 @@ const SinglePost = ({
                   className="text-blueOrchid font-medium cursor-pointer bg-transparent"
                   onClick={() => setSeeMore((prev) => !prev)}
                 >
-                  {seeMore ? 'see more' : 'show less'}
+                  {seeMore ? 'show less' : 'see more'}
                 </button>
               </span>
             )}{' '}
           </p>
         </div>
       )}
-      <div className="images-section mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3.5">
-        {mediaFiles.slice(0, 3).map(({ _id, url }, i) => (
+
+      {/* filesimages or video view on single post */}
+
+      <div className="images-section mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+        <LightBox mediaUrls={mediaFiles} open={openLightbox} setOpen={setOpenLightbox} index={lightboxIndex} />
+        {mediaFiles.slice(0, 3).map(({ _id, url, type }, i) => (
           <div className="relative h-44 w-auto col-span-1" key={_id}>
-            <Image
-              fill={true}
-              alt={`media-${i}`}
-              src={url}
-              className="rounded-md size-24"
-            />
+            {
+              type.includes('video') ? <video onClick={() => handleLightbox(i)} src={url} className="rounded-md cursor-pointer h-full w-full object-cover" /> : (
+                <Image
+                  fill={true}
+                  alt={`media-${i}`}
+                  src={url}
+                  onClick={() => handleLightbox(i)}
+                  className="rounded-md cursor-pointer shadow-sm size-24 object-cover"
+                />
+              )
+            }
             {mediaFiles.length > 2 && i === 2 && (
-              <p className="absolute text-white font-semibold text-xl left-[50%] top-[50%]">
+              <p onClick={() => handleLightbox(i)} className="absolute text-white font-semibold text-xl left-[50%] top-[50%]">
                 +2
               </p>
             )}

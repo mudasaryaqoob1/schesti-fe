@@ -8,6 +8,9 @@ import { userService } from '@/app/services/user.service';
 import filesUrlGenerator from '@/app/utils/filesUrlGenerator';
 import { useParams } from 'next/navigation';
 import { voidFc } from '@/app/utils/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserAction } from '@/redux/authSlices/authSlice';
+import { RootState } from '@/redux/store';
 
 type Props = {
   name: string;
@@ -24,6 +27,8 @@ const UpdateProfile = ({
   fetchUser,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const authData = useSelector((state: RootState) => state.auth)
   const [profileName, setProfileName] = useState(name);
   const { id } = useParams();
   const [profileAvatar, setProfileAvatar] = useState<string | File>(avatar);
@@ -38,7 +43,8 @@ const UpdateProfile = ({
       });
       setIsLoading(false);
     } else {
-      await userService.updateSocialProfile(id, { socialName: profileName });
+      const { data } = await userService.updateSocialProfile(id, { socialName: profileName });
+      dispatch(dispatch(setUserAction({ ...authData, user: data })))
       setIsLoading(false);
     }
     setShowModal(false);
@@ -48,7 +54,7 @@ const UpdateProfile = ({
   return (
     <ModalComponent setOpen={setShowModal} open={showModal} destroyOnClose>
       <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
-        <div className="flex px-6 py-2.5 justify-between bg-mistyWhite">
+        <div className="flex px-6 py-2.5 justify-between border-b pb-3">
           <TertiaryHeading
             title="Update Profile"
             className="text-graphiteGray"

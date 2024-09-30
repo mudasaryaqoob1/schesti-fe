@@ -6,6 +6,7 @@ import { ReduxProvider } from '@/redux/provider';
 import 'react-toastify/dist/ReactToastify.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Providers } from './(pages)/providers';
+import 'react-photo-view/dist/react-photo-view.css';
 
 const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {

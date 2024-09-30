@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import type { TabsProps } from 'antd';
 import { Tabs } from 'antd';
 import MyPosts from './components/post/MyPosts';
+import Setttings from './components/Setting';
 
 const SocialMedia = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,11 @@ const SocialMedia = () => {
       key: '2',
       label: 'My Feeds',
       children: <MyPosts />,
+    },
+    {
+      key: '3',
+      label: 'Settings',
+      children: <Setttings />,
     },
   ];
 

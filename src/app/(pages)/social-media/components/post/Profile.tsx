@@ -5,29 +5,33 @@ import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 
 type Props = {
-  onClick: voidFc;
+  onClick?: voidFc;
   feeling?: string;
-  date: string;
-  name: string;
+  date?: string;
+  name?: string;
   avatar?: string;
   isOwner?: boolean;
   from?: string;
 };
-const Profile = ({
+const ProfileAvatar = ({
   name,
   feeling,
   date,
-  onClick,
+  onClick = () => { },
   avatar = '/profileAvatar.png',
   isOwner = false,
   from = '',
 }: Props) => {
   return (
     <div className="flex items-center gap-2 cursor-pointer" onClick={onClick}>
-      <Image width={36} height={36} src={avatar} alt={name} />
+      <Image className='rounded-full' width={36} height={36} src={avatar} alt={name ?? ''} />
       <div>
         <div className="flex gap-2 items-start">
-          <p className="font-bold text-xs text-graphiteGray">{name}</p>
+          {
+            name && (
+              <p className="font-bold text-xs text-graphiteGray">{name}</p>
+            )
+          }
           {from && <p className="text-xs text-graphiteGray"> from {from}</p>}
           {feeling && (
             <p className="text-xs text-graphiteGray">
@@ -40,16 +44,21 @@ const Profile = ({
             </sup>
           )}
         </div>
-        <p
-          className={twMerge(
-            clsx('mt-1.5 text-coolGray text-[10px]', isOwner && 'mt-0')
-          )}
-        >
-          {moment(date).fromNow()}
-        </p>
+        {
+          date && (
+            <p
+              className={twMerge(
+                clsx('mt-1.5 text-coolGray text-[10px]', isOwner && 'mt-0')
+              )}
+            >
+              {moment(date).fromNow()}
+            </p>
+          )
+        }
+
       </div>
     </div>
   );
 };
 
-export default Profile;
+export default ProfileAvatar;
