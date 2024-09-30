@@ -1,3 +1,4 @@
+import { useUser } from '@/app/hooks/useUser';
 import { voidFc } from '@/app/utils/types';
 import clsx from 'clsx';
 import moment from 'moment';
@@ -11,6 +12,7 @@ type Props = {
   name?: string;
   avatar?: string;
   isOwner?: boolean;
+  showName?: boolean;
   from?: string;
 };
 const ProfileAvatar = ({
@@ -20,16 +22,23 @@ const ProfileAvatar = ({
   onClick = () => { },
   avatar = '/profileAvatar.png',
   isOwner = false,
+  showName = true,
   from = '',
 }: Props) => {
+
+  const user = useUser();
+  const fullName = name || user?.socialName || user?.name || '';
+  const userAvatar = avatar || user?.socialAvatar || user?.avatar || '/profileAvatar.png';
+
+  console.log(avatar, 'avatar....', user?.socialName)
   return (
     <div className="flex items-center gap-2 cursor-pointer" onClick={onClick}>
-      <Image className='rounded-full' width={36} height={36} src={avatar} alt={name ?? ''} />
+      <Image className='rounded-full' width={36} height={36} src={userAvatar} alt={fullName ?? ''} />
       <div>
         <div className="flex gap-2 items-start">
           {
-            name && (
-              <p className="font-bold text-xs text-graphiteGray">{name}</p>
+            showName && (
+              <p className="font-bold text-xs text-graphiteGray">{fullName}</p>
             )
           }
           {from && <p className="text-xs text-graphiteGray"> from {from}</p>}

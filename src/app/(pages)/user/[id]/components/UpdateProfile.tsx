@@ -44,7 +44,7 @@ const UpdateProfile = ({
       setIsLoading(false);
     } else {
       const { data } = await userService.updateSocialProfile(id, { socialName: profileName });
-      dispatch(dispatch(setUserAction({ ...authData, user: data })))
+      dispatch(dispatch(setUserAction({ ...authData, user: { ...authData.user, ...data.user } })))
       setIsLoading(false);
     }
     setShowModal(false);
@@ -77,9 +77,9 @@ const UpdateProfile = ({
               height={60}
               src={
                 !profileAvatar
-                  ? '/profileAvatar.svg'
+                  ? '/profileAvatar.png'
                   : typeof profileAvatar === 'string'
-                    ? avatar
+                    ? profileAvatar
                     : URL.createObjectURL(profileAvatar as File)
               }
               alt={name}

@@ -70,7 +70,7 @@ const AddComment = ({
       onFinish={addPostCommentHandler}
     >
       {/* <Image src="/profileAvatar.png" width={36} height={36} alt="profile" /> */}
-      <ProfileAvatar name={user?.firstName} avatar={user?.avatar} />
+      <ProfileAvatar showName={false} name={user?.firstName || user?.name} avatar={user?.socialAvatar || user?.avatar} />
       <input
         autoFocus={true}
         value={content}

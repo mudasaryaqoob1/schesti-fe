@@ -7,6 +7,7 @@ import { IUserInterface } from '@/app/interfaces/user.interface';
 import { userService } from '@/app/services/user.service';
 import Loader from '@/app/component/loader';
 import { ArrowLeftOutlined } from '@ant-design/icons';
+import ProfileAvatar from '@/app/(pages)/social-media/components/post/Profile';
 
 type Props = {
   userId?: boolean;
@@ -57,17 +58,7 @@ const ProfileIntro = ({
       <div className="w-full mt-3.5 shadow rounded-xl p-6 bg-white flex justify-between">
         <div className="flex gap-4 items-center">
           <ArrowLeftOutlined className='text-xl cursor-pointer' onClick={() => router.push('/social-media')} />
-          <Image
-            className="border rounded-full border-slate-300"
-            width={42}
-            height={42}
-            src={avatar}
-            alt={name}
-          />
-
-          <div className="flex">
-            <p className="font-bold text-lg text-graphiteGray">{name}</p>
-          </div>
+          <ProfileAvatar avatar={avatar} />
         </div>
         {user?._id === id && (
           <Image

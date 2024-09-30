@@ -137,6 +137,9 @@ const CreatePost = () => {
     dispatch(setPostData(null));
   }
 
+  const userAvatar = user?.socialAvatar || user?.avatar || "/profileAvatar.png";
+  const fullName = user?.socialName || user?.name || '';
+
   return (
     <div className="w-full mt-3.5 shadow rounded-xl p-6 bg-white">
       <ModalComponent
@@ -154,11 +157,10 @@ const CreatePost = () => {
       >
         <h1>Create Post</h1>
       </ModalComponent>
-      <ProfileAvatar avatar={user?.avatar} name='Create Post' />
-      {/* <div className="flex items-center gap-2">
-        <Image src="/profileAvatar.png" width={36} height={36} alt="profile" />
+      <div className="flex items-center gap-2">
+        <Image src={userAvatar} className='rounded-full' width={36} height={36} alt={fullName} />
         <p className="font-medium text-graphiteGray text-sm">Create Post</p>
-      </div> */}
+      </div>
       <textarea
         value={description}
         onChange={({ target }) => setDescription(target.value)}

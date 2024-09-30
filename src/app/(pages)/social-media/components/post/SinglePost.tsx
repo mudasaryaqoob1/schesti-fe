@@ -5,7 +5,7 @@ import Comments from '../comment';
 import { IPost } from '.';
 import { truncate } from 'lodash';
 import { socialMediaService } from '@/app/services/social-media.service';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import AddComment from './AddComment';
@@ -18,12 +18,11 @@ import WarningModal from '@/app/component/modal/Warning';
 import PostReactions from './PostReactions';
 import Report from './Report';
 import SharePost from './Share';
-import { RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
-import Profile from './Profile';
 import { postOptions, myPostOptions } from './Options';
 import LightBox from '../Lightbox';
 import { useUser } from '@/app/hooks/useUser';
+import ProfileAvatar from './Profile';
 
 type Props = {
   myFeed?: boolean;
@@ -42,7 +41,9 @@ const SinglePost = ({
     name = '',
     companyName = '',
     organizationName = '',
+    socialName,
     university = '',
+    avatar = '', socialAvatar = ''
   },
   myFeed = false,
 }: Props) => {
@@ -53,8 +54,9 @@ const SinglePost = ({
   const dispatch = useDispatch();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingPost, setIsDeletingPost] = useState(false);
-  const fullName = name || companyName || organizationName;
+  const fullName = socialName || name || companyName || organizationName;
   const from = companyName || university || name;
+  const userAvatar = socialAvatar || avatar || '/profileAvatar.png';
   const router = useRouter();
   const [openLightbox, setOpenLightbox] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0)
@@ -136,11 +138,11 @@ const SinglePost = ({
         </Dropdown>
       )}
 
-      <Profile
+      <ProfileAvatar
         name={fullName}
         feeling={feeling}
         date={createdAt}
-        avatar={user?.avatar}
+        avatar={userAvatar}
         onClick={() => router.push(`/user/${postOwnerId}`)}
         from={isAdmin ? '' : from}
       />
