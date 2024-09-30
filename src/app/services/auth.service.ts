@@ -149,6 +149,9 @@ class AuthService extends HttpService {
     }>
   > => this.get(`${this.prefix}/get-details-by-email/${email}`);
 
-  httpSubscribeToFreePlan = (planId: string): Promise<IResponseInterface<IUserInterface>> => this.post(`${this.prefix}/subscribe-to-free-plan`, { planId: planId });
+  httpSubscribeToFreePlan = (
+    planId: string
+  ): Promise<IResponseInterface<IUserInterface>> =>
+    this.post(`${this.prefix}/subscribe-to-free-plan`, { planId: planId });
 }
 export const authService = new AuthService();

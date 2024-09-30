@@ -59,7 +59,7 @@ const SinglePlan = (props: Props) => {
     }
   );
   const BTN =
-    user && (user.planId) ? (
+    user && user.planId ? (
       <Button
         text={user?.planId === _id ? 'Subscribed' : 'Upgrade'}
         className={`text-white ${user?.planId === _id ? '!bg-schestiLightPrimary !text-schestiPrimaryBlack !border-schestiLightPrimary' : ''} self-stretch w-full`}

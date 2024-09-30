@@ -1,12 +1,12 @@
 // const nextConfig = {
-  //   reactStrictMode: true,
-  //   compiler: {
-    //     styledComponents: true,
-    //   },
-    // };
-    
-    // module.exports = nextConfig;
-    
+//   reactStrictMode: true,
+//   compiler: {
+//     styledComponents: true,
+//   },
+// };
+
+// module.exports = nextConfig;
+
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: false,
@@ -31,7 +31,7 @@ module.exports = {
     ],
     domains: ['https://schesti-dev.s3.eu-north-1.amazonaws.com', '*'],
   },
-  experimental:{
-    serverComponentsExternalPackages: ['@react-pdf/renderer']
-  }
+  experimental: {
+    serverComponentsExternalPackages: ['@react-pdf/renderer'],
+  },
 };

@@ -1,4 +1,3 @@
-
 type IBasePricing = {
   _id: string;
   type: string;
@@ -15,6 +14,6 @@ type IBasePricing = {
   stripePriceId: string;
   stripeProductId: string;
   isInternal?: boolean;
-}
+};
 
 export type IPricingPlan = IBasePricing;

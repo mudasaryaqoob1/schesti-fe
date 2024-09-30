@@ -121,10 +121,10 @@ const Login = () => {
           // employee logging in
           const permissions = authUser.roles
             ? authUser.roles
-              .map((item) =>
-                typeof item !== 'string' ? item.permissions : []
-              )
-              .flat()
+                .map((item) =>
+                  typeof item !== 'string' ? item.permissions : []
+                )
+                .flat()
             : [];
           if (permissions.length > 0) {
             const permission = permissions[0];
@@ -136,7 +136,6 @@ const Login = () => {
           } else {
             router.push('/dashboard');
           }
-
         } else {
           const responseLink = navigateUserWhileAuth(result.payload.data.user);
           console.log({ responseLink });
@@ -149,15 +148,16 @@ const Login = () => {
           }
         }
         return;
-      }
-      // const responseLink = navigateUserWhileAuth(result.payload.data.user);
+      } else {
+        const responseLink = navigateUserWhileAuth(result.payload.data.user);
 
-      // if (responseLink) {
-      //   router.push(responseLink);
-      //   return;
-      // } else {
-      //   toast.warning('You are not allowed to login. ');
-      // }
+        if (responseLink) {
+          router.push(responseLink);
+          return;
+        } else {
+          toast.warning('You are not allowed to login. ');
+        }
+      }
     } else {
       setLoading(false);
       // if statusCode === 400 and email is not verified then redirect to checkmail page
@@ -209,7 +209,7 @@ const Login = () => {
         } else if (
           checkUserExist.statusCode == 400 &&
           checkUserExist.message ===
-          'Verify from your email and complete your profile'
+            'Verify from your email and complete your profile'
         ) {
           router.push(`/companydetails/${checkUserExist.data.user._id}`);
         } else if (

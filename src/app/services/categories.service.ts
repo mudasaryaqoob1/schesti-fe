@@ -1,7 +1,6 @@
 // Importing base class
 import { HttpService } from '@/app/services/base.service';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
 import { CategoryInitTypes } from '@/app/(pages)/settings/CategorySetup/Category/page';
 import { SubcategoryInitValues } from '@/app/(pages)/settings/CategorySetup/Subcategory/page';
 import {

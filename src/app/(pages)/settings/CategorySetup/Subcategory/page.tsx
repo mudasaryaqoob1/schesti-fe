@@ -113,9 +113,9 @@ const AddSubcategory = () => {
 
   const options = categoriesReduxData
     ? categoriesReduxData.map(({ name, _id }: ICategory) => ({
-      label: name,
-      value: _id,
-    }))
+        label: name,
+        value: _id,
+      }))
     : [];
 
   return (
@@ -168,13 +168,15 @@ const AddSubcategory = () => {
                   </div>
 
                   <div className="flex justify-end space-x-3 mt-5 items-center">
-                    {!subcategoryData ? <WhiteButton
-                      text="Cancel"
-                      className="!w-fit"
-                      onClick={() => {
-                        setShowForm(false);
-                      }}
-                    /> : null}
+                    {!subcategoryData ? (
+                      <WhiteButton
+                        text="Cancel"
+                        className="!w-fit"
+                        onClick={() => {
+                          setShowForm(false);
+                        }}
+                      />
+                    ) : null}
                     <div className="flex items-center gap-3">
                       <CustomButton
                         text={
@@ -252,7 +254,7 @@ const AddSubcategory = () => {
           onEdit={() => {
             setShowForm(true);
           }}
-          onDelete={() => { }}
+          onDelete={() => {}}
         />
       </div>
     </>

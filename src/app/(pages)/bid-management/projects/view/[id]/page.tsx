@@ -101,8 +101,9 @@ function OwnerProjectDetailsPage() {
                 label: (
                   <QuaternaryHeading
                     title={tab}
-                    className={`!w-full ${activeTab === tab ? 'text-schestiPrimary' : 'text-black'
-                      }`}
+                    className={`!w-full ${
+                      activeTab === tab ? 'text-schestiPrimary' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: tab,

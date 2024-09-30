@@ -141,20 +141,20 @@ const EstimateRequestTable: React.FC = () => {
       dataIndex: 'salePerson',
       render: (text, record: any) => {
         if (!record.salePerson) {
-          return "N/A";
+          return 'N/A';
         }
-        return `${record?.salePerson?.firstName} ${record?.salePerson?.lastName}`
-      }
+        return `${record?.salePerson?.firstName} ${record?.salePerson?.lastName}`;
+      },
     },
     {
       title: 'Estimator',
       dataIndex: 'estimator',
       render: (text, record: any) => {
         if (!record.estimator) {
-          return "N/A";
+          return 'N/A';
         }
         return `${record?.estimator?.firstName} ${record?.estimator?.lastName}`;
-      }
+      },
     },
     {
       title: 'Status',

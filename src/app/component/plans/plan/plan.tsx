@@ -76,9 +76,9 @@ const SinglePlan = (props: Props) => {
 
   const BTN =
     props.user &&
-      props.user.subscription &&
-      props.user.subscription.planId &&
-      props.user.subscription.status === 'active' ? (
+    props.user.subscription &&
+    props.user.subscription.planId &&
+    props.user.subscription.status === 'active' ? (
       <Button
         text={
           (props.user.subscription.planId as IPricingPlan)._id === _id

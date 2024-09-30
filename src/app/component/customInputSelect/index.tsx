@@ -7,7 +7,6 @@ import clsx from 'clsx';
 import { Field, useField } from 'formik';
 import type { FormikValues } from 'formik';
 
-
 const CustomInputSelect: React.FC = (props: any) => {
   const {
     name,
@@ -18,10 +17,9 @@ const CustomInputSelect: React.FC = (props: any) => {
     selectStyle,
     className,
     disabled,
-    setCustomState = () => { },
-    onItemAdd = () => { },
+    setCustomState = () => {},
+    onItemAdd = () => {},
     onItemAddloading = false,
-
   } = props;
 
   const [items, setItems] =

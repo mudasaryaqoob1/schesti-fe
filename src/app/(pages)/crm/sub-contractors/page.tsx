@@ -84,7 +84,8 @@ const activeMenuItems: MenuProps['items'] = [
   //   key: 'createNewTakeoff',
   //   label: <p>Create New Takeoff</p>,
   // },
-  {/* The above code appears to be a comment block in a TypeScript React file. It includes
+  {
+    /* The above code appears to be a comment block in a TypeScript React file. It includes
   commented-out code that defines an object with a key 'email' and a label that contains an HTML
   paragraph element. The code is currently commented out and not active in the program. */
 
@@ -274,18 +275,19 @@ const SubcontractTable = () => {
       </Head>
       <SelectInvoiceType
         show={showInvoicePopup && selectedItem !== null}
-        setShow={val => {
+        setShow={(val) => {
           setShowInvoicePopup(val);
           setSelectedItem(null);
         }}
-        onChange={val => {
+        onChange={(val) => {
           if (val === 'aia') {
             router.push(`/financial/aia-invoicing`);
           } else if (val === 'standard') {
-            router.push(`${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`);
+            router.push(
+              `${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`
+            );
           }
         }}
-
       />
 
       {selectedItem && showEmailModal ? (

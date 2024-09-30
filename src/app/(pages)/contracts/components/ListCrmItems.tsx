@@ -4,7 +4,11 @@ import { CrmModuleType, CrmType } from '@/app/interfaces/crm/crm.interface';
 import crmService from '@/app/services/crm/crm.service';
 import { Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
-import { formatCrmModuleType, getCrmItemCompany, getCrmItemName } from '../../crm/utils';
+import {
+  formatCrmModuleType,
+  getCrmItemCompany,
+  getCrmItemName,
+} from '../../crm/utils';
 import { ContractPartyType } from '@/app/interfaces/crm/crm-contract.interface';
 import { NoDataComponent } from '@/app/component/noData/NoDataComponent';
 
@@ -33,7 +37,6 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
     setIsLoading(false);
   }
 
-
   return (
     <Popups title={title} onClose={onClose}>
       <div className="my-3">
@@ -51,7 +54,7 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                 label: formatCrmModuleType('subcontractors'),
                 value: 'subcontractors',
               },
-              { label: "Contractors", value: "contractors" },
+              { label: 'Contractors', value: 'contractors' },
             ] as { label: string; value: CrmModuleType }[],
             onChange(value) {
               setModule(value as CrmModuleType);
@@ -87,16 +90,16 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                   {' '}
                   <span className="text-schestiLightBlack">Name: </span>{' '}
                   {item.module === 'subcontractors' ||
-                    item.module === 'partners' ||
-                    item.module === 'contractors'
+                  item.module === 'partners' ||
+                  item.module === 'contractors'
                     ? item.companyRep
                     : `${item.firstName} ${item.lastName || ''}`}
                 </p>
                 <p>
                   <span className="text-schestiLightBlack">Company: </span>{' '}
                   {item.module === 'subcontractors' ||
-                    item.module === 'partners' ||
-                    item.module === 'contractors'
+                  item.module === 'partners' ||
+                  item.module === 'contractors'
                     ? item.name
                     : item.companyName}
                 </p>

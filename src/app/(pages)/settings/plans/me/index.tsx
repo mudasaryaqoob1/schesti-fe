@@ -3,7 +3,6 @@
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { useUser } from '@/app/hooks/useUser';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
-import { IStripeBaseSubscription } from '@/app/interfaces/stripe.interface';
 import { userService } from '@/app/services/user.service';
 import { getPlanFeatureKeyByValue } from '@/app/utils/plans.utils';
 import { calculateProgressBarPercentage } from '@/app/utils/utils';
@@ -34,7 +33,8 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
   const getUserDetail = useCallback(async () => {
     setIsLoading(true);
     try {
-      let { data } = await userService.httpGetCompanyDetail();
+      // let { data } = 
+      await userService.httpGetCompanyDetail();
     } catch (error) {
       console.log(error);
     } finally {
@@ -46,13 +46,16 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
     getUserDetail();
   }, []);
 
-
-  const plan = userData ? (userData.subscription!.planId as IPricingPlan) : null;
+  const plan = userData
+    ? (userData.subscription!.planId as IPricingPlan)
+    : null;
 
   let features = plan ? plan.features.split(',') : [];
 
   const remainingDays = userData
-    ? moment.unix(userData.subscription!.currentPeriodEnd).diff(moment(), 'days')
+    ? moment
+      .unix(userData.subscription!.currentPeriodEnd)
+      .diff(moment(), 'days')
     : 0;
   return (
     <>

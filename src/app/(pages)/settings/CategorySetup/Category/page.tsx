@@ -182,15 +182,16 @@ const AddCategory = () => {
                   </div>
 
                   <div className="flex justify-end mt-5 items-center">
-
                     <div className="flex space-x-2 justify-between mt-5 items-center">
-                      {!categoryData ? <WhiteButton
-                        text="Cancel"
-                        className="!w-fit"
-                        onClick={() => {
-                          setShowForm(false);
-                        }}
-                      /> : null}
+                      {!categoryData ? (
+                        <WhiteButton
+                          text="Cancel"
+                          className="!w-fit"
+                          onClick={() => {
+                            setShowForm(false);
+                          }}
+                        />
+                      ) : null}
                       <div className="flex items-center gap-3">
                         <CustomButton
                           type="submit"
@@ -224,7 +225,7 @@ const AddCategory = () => {
         </div>
       ) : null}
 
-      <ModalComponent open={showPreviewModal} setOpen={() => { }} width="70%">
+      <ModalComponent open={showPreviewModal} setOpen={() => {}} width="70%">
         <div className="bg-white p-5 rounded-md">
           <div className="my-2 mb-6 text-schestiPrimary font-semibold text-[16px] leading-5">
             Preview CSV
@@ -333,7 +334,7 @@ const AddCategory = () => {
           onEdit={() => {
             setShowForm(true);
           }}
-          onDelete={() => { }}
+          onDelete={() => {}}
         />
       </div>
     </>

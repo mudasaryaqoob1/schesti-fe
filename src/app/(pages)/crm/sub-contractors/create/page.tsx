@@ -41,7 +41,7 @@ const initialValues = {
   address: '',
   secondAddress: '',
   trades: [],
-  module: "subcontractors"
+  module: 'subcontractors',
 };
 
 const CreateSubcontractor = () => {
@@ -164,17 +164,20 @@ const CreateSubcontractor = () => {
                     name="address"
                     placeholder="Address"
                   />
-                  <div className='mt-2'>
+                  <div className="mt-2">
                     <SelectTrades
-                      mode='multiple'
-                      name='trades'
-                      label='Trades'
+                      mode="multiple"
+                      name="trades"
+                      label="Trades"
                       hasError={touched.trades && Boolean(errors.trades)}
-                      errorMessage={touched.trades && errors.trades ? errors.trades.toString() : ''}
-                      onChange={val => {
+                      errorMessage={
+                        touched.trades && errors.trades
+                          ? errors.trades.toString()
+                          : ''
+                      }
+                      onChange={(val) => {
                         setFieldValue('trades', val);
                       }}
-
                       onBlur={() => setFieldTouched('trades', true)}
                       value={values.trades}
                     />

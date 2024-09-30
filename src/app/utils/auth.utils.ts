@@ -96,6 +96,7 @@ function navigateEducational(user: IUserInterface) {
   if (!haveDetails) {
     return `${ContractorPages.CompanyDetails}/${user._id}`;
   }
+  console.log('plan', havePlan);
 
   if (!havePlan) {
     console.log('Subcontractor', havePlan);

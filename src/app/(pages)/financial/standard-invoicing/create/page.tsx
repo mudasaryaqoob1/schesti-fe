@@ -23,7 +23,6 @@ import {
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
-import { ISubcontract } from '@/app/interfaces/companyEmployeeInterfaces/subcontractor.interface';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { ListCrmItems } from '@/app/(pages)/contracts/components/ListCrmItems';

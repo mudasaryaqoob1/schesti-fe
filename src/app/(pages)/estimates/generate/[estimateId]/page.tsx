@@ -8,12 +8,14 @@ import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useParams } from 'next/navigation';
 // import { RootState } from '@/redux/rootReducer';
-import { PDFDownloadLink, pdf } from '@react-pdf/renderer';
+import { pdf } from '@react-pdf/renderer';
 import html2canvas from 'html2canvas';
 import dynamic from 'next/dynamic';
 import { withAuth } from '@/app/hoc/withAuth';
 import AwsS3 from '@/app/utils/S3Intergration';
-const ClientPDF = dynamic(() => import("../components/clientPDF"), { ssr: false });
+const ClientPDF = dynamic(() => import('../components/clientPDF'), {
+  ssr: false,
+});
 import ModalComponent from '@/app/component/modal';
 import { formatDataFromAntdColumns } from './utils';
 import Description from '@/app/component/description';
@@ -21,7 +23,6 @@ import { bg_style } from '@/globals/tailwindvariables';
 import MinDesc from '@/app/component/description/minDesc';
 import WhiteButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import CustomButton from '@/app/component/customButton/button';
 import EmailTemplate from '@/app/component/customEmailTemplete';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';

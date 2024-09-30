@@ -88,8 +88,12 @@ const EditEstimateRequest = () => {
       );
       setEstimateRequestData({
         ...estimateRequest,
-        estimator: estimateRequest.estimator ? estimateRequest.estimator._id : '',
-        salePerson: estimateRequest.salePerson ? estimateRequest.salePerson._id : '',
+        estimator: estimateRequest.estimator
+          ? estimateRequest.estimator._id
+          : '',
+        salePerson: estimateRequest.salePerson
+          ? estimateRequest.salePerson._id
+          : '',
       });
       setTakeOffReports(estimateRequest);
       setDrawingsDocuments(estimateRequest.drawingsDocuments);

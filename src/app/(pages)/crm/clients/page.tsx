@@ -285,18 +285,21 @@ const ClientTable = () => {
     <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
       <SelectInvoiceType
         show={showInvoicePopup && selectedItem !== null}
-        setShow={val => {
+        setShow={(val) => {
           setShowInvoicePopup(val);
           setSelectedItem(null);
         }}
-        onChange={val => {
+        onChange={(val) => {
           if (val === 'aia') {
-            router.push(`/financial/aia-invoicing?clientId=${selectedItem?._id}`);
+            router.push(
+              `/financial/aia-invoicing?clientId=${selectedItem?._id}`
+            );
           } else if (val === 'standard') {
-            router.push(`${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`);
+            router.push(
+              `${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`
+            );
           }
         }}
-
       />
       {selectedItem && showEmailModal ? (
         <ModalComponent open={showEmailModal} setOpen={setShowEmailModal}>

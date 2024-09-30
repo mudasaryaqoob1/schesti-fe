@@ -18,27 +18,27 @@ export const uploadAndParseCSVData =
     module: CrmModuleType,
     setParseData: React.Dispatch<React.SetStateAction<T[]>>
   ): ChangeEventHandler<HTMLInputElement> =>
-    async (e) => {
-      const files = e.target.files;
-      if (files && files.length > 0) {
-        setIsLoading(true);
-        try {
-          const file = files[0];
-          const formData = new FormData();
-          formData.append('file', file);
-          const response = await crmService.httpParseCsvFile(formData, module);
-          if (response.data) {
-            toast.success('File parsed successfully');
-            setParseData(response.data as T[]);
-          }
-        } catch (error) {
-          const err = error as AxiosError<{ message: string }>;
-          toast.error(err.response?.data.message || 'An error occurred');
-        } finally {
-          setIsLoading(false);
+  async (e) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setIsLoading(true);
+      try {
+        const file = files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await crmService.httpParseCsvFile(formData, module);
+        if (response.data) {
+          toast.success('File parsed successfully');
+          setParseData(response.data as T[]);
         }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message || 'An error occurred');
+      } finally {
+        setIsLoading(false);
       }
-    };
+    }
+  };
 
 export async function saveManyCrmItems<
   ParsedType extends ParseData = ParseData,
@@ -154,7 +154,6 @@ export function formatCrmModuleType(module: CrmModuleType | undefined): string {
       throw new Error('Invalid crm module type');
   }
 }
-
 
 export function getCrmItemName(item: CrmType) {
   if (

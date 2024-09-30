@@ -106,7 +106,6 @@ function VendorsPage() {
   const [showInvoicePopup, setShowInvoicePopup] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ICrmItem | null>(null);
 
-
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
 
@@ -252,21 +251,21 @@ function VendorsPage() {
 
   return (
     <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
-
       <SelectInvoiceType
         show={showInvoicePopup && selectedItem !== null}
-        setShow={val => {
+        setShow={(val) => {
           setShowInvoicePopup(val);
           setSelectedItem(null);
         }}
-        onChange={val => {
+        onChange={(val) => {
           if (val === 'aia') {
             router.push(`/financial/aia-invoicing`);
           } else if (val === 'standard') {
-            router.push(`${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`);
+            router.push(
+              `${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`
+            );
           }
         }}
-
       />
       {selectedItem && showEmailModal ? (
         <ModalComponent open={showEmailModal} setOpen={setShowEmailModal}>
@@ -293,7 +292,6 @@ function VendorsPage() {
           />
         </ModalComponent>
       ) : null}
-
 
       {selectedVendor && showDeleteModal ? (
         <ModalComponent
