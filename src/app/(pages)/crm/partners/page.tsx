@@ -45,22 +45,42 @@ import {
 import _ from 'lodash';
 
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
+import { SelectInvoiceType } from '../components/SelectInvoiceType';
+import CustomEmailTemplate from '@/app/component/customEmailTemplete';
+import emailService from '@/app/services/email.service';
+import { AxiosError } from 'axios';
 
-const items: MenuProps['items'] = [
-  // {
-  //   key: 'createNewInvoice',
-  //   label: <p>Create Invoice</p>,
-  // },
+const activeMenuItems: MenuProps['items'] = [
+  {
+    key: 'createEstimateRequest',
+    label: <p>Create Estimate Request</p>,
+  },
+  {
+    key: 'createNewInvoice',
+    label: <p>Create Invoice</p>,
+  },
   {
     key: 'createSchedule',
     label: <p>Create Schedule</p>,
   },
   {
-    key: 'editPartnerDetail',
-    label: <p>Edit details</p>,
+    key: 'edit',
+    label: <p>Edit Details</p>,
   },
   {
-    key: 'deletePartner',
+    key: 'createContract',
+    label: <p>Create Contract</p>,
+  },
+  // {
+  //   key: 'createNewTakeoff',
+  //   label: <p>Create New Takeoff</p>,
+  // },
+  {
+    key: 'email',
+    label: <p>Send Email</p>,
+  },
+  {
+    key: 'delete',
     label: <p>Delete</p>,
   },
   {
@@ -91,6 +111,10 @@ const PartnerTable = () => {
   const [parseData, setParseData] = useState<CrmPartnerParsedType[]>([]);
   const [duplicates, setDuplicates] = useState<CrmPartnerParsedType[]>([]);
   const [isSavingMany, setIsSavingMany] = useState(false);
+  const [showInvoicePopup, setShowInvoicePopup] = useState(false);
+
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
 
   useEffect(() => {
     dispatch(getCrmItemsThunk({ module: 'partners' }));
@@ -99,14 +123,20 @@ const PartnerTable = () => {
   const handleDropdownItemClick = async (key: string, partner: any) => {
     if (key === 'createEstimateRequest') {
       router.push(`/estimates/requests/create`);
+    } else if (key === 'email') {
+      setShowEmailModal(true);
+      setSelectedItem(partner);
     } else if (key === 'createNewInvoice') {
-      router.push(`/financial/aia-invoicing`);
+      setShowInvoicePopup(true);
+      setSelectedItem(partner);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
-    } else if (key == 'deletePartner') {
+    } else if (key === 'createContract') {
+      router.push(`${Routes.Contracts}/create?receiver=${partner._id}`);
+    } else if (key == 'delete') {
       setSelectedItem(partner);
       setShowDeleteModal(true);
-    } else if (key == 'editPartnerDetail') {
+    } else if (key == 'edit') {
       router.push(`${Routes.CRM.Partners}/edit/${partner._id}`);
     } else if (key == 'inactive') {
       dispatch(
@@ -174,7 +204,7 @@ const PartnerTable = () => {
       render: (text, record) => (
         <Dropdown
           menu={{
-            items: record.status ? items : inactiveMenuItems,
+            items: record.status ? activeMenuItems : inactiveMenuItems,
             onClick: (event) => {
               const { key } = event;
               handleDropdownItemClick(key, record);
@@ -218,6 +248,49 @@ const PartnerTable = () => {
 
   return (
     <section className="mt-6 mb-[39px] mx-4 rounded-xl ">
+      <SelectInvoiceType
+        show={showInvoicePopup && selectedItem !== null}
+        setShow={(val) => {
+          setShowInvoicePopup(val);
+          setSelectedItem(null);
+        }}
+        onChange={(val) => {
+          if (val === 'aia') {
+            router.push(`/financial/aia-invoicing`);
+          } else if (val === 'standard') {
+            router.push(
+              `${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`
+            );
+          }
+        }}
+      />
+
+      {selectedItem && showEmailModal ? (
+        <ModalComponent open={showEmailModal} setOpen={setShowEmailModal}>
+          <CustomEmailTemplate
+            isFileUploadShow={false}
+            setEmailModal={setShowEmailModal}
+            submitHandler={async (formData) => {
+              setIsSubmittingEmail(true);
+              try {
+                const response = await emailService.httpSendEmail(formData);
+                if (response.statusCode === 200) {
+                  toast.success('Email sent successfully');
+                  setShowEmailModal(false);
+                }
+              } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data.message);
+              } finally {
+                setIsSubmittingEmail(false);
+              }
+            }}
+            to={selectedItem.email}
+            isSubmitting={isSubmittingEmail}
+          />
+        </ModalComponent>
+      ) : null}
+
       {selectedItem && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}

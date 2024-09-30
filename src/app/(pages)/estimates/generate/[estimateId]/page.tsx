@@ -8,11 +8,14 @@ import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useParams } from 'next/navigation';
 // import { RootState } from '@/redux/rootReducer';
-import { PDFDownloadLink, pdf } from '@react-pdf/renderer';
+import { pdf } from '@react-pdf/renderer';
 import html2canvas from 'html2canvas';
+import dynamic from 'next/dynamic';
 import { withAuth } from '@/app/hoc/withAuth';
 import AwsS3 from '@/app/utils/S3Intergration';
-import ClientPDF from '../components/clientPDF';
+const ClientPDF = dynamic(() => import('../components/clientPDF'), {
+  ssr: false,
+});
 import ModalComponent from '@/app/component/modal';
 import { formatDataFromAntdColumns } from './utils';
 import Description from '@/app/component/description';
@@ -20,7 +23,6 @@ import { bg_style } from '@/globals/tailwindvariables';
 import MinDesc from '@/app/component/description/minDesc';
 import WhiteButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import CustomButton from '@/app/component/customButton/button';
 import EmailTemplate from '@/app/component/customEmailTemplete';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
@@ -190,9 +192,9 @@ const ViewEstimateDetail = () => {
       estimateDetailsSummary?.totalBidDetail?.overheadAndProfit,
       estimateDetailsSummary?.totalBidDetail?.bondFee,
       estimateDetailsSummary?.totalCost +
-        estimateDetailsSummary?.totalBidDetail?.bondFee +
-        estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
-        estimateDetailsSummary?.totalBidDetail?.materialTax,
+      estimateDetailsSummary?.totalBidDetail?.bondFee +
+      estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
+      estimateDetailsSummary?.totalBidDetail?.materialTax,
     ];
 
     setCsvData([
@@ -285,12 +287,12 @@ const ViewEstimateDetail = () => {
         <div className="flex gap-3 items-center">
           <WhiteButton
             text="Send Email"
-            className="w-full"
+            className="!w-fit"
             onClick={() => setEmailModal(true)}
           />
           <CSVLink
             data={csvData}
-            className="!w-full"
+            className="!w-fit"
             asyncOnClick={true}
             filename={`estimate-${Date.now()}.csv`}
             onClick={(_e, done) => {
@@ -298,12 +300,12 @@ const ViewEstimateDetail = () => {
               done();
             }}
           >
-            <WhiteButton text="Download CSV" className="w-full" />
+            <WhiteButton text="Download CSV" className="!w-fit" />
           </CSVLink>
 
           <WhiteButton
             text="Comapny PDF"
-            className="w-full"
+            className="!w-fit"
             onClick={handleDownload}
           />
           {/* <PDFDownloadLink
@@ -326,7 +328,7 @@ const ViewEstimateDetail = () => {
             )}
           </PDFDownloadLink> */}
 
-          <PDFDownloadLink
+          {/* <PDFDownloadLink
             document={
               <ClientPDF
                 estimateDetail={estimateDetailsSummary}
@@ -345,7 +347,7 @@ const ViewEstimateDetail = () => {
                 className="!w-40"
               />
             )}
-          </PDFDownloadLink>
+          </PDFDownloadLink> */}
 
           {/* <PDFViewer>
             <ClientPDF
@@ -496,28 +498,28 @@ const ViewEstimateDetail = () => {
         <div>
           {estimatesRecord?.length
             ? estimatesRecord.map((estimate: any) => (
-                <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <QuaternaryHeading
-                        title={estimate.title}
-                        className="font-semibold"
-                      />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <QuaternaryHeading
-                        title={`Total Cost: ${currency.format(
-                          estimate.totalCostForTitle
-                        )}`}
-                        className="font-semibold"
-                      />
-                    </div>
+              <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <QuaternaryHeading
+                      title={estimate.title}
+                      className="font-semibold"
+                    />
                   </div>
-                  <div className="estimateTable_container">
-                    <EstimatesTable estimates={estimate.scopeItems} />
+                  <div className="flex items-center gap-2">
+                    <QuaternaryHeading
+                      title={`Total Cost: ${currency.format(
+                        estimate.totalCostForTitle
+                      )}`}
+                      className="font-semibold"
+                    />
                   </div>
                 </div>
-              ))
+                <div className="estimateTable_container">
+                  <EstimatesTable estimates={estimate.scopeItems} />
+                </div>
+              </div>
+            ))
             : null}
         </div>
 
@@ -565,9 +567,9 @@ const ViewEstimateDetail = () => {
             className="font-semibold"
             title={`${currency.format(
               estimateDetailsSummary?.totalCost +
-                estimateDetailsSummary?.totalBidDetail?.bondFee +
-                estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
-                estimateDetailsSummary?.totalBidDetail?.materialTax
+              estimateDetailsSummary?.totalBidDetail?.bondFee +
+              estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
+              estimateDetailsSummary?.totalBidDetail?.materialTax
             )}`}
           />
         </div>

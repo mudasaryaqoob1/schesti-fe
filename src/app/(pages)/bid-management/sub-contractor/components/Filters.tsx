@@ -30,8 +30,8 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
     projectValue: 0,
     page: 1,
     limit: 10,
-    country: undefined,
-    state: undefined,
+    country: '',
+    state: '',
   });
 
   if (!isVisible) return null;

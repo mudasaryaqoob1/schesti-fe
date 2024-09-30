@@ -42,6 +42,10 @@ import {
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
+import { SelectInvoiceType } from '../components/SelectInvoiceType';
+import CustomEmailTemplate from '@/app/component/customEmailTemplete';
+import emailService from '@/app/services/email.service';
+import { AxiosError } from 'axios';
 
 const activeMenuItems: MenuProps['items'] = [
   {
@@ -64,14 +68,14 @@ const activeMenuItems: MenuProps['items'] = [
     key: 'createContract',
     label: <p>Create Contract</p>,
   },
-  {
-    key: 'createNewTakeoff',
-    label: <p>Create New Takeoff</p>,
-  },
   // {
-  //   key: 'email',
-  //   label: <p>Email</p>,
+  //   key: 'createNewTakeoff',
+  //   label: <p>Create New Takeoff</p>,
   // },
+  {
+    key: 'email',
+    label: <p>Send Email</p>,
+  },
   {
     key: 'delete',
     label: <p>Delete</p>,
@@ -105,6 +109,11 @@ const ArchitectPage = () => {
   const [duplicates, setDuplicates] = useState<CommonCrmType[]>([]);
   const [isSavingMany, setIsSavingMany] = useState(false);
 
+  const [showInvoicePopup, setShowInvoicePopup] = useState(false);
+
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+
   useEffect(() => {
     dispatch(getCrmItemsThunk({ module: 'architects' }));
   }, []);
@@ -113,9 +122,14 @@ const ArchitectPage = () => {
     if (key === 'createEstimateRequest') {
       router.push(`/estimates/requests/create?clientId=${architect._id}`);
     } else if (key === 'createNewInvoice') {
-      router.push(`/financial/aia-invoicing?architectId=${architect._id}`);
+      // router.push(`/financial/aia-invoicing?architectId=${architect._id}`);
+      setShowInvoicePopup(true);
+      setSelectedItem(architect);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
+    } else if (key === 'email') {
+      setShowEmailModal(true);
+      setSelectedItem(architect);
     } else if (key == 'createContract') {
       router.push(`${Routes.Contracts}/create?receiver=${architect._id}`);
     } else if (key == 'delete') {
@@ -264,6 +278,51 @@ const ArchitectPage = () => {
 
   return (
     <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
+      <SelectInvoiceType
+        show={showInvoicePopup && selectedItem !== null}
+        setShow={(val) => {
+          setShowInvoicePopup(val);
+          setSelectedItem(null);
+        }}
+        onChange={(val) => {
+          if (val === 'aia') {
+            router.push(
+              `/financial/aia-invoicing?architectId=${selectedItem?._id}`
+            );
+          } else if (val === 'standard') {
+            router.push(
+              `${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`
+            );
+          }
+        }}
+      />
+
+      {selectedItem && showEmailModal ? (
+        <ModalComponent open={showEmailModal} setOpen={setShowEmailModal}>
+          <CustomEmailTemplate
+            isFileUploadShow={false}
+            setEmailModal={setShowEmailModal}
+            submitHandler={async (formData) => {
+              setIsSubmittingEmail(true);
+              try {
+                const response = await emailService.httpSendEmail(formData);
+                if (response.statusCode === 200) {
+                  toast.success('Email sent successfully');
+                  setShowEmailModal(false);
+                }
+              } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data.message);
+              } finally {
+                setIsSubmittingEmail(false);
+              }
+            }}
+            to={selectedItem.email}
+            isSubmitting={isSubmittingEmail}
+          />
+        </ModalComponent>
+      ) : null}
+
       {selectedItem && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}

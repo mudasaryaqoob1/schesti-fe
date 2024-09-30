@@ -324,6 +324,7 @@ const CompanyDetails = () => {
                                     setState('');
                                     setCity('');
                                   },
+                                  optionFilterProp: 'label',
                                 }}
                               />
                             </div>
@@ -335,6 +336,7 @@ const CompanyDetails = () => {
                                 placeholder="State"
                                 field={{
                                   options: states,
+                                  optionFilterProp: 'label',
                                   value: formik.values.state
                                     ? formik.values.state
                                     : undefined,
@@ -387,6 +389,7 @@ const CompanyDetails = () => {
                                 formik.setFieldValue('city', '');
                                 setCity('');
                               },
+                              optionFilterProp: 'label',
                             }}
                             errorMessage={
                               formik.touched.city && formik.errors.city

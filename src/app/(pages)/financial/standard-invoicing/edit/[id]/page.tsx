@@ -312,11 +312,11 @@ const EditSubcontractorInvoice = () => {
               >
                 <div className="flex justify-between items-center mb-4">
                   <TertiaryHeading
-                    title="Subcontractor"
+                    title="Receipt"
                     className="text-graphiteGray"
                   />
                   <Button
-                    text="Add Existing Subcontractor"
+                    text="Add Existing Receipt"
                     className="!w-auto "
                     icon="/plusblack.svg"
                     iconwidth={20}

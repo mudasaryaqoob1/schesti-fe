@@ -44,6 +44,10 @@ import {
 } from '../utils';
 import _ from 'lodash';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
+import { SelectInvoiceType } from '../components/SelectInvoiceType';
+import CustomEmailTemplate from '@/app/component/customEmailTemplete';
+import emailService from '@/app/services/email.service';
+import { AxiosError } from 'axios';
 
 export interface DataType {
   company: string;
@@ -55,7 +59,11 @@ export interface DataType {
   action: string;
 }
 
-const items: MenuProps['items'] = [
+const activeMenuItems: MenuProps['items'] = [
+  {
+    key: 'createEstimateRequest',
+    label: <p>Create Estimate Request</p>,
+  },
   {
     key: 'createNewInvoice',
     label: <p>Create Invoice</p>,
@@ -65,11 +73,27 @@ const items: MenuProps['items'] = [
     label: <p>Create Schedule</p>,
   },
   {
-    key: 'editSubcontractor',
-    label: <p>Edit Subcontractor Detail</p>,
+    key: 'edit',
+    label: <p>Edit Details</p>,
   },
   {
-    key: 'deleteSubcontractor',
+    key: 'createContract',
+    label: <p>Create Contract</p>,
+  },
+  // {
+  //   key: 'createNewTakeoff',
+  //   label: <p>Create New Takeoff</p>,
+  // },
+  {
+    /* The above code appears to be a comment block in a TypeScript React file. It includes
+  commented-out code that defines an object with a key 'email' and a label that contains an HTML
+  paragraph element. The code is currently commented out and not active in the program. */
+
+    key: 'email',
+    label: <p>Send Email</p>,
+  },
+  {
+    key: 'delete',
     label: <p>Delete</p>,
   },
   {
@@ -103,6 +127,10 @@ const SubcontractTable = () => {
     []
   );
   const [isSavingMany, setIsSavingMany] = useState(false);
+  const [showInvoicePopup, setShowInvoicePopup] = useState(false);
+
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
 
   useEffect(() => {
     dispatch(getCrmItemsThunk({ module: 'subcontractors' }));
@@ -112,14 +140,18 @@ const SubcontractTable = () => {
     if (key === 'createEstimateRequest') {
       router.push(`/estimates/requests/create`);
     } else if (key === 'createNewInvoice') {
-      router.push(
-        `/financial/standard-invoicing/create?subcontractorId=${subcontractor._id}`
-      );
+      setShowInvoicePopup(true);
+      setSelectedItem(subcontractor);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
-    } else if (key == 'editSubcontractor') {
+    } else if (key == 'edit') {
       router.push(`${Routes.CRM['Sub-Contractors']}/edit/${subcontractor._id}`);
-    } else if (key == 'deleteSubcontractor') {
+    } else if (key === 'createContract') {
+      router.push(`${Routes.Contracts}/create?receiver=${subcontractor._id}`);
+    } else if (key === 'email') {
+      setShowEmailModal(true);
+      setSelectedItem(subcontractor);
+    } else if (key == 'delete') {
       setSelectedItem(subcontractor);
       setShowDeleteModal(true);
     } else if (key === 'active') {
@@ -188,7 +220,7 @@ const SubcontractTable = () => {
       render: (text, record) => (
         <Dropdown
           menu={{
-            items: record.status ? items : inactiveMenuItems,
+            items: record.status ? activeMenuItems : inactiveMenuItems,
             onClick: (event) => {
               const { key } = event;
               handleDropdownItemClick(key, record);
@@ -241,6 +273,49 @@ const SubcontractTable = () => {
       <Head>
         <title>Schesti - Subcontractor</title>
       </Head>
+      <SelectInvoiceType
+        show={showInvoicePopup && selectedItem !== null}
+        setShow={(val) => {
+          setShowInvoicePopup(val);
+          setSelectedItem(null);
+        }}
+        onChange={(val) => {
+          if (val === 'aia') {
+            router.push(`/financial/aia-invoicing`);
+          } else if (val === 'standard') {
+            router.push(
+              `${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`
+            );
+          }
+        }}
+      />
+
+      {selectedItem && showEmailModal ? (
+        <ModalComponent open={showEmailModal} setOpen={setShowEmailModal}>
+          <CustomEmailTemplate
+            isFileUploadShow={false}
+            setEmailModal={setShowEmailModal}
+            submitHandler={async (formData) => {
+              setIsSubmittingEmail(true);
+              try {
+                const response = await emailService.httpSendEmail(formData);
+                if (response.statusCode === 200) {
+                  toast.success('Email sent successfully');
+                  setShowEmailModal(false);
+                }
+              } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data.message);
+              } finally {
+                setIsSubmittingEmail(false);
+              }
+            }}
+            to={selectedItem.email}
+            isSubmitting={isSubmittingEmail}
+          />
+        </ModalComponent>
+      ) : null}
+
       {selectedItem && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}

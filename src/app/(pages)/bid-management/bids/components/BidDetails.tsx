@@ -99,7 +99,7 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
     <div className="col-span-4 mt-3">
       <div>
         <SenaryHeading
-          title={'Company Name'}
+          title={'Project Name'}
           className="font-normal text-[#475467] text-xs leading-4"
         />
         <div className="flex mt-1 items-center space-x-3">

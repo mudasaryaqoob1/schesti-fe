@@ -36,6 +36,7 @@ import { byteConverter } from '@/app/utils/byteConverter';
 // import { IUnits } from '@/app/interfaces/settings/material-settings.interface';
 import EstimatesUnits from '@/app/constants/estimatesUnits.json';
 import { formatNumberWithCommas } from '@/app/utils/helper';
+import { AxiosError } from 'axios';
 
 type InitialValuesType = {
   category: string;
@@ -161,10 +162,16 @@ const Scope = ({ setPrevNext }: Props) => {
   const [estimateDetail, setEstimateDetail] = useState<any>({});
   const [planDocuments, setPlanDocuments] = useState<Object[]>([]);
   const [viewPlansModel, setViewPlansModel] = useState(false);
+
+  const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
   const [categories, setCategories] = useState([]);
+
+  const [isAddingNewSubCategory, setIsAddingNewSubCategory] = useState(false);
   const [subCategories, setSubCategories] = useState<Object[]>([]);
+
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubCategory, setSelectedSubCategory] = useState('');
+
   const [estimateDescriptions, setEstimateDescriptions] = useState<any>([]);
   // const [selecteddescription, setsSelecteddescription] = useState('');
   const [editItem, setEditItem] = useState(false);
@@ -1099,6 +1106,28 @@ const Scope = ({ setPrevNext }: Props) => {
                     className="w-full h-10"
                     setCustomState={setSelectedCategory}
                     disabled={editConfirmItem}
+                    onItemAdd={(newCategory: string) => {
+                      setIsAddingNewCategory(true);
+                      categoriesService
+                        .httpAddNewCategory({
+                          categoryId: categories.length.toString(),
+                          name: newCategory,
+                        })
+                        .then((response) => {
+                          fetchCategories();
+                          if (response.data) {
+                            setSelectedCategory(response.data._id as string);
+                          }
+                        })
+                        .catch((err) => {
+                          const error = err as AxiosError<{ message: string }>;
+                          toast.error(error.response?.data.message);
+                        })
+                        .finally(() => {
+                          setIsAddingNewCategory(false);
+                        });
+                    }}
+                    onItemAddloading={isAddingNewCategory}
                   />
                   <FormControl
                     control="inputselect"
@@ -1112,6 +1141,34 @@ const Scope = ({ setPrevNext }: Props) => {
                     className="w-full h-10"
                     setCustomState={setSelectedSubCategory}
                     disabled={editConfirmItem}
+                    onItemAddloading={isAddingNewSubCategory}
+                    onItemAdd={(newSubCategory: string) => {
+                      if (selectedCategory) {
+                        categoriesService
+                          .httpAddNewSubcategory({
+                            category: selectedCategory,
+                            name: newSubCategory,
+                            price: 0,
+                          })
+                          .then((response) => {
+                            if (response.data) {
+                              fetchSubCategories();
+                              setSelectedSubCategory(
+                                response.data._id as string
+                              );
+                            }
+                          })
+                          .catch((err) => {
+                            const error = err as AxiosError<{
+                              message: string;
+                            }>;
+                            toast.error(error.response?.data.message);
+                          })
+                          .finally(() => {
+                            setIsAddingNewSubCategory(false);
+                          });
+                      }
+                    }}
                   />
                 </div>
                 <div className="bg-graylighty h-px w-full my-5"></div>

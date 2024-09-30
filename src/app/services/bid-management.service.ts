@@ -115,7 +115,7 @@ class BidManagementService extends HttpService {
     }>
   > =>
     this.get(
-      `${this.prefix}/get-all?projectValue=${params.projectValue}&trades=${params.trades?.toString()}&page=${params.page}&limit=${params.limit}&country=${params.country}&state=${params.state}`
+      `${this.prefix}/get-all?projectValue=${params.projectValue}&trades=${params.trades?.toString()}&page=${params.page}&limit=${params.limit}&country=${params.country ? params.country.toString() : ''}&state=${params.state ? params.state.toString() : ''}`
     );
 
   httpGetOwnerProjectsWithoutFilters = (): Promise<

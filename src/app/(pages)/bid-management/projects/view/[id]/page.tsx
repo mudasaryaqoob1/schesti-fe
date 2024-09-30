@@ -16,6 +16,7 @@ import { useParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { bidManagementOwnerActions } from '@/redux/bid-management/owner.slice';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const SUMMARY = 'Summary';
 const BIDS = 'Bids';
@@ -28,6 +29,7 @@ function OwnerProjectDetailsPage() {
   const [activeTab, setActiveTab] = useState(SUMMARY);
   const params = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouterHook();
 
   useEffect(() => {
     return () => {
@@ -47,7 +49,10 @@ function OwnerProjectDetailsPage() {
         />
         <Description
           title="Posted Project"
-          className="font-base text-slateGray"
+          className="font-base text-slateGray hover:underline cursor-pointer"
+          onClick={() => {
+            router.back();
+          }}
         />
         <Image
           src={'/chevron-right.svg'}

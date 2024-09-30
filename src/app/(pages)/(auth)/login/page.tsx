@@ -148,15 +148,16 @@ const Login = () => {
           }
         }
         return;
-      }
-      // const responseLink = navigateUserWhileAuth(result.payload.data.user);
+      } else {
+        const responseLink = navigateUserWhileAuth(result.payload.data.user);
 
-      // if (responseLink) {
-      //   router.push(responseLink);
-      //   return;
-      // } else {
-      //   toast.warning('You are not allowed to login. ');
-      // }
+        if (responseLink) {
+          router.push(responseLink);
+          return;
+        } else {
+          toast.warning('You are not allowed to login. ');
+        }
+      }
     } else {
       setLoading(false);
       // if statusCode === 400 and email is not verified then redirect to checkmail page

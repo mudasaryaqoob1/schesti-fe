@@ -39,11 +39,39 @@ import {
   uploadAndParseCSVData,
 } from '../utils';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
+import { SelectInvoiceType } from '../components/SelectInvoiceType';
+import { AxiosError } from 'axios';
+import emailService from '@/app/services/email.service';
+import CustomEmailTemplate from '@/app/component/customEmailTemplete';
 
-const items: MenuProps['items'] = [
+const activeMenuItems: MenuProps['items'] = [
+  {
+    key: 'createEstimateRequest',
+    label: <p>Create Estimate Request</p>,
+  },
+  {
+    key: 'createNewInvoice',
+    label: <p>Create Invoice</p>,
+  },
+  {
+    key: 'createSchedule',
+    label: <p>Create Schedule</p>,
+  },
   {
     key: 'edit',
-    label: <p>Edit Vendor Details</p>,
+    label: <p>Edit Details</p>,
+  },
+  {
+    key: 'createContract',
+    label: <p>Create Contract</p>,
+  },
+  // {
+  //   key: 'createNewTakeoff',
+  //   label: <p>Create New Takeoff</p>,
+  // },
+  {
+    key: 'email',
+    label: <p>Send Email</p>,
   },
   {
     key: 'delete',
@@ -75,13 +103,30 @@ function VendorsPage() {
   const [parseData, setParseData] = useState<CommonCrmType[]>([]);
   const [duplicates, setDuplicates] = useState<CommonCrmType[]>([]);
   const [isSavingMany, setIsSavingMany] = useState(false);
+  const [showInvoicePopup, setShowInvoicePopup] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<ICrmItem | null>(null);
+
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
 
   useEffect(() => {
     dispatch(getCrmItemsThunk({ module: 'vendors' }));
   }, []);
 
   function handleMenuItemClick(key: string, record: ICrmItem) {
-    if (key === 'edit') {
+    if (key === 'createEstimateRequest') {
+      router.push(`/estimates/requests/create`);
+    } else if (key === 'email') {
+      setShowEmailModal(true);
+      setSelectedItem(record);
+    } else if (key === 'createContract') {
+      router.push(`${Routes.Contracts}/create?receiver=${record._id}`);
+    } else if (key === 'createNewInvoice') {
+      setShowInvoicePopup(true);
+      setSelectedItem(record);
+    } else if (key === 'createSchedule') {
+      router.push(`/schedule`);
+    } else if (key === 'edit') {
       router.push(`${Routes.CRM.Vendors}/edit/${record._id}`);
     } else if (key === 'delete') {
       setSelectedVendor(record);
@@ -155,7 +200,8 @@ function VendorsPage() {
         return (
           <Dropdown
             menu={{
-              items: record.status ? items : inactiveItems,
+              items: record.status ? activeMenuItems : inactiveItems,
+
               onClick({ key }) {
                 handleMenuItemClick(key, record);
               },
@@ -205,6 +251,48 @@ function VendorsPage() {
 
   return (
     <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
+      <SelectInvoiceType
+        show={showInvoicePopup && selectedItem !== null}
+        setShow={(val) => {
+          setShowInvoicePopup(val);
+          setSelectedItem(null);
+        }}
+        onChange={(val) => {
+          if (val === 'aia') {
+            router.push(`/financial/aia-invoicing`);
+          } else if (val === 'standard') {
+            router.push(
+              `${Routes.Financial['Standard-Invoicing']}/create?id=${selectedItem?._id}`
+            );
+          }
+        }}
+      />
+      {selectedItem && showEmailModal ? (
+        <ModalComponent open={showEmailModal} setOpen={setShowEmailModal}>
+          <CustomEmailTemplate
+            isFileUploadShow={false}
+            setEmailModal={setShowEmailModal}
+            submitHandler={async (formData) => {
+              setIsSubmittingEmail(true);
+              try {
+                const response = await emailService.httpSendEmail(formData);
+                if (response.statusCode === 200) {
+                  toast.success('Email sent successfully');
+                  setShowEmailModal(false);
+                }
+              } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data.message);
+              } finally {
+                setIsSubmittingEmail(false);
+              }
+            }}
+            to={selectedItem.email}
+            isSubmitting={isSubmittingEmail}
+          />
+        </ModalComponent>
+      ) : null}
+
       {selectedVendor && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}
