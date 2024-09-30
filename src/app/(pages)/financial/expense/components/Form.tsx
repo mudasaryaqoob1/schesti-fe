@@ -54,21 +54,21 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
     initialValues: expense
       ? { ...expense }
       : {
-          file: undefined,
-          name: '',
-          costCode: '',
-          expenseType: '',
-          expenseDate: new Date().toISOString(),
-          invoiceNo: '',
-          totalPrice: 0,
-          project: '',
-          note: '',
-          salesTax: 0,
-          countryTax: 0,
-          paymentMethod: '',
-          reference: '',
-          repeat: '',
-        },
+        file: undefined,
+        name: '',
+        costCode: '',
+        expenseType: '',
+        expenseDate: new Date().toISOString(),
+        invoiceNo: '',
+        totalPrice: 0,
+        project: '',
+        note: '',
+        salesTax: 0,
+        countryTax: 0,
+        paymentMethod: '',
+        reference: '',
+        repeat: '',
+      },
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {
@@ -144,7 +144,7 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
           itemRender={() => {
             return null;
           }}
-          onChange={() => {}}
+          onChange={() => { }}
         >
           <p className="ant-upload-drag-icon">
             <Image
@@ -188,6 +188,35 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
       />
 
       <div className="grid grid-cols-2 gap-4">
+        <div className="col-span-2">
+          <SelectComponent
+            label="Description of Expense"
+            name="costCode"
+            placeholder="Select description"
+            field={{
+              options: costCodeData.map((item) => {
+                return { label: item.description, value: item.id };
+              }),
+              onChange: (val) => {
+                formik.setFieldValue('costCode', val);
+              },
+              value: formik.values.costCode
+                ? formik.values.costCode
+                : undefined,
+              onBlur: formik.handleBlur,
+              optionFilterProp: 'label',
+              showSearch: true,
+            }}
+            hasError={Boolean(
+              formik.touched.costCode && formik.errors.costCode
+            )}
+            errorMessage={
+              formik.touched.costCode && formik.errors.costCode
+                ? 'Description is required'
+                : ''
+            }
+          />
+        </div>
         <SelectComponent
           label="Cost Code"
           name="costCode"
@@ -236,35 +265,7 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
           }
         />
 
-        <div className="col-span-2">
-          <SelectComponent
-            label="Description of Expense"
-            name="costCode"
-            placeholder="Select description"
-            field={{
-              options: costCodeData.map((item) => {
-                return { label: item.description, value: item.id };
-              }),
-              onChange: (val) => {
-                formik.setFieldValue('costCode', val);
-              },
-              value: formik.values.costCode
-                ? formik.values.costCode
-                : undefined,
-              onBlur: formik.handleBlur,
-              optionFilterProp: 'label',
-              showSearch: true,
-            }}
-            hasError={Boolean(
-              formik.touched.costCode && formik.errors.costCode
-            )}
-            errorMessage={
-              formik.touched.costCode && formik.errors.costCode
-                ? 'Description is required'
-                : ''
-            }
-          />
-        </div>
+
 
         <SelectComponent
           label="Expense Type"
