@@ -99,7 +99,7 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
     <div className="col-span-4 mt-3">
       <div>
         <SenaryHeading
-          title={'Company Name'}
+          title={'Project Name'}
           className="font-normal text-[#475467] text-xs leading-4"
         />
         <div className="flex mt-1 items-center space-x-3">
@@ -192,11 +192,11 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
             title={
               selectedBidProjectDetail
                 ? Bid_How_Long_Price_Increase.find((bidprice) => {
-                    return (
-                      selectedBidProjectDetail.priceExpiryDuration ===
-                      bidprice.value
-                    );
-                  })!.label
+                  return (
+                    selectedBidProjectDetail.priceExpiryDuration ===
+                    bidprice.value
+                  );
+                })!.label
                 : ''
             }
             className="font-semibold text-[#101828] text-xs leading-4"
