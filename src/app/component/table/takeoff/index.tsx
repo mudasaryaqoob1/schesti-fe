@@ -52,7 +52,7 @@ export interface ITableProps {
   search: any;
 }
 const Index: React.FC<ITableProps> = ({
-  handleEditClick,
+  // handleEditClick,
   handleEditDetailsClick,
   handleDownloadClick,
   search,
@@ -63,7 +63,8 @@ const Index: React.FC<ITableProps> = ({
     if (e.key === 'edit') {
       // Handle edit action
       console.log('Edit action', record);
-      handleEditClick(record);
+      // handleEditClick(record);
+      handleEditDetailsClick(record);
     } else if (e.key === 'delete') {
       // Handle delete action
       console.log('Delete action', record);
@@ -72,11 +73,11 @@ const Index: React.FC<ITableProps> = ({
       // Handle delete action
       console.log('View Details action', record);
       handleEditDetailsClick(record);
-    } else if (e.key === 'download') {
+    } else if (e.key === 'download' || e.key === 'view_estimate') {
       // Handle delete action
       console.log('Download action', record);
       handleDownloadClick(record?._id ?? null);
-    }
+    } 
   };
 
   const menu = (it: any) => (
@@ -87,8 +88,8 @@ const Index: React.FC<ITableProps> = ({
       }}
     >
       <Menu.Item key="edit">Edit</Menu.Item>
-      <Menu.Item key="edit_details">Edit Details</Menu.Item>
-      <Menu.Item key="view_estimate">View Estimate</Menu.Item>
+      {/* <Menu.Item key="edit_details">Edit Details</Menu.Item>s */}
+      <Menu.Item key="view_estimate">View TakeOff</Menu.Item>
       <Menu.Item key="download">Download</Menu.Item>
       <Menu.Item key="email">Email</Menu.Item>
       <Menu.Item key="delete">Delete</Menu.Item>
