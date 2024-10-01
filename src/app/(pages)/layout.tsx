@@ -35,7 +35,7 @@ const CustomNavbar = ({ children }: Props) => {
     'settings',
     'trades',
     'verification',
-    'pending',
+    'pending'
   ];
 
   const isUnProtectedRoute =
