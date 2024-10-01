@@ -69,6 +69,7 @@ export const OtherRoutes = {
   Dashboard: '/dashboard',
   Contracts: '/contracts',
   DailyWork: '/daily-work',
+  Social_Media: '/social-media',
 };
 
 export const Plans = {
