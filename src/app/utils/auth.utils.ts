@@ -116,10 +116,10 @@ function navigateOwner(user: IUserInterface) {
   if (!haveCompanyDetails) {
     return `${ContractorPages.CompanyDetails}/${user._id}`;
   }
-  const havePlan = user.subscription && user.subscription.status === 'active';
-  if (!havePlan) {
-    return OwnerPages.Plans;
-  }
+  // const havePlan = user.subscription && user.subscription.status === 'active';
+  // if (!havePlan) {
+  //   return OwnerPages.Plans;
+  // }
   return null;
 }
 

@@ -2,31 +2,30 @@ import React, { useEffect, useState } from 'react';
 import SinglePost from './SinglePost';
 import { socialMediaService } from '@/app/services/social-media.service';
 import { Skeleton } from 'antd';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
 import { IPost } from '.';
 import { useParams } from 'next/navigation';
+import { useUser } from '@/app/hooks/useUser';
 
 const UserPosts = () => {
   const [posts, setPosts] = useState<IPost[]>([]);
+  const user = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
-  const { fetchPosts } = useSelector((state: RootState) => state.socialMedia);
 
   const getUserPosts = async () => {
     setIsLoading(true);
     const { data } = await socialMediaService.httpGetUserPosts({
-      id: id as string,
+      id: id as string || user?._id as string,
     });
     setIsLoading(false);
     setPosts(data.posts);
   };
 
   useEffect(() => {
-    if (id) {
+    if (id || user?._id) {
       getUserPosts();
     }
-  }, [fetchPosts, id]);
+  }, [id]);
 
   if (isLoading) {
     <Skeleton />;

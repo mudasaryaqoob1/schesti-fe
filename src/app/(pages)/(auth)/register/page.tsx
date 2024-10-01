@@ -169,7 +169,7 @@ const Register = () => {
         } else if (
           checkUserExist.statusCode == 400 &&
           checkUserExist.message ===
-            'Verify from your email and complete your profile'
+          'Verify from your email and complete your profile'
         ) {
           router.push(`/companydetails/${checkUserExist.data.user._id}`);
         } else if (
@@ -331,7 +331,7 @@ const Register = () => {
                       </Checkbox>
                     </ConfigProvider>
                     {formik.errors.isTermsAccepted &&
-                    formik.touched.isTermsAccepted ? (
+                      formik.touched.isTermsAccepted ? (
                       <p className="mt-1 text-red-500">
                         {formik.errors.isTermsAccepted}
                       </p>

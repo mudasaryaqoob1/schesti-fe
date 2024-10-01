@@ -15,6 +15,8 @@ import { RootState } from '@/redux/store';
 import ModalComponent from '@/app/component/modal';
 import FeelingActivityFeature from './FeelingActivity';
 import { userService } from '@/app/services/user.service';
+import ProfileAvatar from './Profile';
+import { useUser } from '@/app/hooks/useUser';
 
 type IPost = {
   mediaFiles: IMediaFile[];
@@ -23,11 +25,13 @@ type IPost = {
 };
 const CreatePost = () => {
   const dispatch = useDispatch();
+  const user = useUser();
   const [isFilesUploading, setIsFilesUploading] = useState(false);
   const [files, setFiles] = useState([] as File[]);
+  const [openCreatePost, setOpenCreatePost] = useState(false);
   const [description, setDescription] = useState('');
   const { postData } = useSelector((state: RootState) => state.socialMedia);
-  const [postOldUrls, setPostOldUrls] = useState<IMediaFile[]>([]);
+  const [postOldMediaUrls, setPostOldMediaUrls] = useState<IMediaFile[]>([]);
   const [showFeelingActivity, setShowFeelingActivity] = useState(false);
   const [feeling, setFeeling] = useState('');
 
@@ -75,18 +79,18 @@ const CreatePost = () => {
     try {
       setIsFilesUploading(true);
       const { mediaFiles, mediaFilesLength } = await filesUrlGenerator(files);
-      if (mediaFilesLength || postOldUrls || description) {
+      if (mediaFilesLength || postOldMediaUrls || description) {
         const allMediaFiles: IMediaFile[] = [];
         const payload: Partial<IPost> = {};
 
         if (mediaFilesLength) {
           allMediaFiles.push(...mediaFiles);
         }
-        if (postOldUrls.length > 0) {
-          allMediaFiles.push(...postOldUrls);
+        if (postOldMediaUrls.length > 0) {
+          allMediaFiles.push(...postOldMediaUrls);
         }
 
-        if (mediaFilesLength > 0 || postOldUrls.length > 0) {
+        if (mediaFilesLength > 0 || postOldMediaUrls.length > 0) {
           payload['mediaFiles'] = allMediaFiles;
         }
 
@@ -121,7 +125,7 @@ const CreatePost = () => {
     if (postData) {
       const { description, mediaFiles } = postData;
       setDescription(description);
-      setPostOldUrls(mediaFiles);
+      setPostOldMediaUrls(mediaFiles);
     }
   }, [postData]);
 
@@ -129,9 +133,12 @@ const CreatePost = () => {
     setFiles([]);
     setDescription('');
     setFeeling('');
-    setPostOldUrls([]);
+    setPostOldMediaUrls([]);
     dispatch(setPostData(null));
   }
+
+  const userAvatar = user?.socialAvatar || user?.avatar || "/profileAvatar.png";
+  const fullName = user?.socialName || user?.name || '';
 
   return (
     <div className="w-full mt-3.5 shadow rounded-xl p-6 bg-white">
@@ -144,8 +151,14 @@ const CreatePost = () => {
           setFeeling={setFeeling}
         />
       </ModalComponent>
+      <ModalComponent
+        setOpen={setOpenCreatePost}
+        open={openCreatePost}
+      >
+        <h1>Create Post</h1>
+      </ModalComponent>
       <div className="flex items-center gap-2">
-        <Image src="/profileAvatar.png" width={36} height={36} alt="profile" />
+        <Image src={userAvatar} className='rounded-full' width={36} height={36} alt={fullName} />
         <p className="font-medium text-graphiteGray text-sm">Create Post</p>
       </div>
       <textarea
@@ -156,27 +169,40 @@ const CreatePost = () => {
         placeholder="What’s in your mind..."
       />
 
+      {/* small old image or video irls to view in create or update post*/}
       <div className="media-list-section mt-3 flex flex-wrap gap-2">
-        {postOldUrls.map(({ url }, i) => (
+        {postOldMediaUrls.map(({ url, type }, i) => (
           <div className="relative" key={i}>
             <CloseCircleOutlined
               onClick={() =>
-                setPostOldUrls((prev) =>
+                setPostOldMediaUrls((prev) =>
                   prev.filter((_, fileIndex) => fileIndex !== i)
                 )
               }
               className="text-red-600 absolute -right-1 cursor-pointer rounded-full -top-1 bg-cloudWhite"
             />
-            <Image
-              className="rounded-md"
-              key={i}
-              src={url}
-              height={100}
-              width={100}
-              alt={'img-' + i}
-            />
+            {
+              type.includes('image') ? (
+                <Image
+                  className="rounded-md"
+                  key={i}
+                  src={url}
+                  height={100}
+                  width={100}
+                  alt={'img-' + i}
+                />
+              ) : (
+                <video
+                  className="rounded-md size-[100px] object-cover"
+                  key={i}
+                  src={url}
+                />
+              )
+            }
           </div>
         ))}
+
+        {/* files selected from computer of images or video to view on single post */}
         {files &&
           files.map((file, i) => (
             <div className="relative" key={i}>
@@ -199,13 +225,14 @@ const CreatePost = () => {
                 />
               ) : (
                 <video
-                  className="rounded-md size-[100px] object-cover"
+                  className="rounded-md size-[200px] object-cover"
                   key={i}
                   src={URL.createObjectURL(file)}
                 />
               )}
             </div>
           ))}
+
       </div>
       <div className="upload-media-section flex flex-wrap justify-between items-center mt-3">
         <div className="flex gap-4 items-center ">
@@ -228,12 +255,18 @@ const CreatePost = () => {
             id="photo-video"
             className="hidden"
             type="file"
+            accept='image/* , video/*'
             onChange={({ target }) => {
               if (target.files) {
-                setFiles((prev) => [
-                  ...prev,
-                  ...Array.from(target.files as FileList),
-                ]);
+                if (target.files.length > 0) {
+                  const selectedMediaFiles = Array.from(target.files as FileList);
+                  console.log(selectedMediaFiles, 'selected fmed', files);
+                  setFiles((prev) => [
+                    ...prev,
+                    ...selectedMediaFiles.filter(({ type }) => (type.includes('video') || type.includes('image'))),
+                  ]);
+                }
+
               }
             }}
           />
@@ -247,10 +280,10 @@ const CreatePost = () => {
             </p>
           </label>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
           {postData && (
             <CustomButton
-              isLoading={isFilesUploading}
+              disabled={isFilesUploading}
               onClick={resetPost}
               text={'Cancel'}
               className="max-w-16 flex justify-center bg-vividRed text-xs text-white"
@@ -259,6 +292,7 @@ const CreatePost = () => {
           <CustomButton
             isLoading={isFilesUploading}
             onClick={() => (postData ? updatePost() : createPost())}
+            // onClick={() => setOpenCreatePost(true)}
             text={postData ? 'Update' : 'Create'}
             className="max-w-16 flex justify-center bg-lavenderPurpleReplica text-xs text-white"
           />

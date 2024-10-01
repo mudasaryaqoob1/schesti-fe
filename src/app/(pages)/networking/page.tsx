@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import { useDispatch } from 'react-redux';
 import { SetInvitedClient } from '@/redux/network/network.slice';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const networkInfo = [
   {
@@ -82,7 +83,7 @@ const Networking = () => {
                   clsx(
                     'text-sm cursor-pointer bg-transparent text-graphiteGray py-2 px-3 rounded-md',
                     i === currentNetwork &&
-                      'bg-schestiPrimary text-white font-semibold'
+                    'bg-schestiPrimary text-white font-semibold'
                   )
                 )}
               >
@@ -114,4 +115,4 @@ const Networking = () => {
   );
 };
 
-export default Networking;
+export default withAuth(Networking);
