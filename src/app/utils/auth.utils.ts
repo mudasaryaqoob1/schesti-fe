@@ -12,12 +12,6 @@ const SubContractorPages = {
   Verification: '/verification',
   Plans: '/plans',
 };
-
-const OwnerPages = {
-  CompanyDetails: '/companydetails',
-  Plans: '/plans',
-};
-
 export function navigateUserWhileAuth(user: IUserInterface) {
   if (
     user.userRole === USER_ROLES_ENUM.PROFESSOR ||
