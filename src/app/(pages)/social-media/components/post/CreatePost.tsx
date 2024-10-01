@@ -15,7 +15,6 @@ import { RootState } from '@/redux/store';
 import ModalComponent from '@/app/component/modal';
 import FeelingActivityFeature from './FeelingActivity';
 import { userService } from '@/app/services/user.service';
-import ProfileAvatar from './Profile';
 import { useUser } from '@/app/hooks/useUser';
 
 type IPost = {

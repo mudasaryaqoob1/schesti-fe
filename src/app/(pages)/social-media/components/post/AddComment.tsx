@@ -5,7 +5,6 @@ import {
   setFetchComments,
 } from '@/redux/social-media/social-media.slice';
 import { Form } from 'antd';
-import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import clsx from 'clsx';

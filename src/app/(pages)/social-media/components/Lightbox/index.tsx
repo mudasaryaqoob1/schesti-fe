@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import Lightbox, { Slide } from "yet-another-react-lightbox";
+import { Dispatch, SetStateAction } from "react";
+import Lightbox from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import { IMediaFile } from "../post";
@@ -18,7 +18,7 @@ const LightBox = ({ mediaUrls, index = 0, open, setOpen }: Props) => {
             close={() => setOpen(false)}
             slides={[
                 ...mediaSlides(mediaUrls)
-            ] as Slide[]}
+            ] as any}
         />
     )
 }
