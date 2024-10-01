@@ -1,3 +1,4 @@
+import { useUser } from '@/app/hooks/useUser';
 import { voidFc } from '@/app/utils/types';
 import clsx from 'clsx';
 import moment from 'moment';
@@ -5,29 +6,41 @@ import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 
 type Props = {
-  onClick: voidFc;
+  onClick?: voidFc;
   feeling?: string;
-  date: string;
-  name: string;
+  date?: string;
+  name?: string;
   avatar?: string;
   isOwner?: boolean;
+  showName?: boolean;
   from?: string;
 };
-const Profile = ({
+const ProfileAvatar = ({
   name,
   feeling,
   date,
-  onClick,
+  onClick = () => { },
   avatar = '/profileAvatar.png',
   isOwner = false,
+  showName = true,
   from = '',
 }: Props) => {
+
+  const user = useUser();
+  const fullName = name || user?.socialName || user?.name || '';
+  const userAvatar = avatar || user?.socialAvatar || user?.avatar || '/profileAvatar.png';
+
+  console.log(avatar, 'avatar....', user?.socialName)
   return (
     <div className="flex items-center gap-2 cursor-pointer" onClick={onClick}>
-      <Image width={36} height={36} src={avatar} alt={name} />
+      <Image className='rounded-full' width={36} height={36} src={userAvatar} alt={fullName ?? ''} />
       <div>
         <div className="flex gap-2 items-start">
-          <p className="font-bold text-xs text-graphiteGray">{name}</p>
+          {
+            showName && (
+              <p className="font-bold text-xs text-graphiteGray">{fullName}</p>
+            )
+          }
           {from && <p className="text-xs text-graphiteGray"> from {from}</p>}
           {feeling && (
             <p className="text-xs text-graphiteGray">
@@ -40,16 +53,21 @@ const Profile = ({
             </sup>
           )}
         </div>
-        <p
-          className={twMerge(
-            clsx('mt-1.5 text-coolGray text-[10px]', isOwner && 'mt-0')
-          )}
-        >
-          {moment(date).fromNow()}
-        </p>
+        {
+          date && (
+            <p
+              className={twMerge(
+                clsx('mt-1.5 text-coolGray text-[10px]', isOwner && 'mt-0')
+              )}
+            >
+              {moment(date).fromNow()}
+            </p>
+          )
+        }
+
       </div>
     </div>
   );
 };
 
-export default Profile;
+export default ProfileAvatar;

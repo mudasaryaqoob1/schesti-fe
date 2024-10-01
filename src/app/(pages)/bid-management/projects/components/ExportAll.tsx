@@ -13,7 +13,7 @@ export default function ExportAll({ bids }: Props) {
       document={<BidListPdf bids={bids} />}
       fileName={`bid-list-${Math.random()}.pdf`}
     >
-      {({ loading }) => (
+      {({ loading } : { loading: any; }) => (
         <WhiteButton
           text={loading ? 'Exporting...' : 'Export'}
           icon="/uploadcloud.svg"

@@ -9,7 +9,7 @@ import NoData from './NoData';
 
 const MyPosts = () => {
   const [posts, setPosts] = useState<IPost[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { user } = useSelector((state: RootState) => state.auth.user);
   const { fetchPosts } = useSelector((state: RootState) => state.socialMedia);
 
@@ -27,7 +27,7 @@ const MyPosts = () => {
   }, [fetchPosts]);
 
   if (isLoading) {
-    <Skeleton />;
+    return <Skeleton />;
   }
 
   return (

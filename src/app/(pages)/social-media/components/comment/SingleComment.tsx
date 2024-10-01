@@ -121,6 +121,7 @@ const SingleComment = ({
       </div>
       {editVisible && (
         <div ref={editContainerRef}>
+          <h1>Edit Comment Visible parent {parentId} {_id}</h1>
           <AddComment
             parentId={parentId}
             commentId={_id}
@@ -131,11 +132,11 @@ const SingleComment = ({
       )}
       {replyVisible && (
         <div ref={replyContainerRef}>
+          <h1>Reply Comment Visible</h1>
           <AddComment parentId={_id} commentId={_id} replyComment />
         </div>
       )}
       <p className="mt-3 text-stormGrey">
-        {' '}
         <span className="font-semibold text-base text-schestiPrimary mr-[2px]">
           {type == 'reply' && `@${reply_to_username}`}
         </span>
