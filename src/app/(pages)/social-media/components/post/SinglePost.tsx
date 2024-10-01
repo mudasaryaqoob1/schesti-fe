@@ -15,7 +15,7 @@ import {
   setPostData,
 } from '@/redux/social-media/social-media.slice';
 import WarningModal from '@/app/component/modal/Warning';
-import PostReactions from './PostReactions';
+import Reactions from './Reactions';
 import Report from './Report';
 import SharePost from './Share';
 import { useRouter } from 'next/navigation';
@@ -50,7 +50,7 @@ const SinglePost = ({
   const [refetchPost, setRefetchPost] = useState(false);
   const [seeMore, setSeeMore] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
-  const [showComments, setShowComments] = useState(false);
+  const [showComments, setShowComments] = useState(true);
   const dispatch = useDispatch();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingPost, setIsDeletingPost] = useState(false);
@@ -195,7 +195,7 @@ const SinglePost = ({
       </div>
       <div className="post-actions-section flex justify-between mt-4 items-center">
         <div className="flex gap-2 items-center">
-          <PostReactions
+          <Reactions
             id={_id}
             reactions={reactions}
             setRefetchPost={setRefetchPost}
@@ -203,7 +203,7 @@ const SinglePost = ({
           />
           <div
             className="flex gap-2 items-center cursor-pointer"
-            onClick={() => setShowComments((prev) => !prev)}
+          // onClick={() => setShowComments((prev) => !prev)}
           >
             <Image
               src="/comments-01.svg"
@@ -233,6 +233,7 @@ const SinglePost = ({
         <Comments
           parentId={_id}
           postId={_id}
+          setRefetchPost={setRefetchPost}
           setTotalComments={setTotalComments}
           isPostOwner={isPostOwner}
           isAdmin={isAdmin}

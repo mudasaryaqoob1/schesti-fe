@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import Comments, { IComment } from '.';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -10,12 +10,17 @@ import useToggleVisibility from '@/app/hooks/useToggleVisibility';
 import { useRouter } from 'next/navigation';
 import Report from '../post/Report';
 import Profile from '../post/Profile';
+import Reactions from '../post/Reactions';
+import { IUserReaction } from '../post';
 
 export type ICommentProps = {
   isPostOwner: boolean;
   isAdmin: boolean;
   reply_to_username?: string;
   postId: string;
+  userReaction: IUserReaction;
+  reactions: IUserReaction[];
+  setRefetchPost: Dispatch<SetStateAction<boolean>>;
 } & IComment;
 
 const SingleComment = ({
@@ -24,12 +29,15 @@ const SingleComment = ({
   isPostOwner,
   content,
   updatedAt,
+  userReaction,
+  reactions,
   associatedCompany,
   replyCount,
   isAdmin,
   type,
   reply_to_username,
   postId,
+  setRefetchPost
 }: ICommentProps) => {
   const { user } = useSelector((state: RootState) => state.auth.user);
   const router = useRouter();
@@ -121,7 +129,6 @@ const SingleComment = ({
       </div>
       {editVisible && (
         <div ref={editContainerRef}>
-          <h1>Edit Comment Visible parent {parentId} {_id}</h1>
           <AddComment
             parentId={parentId}
             commentId={_id}
@@ -142,12 +149,20 @@ const SingleComment = ({
         </span>
         {content}
       </p>
+      <Reactions
+        id={_id}
+        reactions={reactions}
+        setRefetchPost={setRefetchPost}
+        isPost={false}
+        userReaction={userReaction}
+      />
       <div className="mt-4 border-l flex flex-col gap-2 border-mercury ps-10">
         {replyCount > 0 && (
           <Comments
             parentId={_id}
             isPostOwner={isPostOwner}
             isAdmin={isAdmin}
+            setRefetchPost={setRefetchPost}
             reply_to_username={associatedCompany.name}
             postId={_id}
           />

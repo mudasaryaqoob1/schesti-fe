@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { IUserInterface } from '@/app/interfaces/user.interface';
 import { setCommentContent } from '@/redux/social-media/social-media.slice';
-import { IPost } from '../post';
+import { IPost, IUserReaction } from '../post';
 
 export interface IComment {
   _id: string;
@@ -15,6 +15,8 @@ export interface IComment {
   content: string;
   createdAt: string;
   updatedAt: string;
+  userReaction: IUserReaction;
+  reactions: IUserReaction[];
   post: IPost;
   type: 'post' | 'reply';
   replyCount: any;
@@ -26,6 +28,7 @@ const Comments = ({
   setTotalComments,
   isPostOwner,
   isAdmin,
+  setRefetchPost,
   reply_to_username = '',
   postId,
 }: {
@@ -34,6 +37,7 @@ const Comments = ({
   isPostOwner: boolean;
   isAdmin: boolean;
   reply_to_username?: string;
+  setRefetchPost: Dispatch<SetStateAction<boolean>>;
   postId: string;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -52,9 +56,9 @@ const Comments = ({
       setComments(
         reply_to_username
           ? postComments.map((comment: IComment) => ({
-              ...comment,
-              reply_to_username,
-            }))
+            ...comment,
+            reply_to_username,
+          }))
           : postComments
       );
       if (setTotalComments) setTotalComments(postComments.length);
@@ -80,6 +84,7 @@ const Comments = ({
         <SingleComment
           key={data._id}
           {...data}
+          setRefetchPost={setRefetchPost}
           isPostOwner={isPostOwner}
           isAdmin={isAdmin}
           postId={postId}
