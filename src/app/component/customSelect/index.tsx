@@ -44,7 +44,7 @@ const SelectComp = (props: any) => {
     input: string,
     option?: { label: string; value: string; children: string }
   ) =>
-    (`${option?.children}` ?? '').toLowerCase().includes(input.toLowerCase());
+    (`${option?.children}` || '').toLowerCase().includes(input.toLowerCase());
 
   return (
     <div>
