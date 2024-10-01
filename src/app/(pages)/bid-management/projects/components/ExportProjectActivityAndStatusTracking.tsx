@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 'use client';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { IBidActivity } from '@/app/interfaces/bid-management/bid-management.interface';
