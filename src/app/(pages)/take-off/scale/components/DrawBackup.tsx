@@ -1875,8 +1875,8 @@ const Draw: React.FC<Props> = ({
                 // fill={selectedShape === id ? 'gray' : (rest?.textColor ?? 'red')}
                 // width={20}
                 // height={20}
-                scaleX={rest?.textUnit / 12 ?? 1}
-                scaleY={rest?.textUnit / 12 ?? 1}
+                scaleX={rest?.textUnit / 12 || 1}
+                scaleY={rest?.textUnit / 12 || 1}
                 {...rest}
                 onMouseDown={(e) => {
                   e.cancelBubble = true;
