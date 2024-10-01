@@ -52,7 +52,7 @@ const CustomInputSelect: React.FC = (props: any) => {
   const filterOption = (
     input: string,
     option?: { label: string; value: string }
-  ) => (`${option?.label}` ?? '').toLowerCase().includes(input.toLowerCase());
+  ) => (`${option?.label}` || "").toLowerCase().includes(input.toLowerCase());
 
   return (
     <div>
