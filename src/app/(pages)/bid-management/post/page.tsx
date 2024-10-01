@@ -359,18 +359,18 @@ function CreatePost() {
   const basicInformationFormik = useFormik({
     initialValues: postProjectState.project
       ? {
-          ...postProjectState.project,
-        }
+        ...postProjectState.project,
+      }
       : {
-          projectName: '',
-          country: 'US',
-          city: '',
-          zipCode: '',
-          state: '',
-          constructionTypes: [] as string[],
-          address: '',
-          status: 'draft' as CreateOwnerPostProjectType['status'],
-        },
+        projectName: '',
+        country: 'US',
+        city: '',
+        zipCode: '',
+        state: '',
+        constructionTypes: [] as string[],
+        address: '',
+        status: 'draft' as CreateOwnerPostProjectType['status'],
+      },
     onSubmit(values) {
       if (postProjectState.project) {
         updateProjectMutation.mutate(values);

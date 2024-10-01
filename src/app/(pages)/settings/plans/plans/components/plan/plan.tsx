@@ -81,7 +81,11 @@ const SinglePlan = (props: Props) => {
       <Button
         text={'Buy'}
         className="text-white self-stretch w-full"
-        onClick={() => setSelectedPlan({ planName, price, duration })}
+        onClick={() => {
+          setSelectedPlan({ planName, price, duration })
+          pricingHook.setValueToStorage(props);
+          router.push('/payment');
+        }}
       />
     );
 
