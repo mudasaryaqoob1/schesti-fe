@@ -42,6 +42,11 @@ const validationSchema = Yup.object({
 const initialValues = {
   title: '',
   description: '',
+  file : {
+    name : "",
+    fileType : "",
+    url : ""
+  }
 };
 
 const EditSupportTicket = () => {
@@ -63,7 +68,7 @@ const EditSupportTicket = () => {
     setSupportTicketData(selectedSupportTicket);
   }, [id, supportTicketsData]);
 
-  const onSubmit = async ({ title, description, file }: ISupportTicket) => {
+  const onSubmit = async ({ title, description, file }: any) => {
     setIsLoading(true);
     let updateSupportTicketBody = {
       title,
@@ -231,7 +236,7 @@ const EditSupportTicket = () => {
                         />
                       </div> */}
                       {/* Upload Image Div */}
-                      {values.file ? (
+                      {values?.file ? (
                         <FileView
                           name={values.file.name}
                           extension={values.file.fileType.split('/')[1]}
