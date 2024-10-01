@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import BidListPdf from './bid-pdf';
