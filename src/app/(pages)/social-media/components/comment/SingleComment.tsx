@@ -59,7 +59,7 @@ const SingleComment = ({
       await socialMediaService.httpDeletePostComment(_id);
       dispatch(setFetchComments());
     } catch (error) {
-      console.log(error);
+      console.log(error, 'error in ...comment');
     }
   };
 
