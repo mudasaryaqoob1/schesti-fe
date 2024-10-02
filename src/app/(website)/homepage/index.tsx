@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import Navbar from './navbar';
+import Navbar from '../navbar';
 import Image from 'next/image';
 
 import ContractorCard from './contractorCard';
@@ -117,54 +117,41 @@ const HomePage = () => {
           <ContractorCard
             imageSrc="/images/Rec2.png"
             title="Sub Contractor"
-            description="Track and manage labor and material costs
-  effortlessly with automated updates, allowing you to focus on delivering quality results on time and within budget. Simplify
-  subcontractor management with us"
+            description="Track and manage labor and material costs effortlessly with automated updates, allowing you to focus on delivering quality results on time and within budget. Simplify subcontractor management with us"
           />
           <ContractorCard
             imageSrc="/images/Rec3.png"
             title="Owner/Developers"
-            description="Optimize project financials with detailed cost
-    analysis and forecasting tools, empowering you to make informed
-     decisions that drive project success. Trust our comprehensive project
-    financial management"
+            description="Optimize project financials with detailed cost analysis and forecasting tools, empowering you to make informed decisions that drive project success. Trust our comprehensive project financial management"
           />
           <ContractorCard
             imageSrc="/images/Rec4.png"
             title="Professor / Student"
-            description="SCHESTi streamlines academic research projects with comprehensive project management tools, including
- estimating, contract management, and social media integration
- tailored to academic needs"
+            description="SCHESTi streamlines academic research projects with comprehensive project management tools, including estimating, contract management, and social media integration tailored to academic needs"
             title2=""
           />
           <ContractorCard
             imageSrc="/images/Rec5.png"
             title="Educational Institutes "
-            description="Facilitate efficient project management and
-   resource allocation, supporting educational facility development and enhancement. We aid in educational construction projects"
+            description="Facilitate efficient project management and resource allocation, supporting educational facility development and enhancement. We aid in educational construction projects"
             title2=""
           />
           <ContractorCard
             imageSrc="/images/card6.png"
             title="Estimators"
-            description="Rely on accurate project cost estimates according to
-industry standards and available data, empowering informed decision
-making and project success. Ensure precision in construction estimating with us"
+            description="Rely on accurate project cost estimates according to industry standards and available data, empowering informed decision making and project success. Ensure precision in construction estimating with us"
             title2=""
           />
           <div className="grid justify-center gap-0 md:flex grid-col-1 sm:col-span-2 lg:col-span-3 md:gap-6 lg:gap-9 ">
             <ContractorCard
               imageSrc="/images/Rec7.png "
               title="Architect"
-              description="Enhance your design process and client engagement
-with collaborative tools and visual planning capabilities, ensuring innovative and timely project delivery. We support architects in
-delivering excellence"
+              description="Enhance your design process and client engagement with collaborative tools and visual planning capabilities, ensuring innovative and timely project delivery. We support architects in delivering excellence"
             />
             <ContractorCard
               imageSrc="/images/Rec7.png"
               title="Vendors"
-              description="Accelerate cash flows and enhance supply relationships
-       with tools for contract management and efficient order tracking. We support vendor efficiency and relationship building"
+              description="Accelerate cash flows and enhance supply relationships with tools for contract management and efficient order tracking. We support vendor efficiency and relationship building"
             />
           </div>
         </div>

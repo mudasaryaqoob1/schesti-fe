@@ -22,7 +22,7 @@ const Navbar = () => {
     {
       key: '2',
       label: (
-        <Link href="/custumerrelationship" className="cursor-pointer ">
+        <Link href="/contract" className="cursor-pointer ">
           Contracts
         </Link>
       ),
@@ -38,7 +38,7 @@ const Navbar = () => {
     {
       key: '4',
       label: (
-        <Link href="/custumermanagment" className="cursor-pointer ">
+        <Link href="/crm" className="cursor-pointer ">
           CRM
         </Link>
       ),
@@ -46,7 +46,7 @@ const Navbar = () => {
     {
       key: '5',
       label: (
-        <Link href="/FinantialTool" className="cursor-pointer ">
+        <Link href="/financial-tools" className="cursor-pointer ">
           Financial Tools
         </Link>
       ),
@@ -54,7 +54,7 @@ const Navbar = () => {
     {
       key: '6',
       label: (
-        <Link href="/onlinemettings" className="cursor-pointer ">
+        <Link href="/online-mettings" className="cursor-pointer ">
           Online meetings
         </Link>
       ),
@@ -62,7 +62,7 @@ const Navbar = () => {
     {
       key: '7',
       label: (
-        <Link href="/timeseduling" className="cursor-pointer ">
+        <Link href="/time-scheduling" className="cursor-pointer ">
           Time Scheduling
         </Link>
       ),
@@ -111,7 +111,7 @@ const Navbar = () => {
           </Link>
 
           <div className="cursor-pointer ">
-            <Link href="/prices" className="cursor-pointer ">
+            <Link href="/pricing-page" className="cursor-pointer ">
               Pricing
             </Link>
           </div>
@@ -151,9 +151,12 @@ const Navbar = () => {
               Let’s Talk
             </div>
           </div>
-          <button className="w-[77px] h-[40px] border-[#007AB6] border rounded-[24px] font-normal text-[15px] leading-[26px] text-[#007AB6] hover:bg-[#007AB6] hover:text-white transition-colors duration-300">
+          <Link href="/login">
+          <button className="cursor-pointer w-[77px] h-[40px] border-[#007AB6] border rounded-[24px] font-normal text-[15px] leading-[26px] text-[#007AB6] hover:bg-[#007AB6] hover:text-white transition-colors duration-300">
             Login
           </button>
+          </Link>
+        
           <button className="w-[105px] h-[40px] font-normal text-[15px] leading-[26px] bg-[#007AB6] text-white rounded-[300px] hover:bg-transparent hover:border-[#007AB6] hover:text-[#007AB6] border border-transparent transition-colors duration-300">
             Free trial
           </button>
@@ -220,8 +223,11 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex flex-col gap-3 mx-3">
+
+        <Link href="/contact-us" className="cursor-pointer ">
           <div className="flex items-center py-2 text-[#007AB6] border border-[#007AB6] rounded-[24px] justify-center">
-            <Image
+      
+          <Image
               src="/images/phone.svg"
               width={24}
               height={24}
@@ -229,10 +235,16 @@ const Navbar = () => {
               className="w-6 h-6"
             />
             <span className="ml-2">Let’s Talk</span>
+       
+    
           </div>
-          <button className="py-2 text-[#007AB6] border border-[#007AB6] rounded-full hover:bg-[#007AB6] hover:text-white transition-colors duration-300">
+          </Link>
+          {/* <Link href="/login" className="cursor-pointer "> */}
+          <Link href="/login"  className="cursor-pointer py-2 text-[#007AB6] border border-[#007AB6] rounded-full hover:bg-[#007AB6] hover:text-white transition-colors duration-300">
             Login
-          </button>
+          </Link>
+          {/* </Link> */}
+      
           <button className="py-2 text-white bg-[#007AB6] rounded-full hover:bg-transparent hover:border-[#007AB6] hover:text-[#007AB6] border border-transparent transition-colors duration-300">
             Free trial
           </button>

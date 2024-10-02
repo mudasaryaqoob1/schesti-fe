@@ -1,5 +1,5 @@
 import React from 'react'
-import HomePage from '@/app/website/homepage'
+import HomePage from '@/app/(website)/homepage'
 
 const Page = () => {
   return (
