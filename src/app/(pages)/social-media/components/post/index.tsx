@@ -42,6 +42,7 @@ export default SchestiPosts;
 export interface IUserReaction {
   type: string;
   associatedCompany: string;
+  _id: string
 }
 export interface IPost {
   _id: string;
@@ -49,7 +50,7 @@ export interface IPost {
   associatedCompany: IUserInterface;
   mediaFiles: IMediaFile[];
   userReaction: IUserReaction;
-  reactions: string[];
+  reactions: IUserReaction[];
   pinPosts: string[];
   savedPosts: string[];
   createdAt: string;
