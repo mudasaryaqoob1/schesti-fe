@@ -23,8 +23,8 @@ import {
   disabledDate
 } from '@/app/utils/date.utils';
 import TimezoneSelect, {
-  type ITimezone,
   type ITimezoneOption,
+  useTimezoneSelect
 } from 'react-timezone-select';
 import { IMeeting } from '@/app/interfaces/meeting.type';
 import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
@@ -98,10 +98,14 @@ export function CreateMeeting({
   isInviteOptional = false,
 }: Props) {
   const [isScheduling, setIsScheduling] = useState(false);
-  const [timezone, setTimezone] = useState<ITimezone>(
+  const [timezone, setTimezone] = useState<any>(
     Intl.DateTimeFormat().resolvedOptions().timeZone
   );
   const dispatch = useDispatch<AppDispatch>();
+
+  const timezoneHook = useTimezoneSelect({
+
+  });
 
   const CreateMeetingSchema = Yup.object().shape({
     topic: Yup.string()
@@ -143,6 +147,7 @@ export function CreateMeeting({
         startDate: dj(meeting.startDate)
           // .tz((timezone as ITimezoneOption).value)
           .format('YYYY-MM-DDTHH:mm:ss'),
+        timezoneData: timezoneHook.parseTimezone(timezone),
       }
       : {
         topic: '',
@@ -154,6 +159,7 @@ export function CreateMeeting({
         recurrence: {
           isChecked: false,
         } as IMeeting['recurrence'],
+        timezoneData: timezoneHook.parseTimezone(timezone)
       },
     validationSchema: CreateMeetingSchema,
     enableReinitialize: meeting ? true : false,
@@ -172,6 +178,7 @@ export function CreateMeeting({
             timezone: getTimeZoneValue(timezone),
             topic: values.topic,
             recurrence: values.recurrence,
+            timezoneData: values.timezoneData,
           })
           .then((response) => {
             if (response.data) {
@@ -202,6 +209,7 @@ export function CreateMeeting({
             topic: values.topic,
             timezone: getTimeZoneValue(timezone),
             recurrence: values.recurrence,
+            timezoneData: values.timezoneData,
           })
           .then((response) => {
             if (response.data) {
@@ -234,7 +242,7 @@ export function CreateMeeting({
     formik.resetForm();
   }
 
-  console.log('Recurrence', formik.errors.recurrence);
+  console.log('timezone', timezoneHook.parseTimezone(timezone));
   const recurrenceTouched = formik.touched.recurrence as any;
   const recurrenceError = formik.errors.recurrence as any;
   return (

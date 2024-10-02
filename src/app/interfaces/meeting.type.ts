@@ -1,3 +1,5 @@
+import { type ITimezoneOption } from "react-timezone-select";
+
 type DailyRecurrence = {
   frequency: 'daily';
 };
@@ -40,4 +42,6 @@ export type IMeeting = {
 
   createdAt: string;
   updatedAt: string;
+
+  timezoneData?: ITimezoneOption
 };
