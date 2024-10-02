@@ -18,7 +18,10 @@ import {
 } from '@/redux/meeting/meeting.slice';
 import Description from '@/app/component/description';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
-import { dayjs, disabledDate } from '@/app/utils/date.utils';
+import {
+  // dayjs,
+  disabledDate
+} from '@/app/utils/date.utils';
 import TimezoneSelect, {
   type ITimezone,
   type ITimezoneOption,
@@ -137,16 +140,17 @@ export function CreateMeeting({
       ? {
         topic: meeting.topic,
         email: meeting.invitees,
-        startDate: dayjs(meeting.startDate)
-          .tz((timezone as ITimezoneOption).value)
+        startDate: dj(meeting.startDate)
+          // .tz((timezone as ITimezoneOption).value)
           .format('YYYY-MM-DDTHH:mm:ss'),
       }
       : {
         topic: '',
         email: [],
-        startDate: dayjs()
-          .tz((timezone as ITimezoneOption).value)
-          .format('YYYY-MM-DDTHH:mm:ss'),
+        // startDate: dayjs()
+        //   .tz((timezone as ITimezoneOption).value)
+        //   .format('YYYY-MM-DDTHH:mm:ss'),
+        startDate: dj().format('YYYY-MM-DDTHH:mm:ss'),
         recurrence: {
           isChecked: false,
         } as IMeeting['recurrence'],
@@ -158,8 +162,8 @@ export function CreateMeeting({
       if (meeting) {
         meetingService
           .httpUpdateMeeting(meeting._id, {
-            startDate: dayjs(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
-            endDate: dayjs(values.startDate)
+            startDate: dj(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+            endDate: dj(values.startDate)
               .add(40, 'minutes')
               .format('YYYY-MM-DDTHH:mm:ss'),
             invitees: values.email as unknown as string[],
@@ -188,8 +192,8 @@ export function CreateMeeting({
         let roomName = `Schesti-${Math.random() * 1000}`;
         meetingService
           .httpCreateMeeting({
-            startDate: dayjs(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
-            endDate: dayjs(values.startDate)
+            startDate: dj(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+            endDate: dj(values.startDate)
               .add(40, 'minutes')
               .format('YYYY-MM-DDTHH:mm:ss'),
             invitees: values.email as unknown as string[],
@@ -506,15 +510,16 @@ export function CreateMeeting({
               fieldProps={{
                 showTime: { format: 'HH:mm' },
                 value: formik.values.startDate
-                  ? dayjs(formik.values.startDate).tz(
-                    (timezone as ITimezoneOption).value
-                  )
+                  ? dj(formik.values.startDate)
+                  // .tz(
+                  //   (timezone as ITimezoneOption).value
+                  // )
                   : undefined,
                 onChange(date) {
                   formik.setFieldValue(
                     'startDate',
-                    dayjs(date)
-                      .tz((timezone as ITimezoneOption).value)
+                    dj(date)
+                      // .tz((timezone as ITimezoneOption).value)
                       .format('YYYY-MM-DDTHH:mm:ss')
                   );
                 },

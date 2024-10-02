@@ -106,7 +106,7 @@ function Page() {
       title: 'Estimated Start Date',
       render(value) {
         // write the format pattern
-        return value ? moment(value).format('YYYY-MM-DD') : null;
+        return value ? moment(value).format('MM-DD-YYYY') : null;
       },
     },
     {
@@ -336,7 +336,7 @@ function Page() {
           <DeletePopup
             closeModal={() => setShowProjectDeleteModal(false)}
             message="Are you sure you want to delete this project?"
-            onConfirm={() => {}}
+            onConfirm={() => { }}
             open={showProjectDeleteModal}
             title="Delete Project"
             isLoading={false}
