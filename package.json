@@ -73,6 +73,7 @@
     "redux-persist": "^6.0.0",
     "sharp": "^0.33.4",
     "sweetalert2": "^11.10.1",
+    "swiper": "^11.1.14",
     "tailwind-merge": "^2.0.0",
     "usehooks-ts": "^2.12.1",
     "yarn": "^1.22.21",
