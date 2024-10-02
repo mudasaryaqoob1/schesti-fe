@@ -4,7 +4,6 @@
 /* globals.css */
 @import 'antd/dist/reset.css';
 
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100&family=Open+Sans:wght@300;400;500;600;700;800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap');
 
 :root {
@@ -296,4 +295,209 @@ a {
 
 .ant-modal-mask {
   background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Website Global CSS */
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/font/Gilroy-Regular.ttf');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/font/Gilroy-Heavy.ttf');
+  font-weight: 900;
+}
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/font/Gilroy-Light.ttf');
+  font-weight: 300;
+}
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/font/Gilroy-Bold.ttf');
+  font-weight: 700;
+}
+
+.container {
+  max-width: 1112px;
+  margin: auto;
+}
+.container_slope {
+  width: 100%;
+  height: 1152px; /* Default height */
+}
+
+/* For smaller screens */
+@media (max-width: 768px) {
+  .container_slope {
+    height: 800px; /* Adjusted height for tablets and smaller screens */
+  }
+}
+
+/* For even smaller screens, such as mobile phones */
+@media (max-width: 480px) {
+  .container_slope {
+    height: 600px; /* Adjusted height for mobile phones */
+  }
+}
+
+.slope-background {
+  width: 100%;
+  height: 100%;
+  background-color: #f4f7fa;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 930px, 0% 100%);
+}
+
+.content_slope {
+  position: relative;
+  /* Add any additional styling needed for content */
+}
+
+.businessOprationImage {
+  filter: brightness(0) saturate(100%) invert(16%) sepia(73%) saturate(1885%)
+    hue-rotate(197deg) brightness(94%) contrast(85%);
+}
+
+.logo-container:hover .logo {
+  filter: brightness(0) saturate(100%) invert(16%) sepia(73%) saturate(1885%)
+    hue-rotate(197deg) brightness(94%) contrast(85%);
+}
+.ant-collapse {
+  background-color: none !important;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.ant-collapse-item {
+  border: none !important;
+  box-shadow: 0px 4px 45px 0px #91a0b226;
+  border-radius: 24px;
+}
+.ant-collapse-header {
+  display: flex !important;
+  align-items: center !important;
+  background-color: white !important;
+  border-radius: 24px;
+}
+.ant-collapse-content {
+  border: none !important;
+}
+@media (min-width: 960px) {
+  .swiper-wrapper {
+    padding: 50px 0px 50px 20px !important;
+  }
+}
+.anticon svg {
+  fill: #007ab6;
+}
+/* Default styles for all screen sizes */
+/* Default style for buttons (mobile-first, smaller screens) */
+.swiper-button-next,
+.swiper-button-prev .swiper-button-prev.swiper-button-disabled,
+.swiper-button-next.swiper-button-disabled {
+  width: 40px; /* Set width */
+  height: 40px; /* Set height */
+  padding: 10px; /* Padding inside the button */
+  border-radius: 20px; /* Circular shape */
+  font-size: 14px; /* Icon or text size */
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .swiper-button-next,
+  .swiper-button-prev .swiper-button-prev.swiper-button-disabled,
+  .swiper-button-next.swiper-button-disabled {
+    width: 50px;
+    height: 50px;
+    padding: 12px;
+    border-radius: 25px;
+    font-size: 16px;
+  }
+}
+
+/* Large devices (desktops, 980px and up) */
+@media (min-width: 980px) {
+  .swiper-button-next,
+  .swiper-button-prev .swiper-button-prev.swiper-button-disabled,
+  .swiper-button-next.swiper-button-disabled {
+    padding: 30px;
+    border-radius: 30px;
+    border: 2px solid;
+  }
+}
+
+/* Extra large devices (1200px and up) */
+@media (min-width: 1200px) {
+  .swiper-button-next,
+  .swiper-button-prev .swiper-button-prev.swiper-button-disabled,
+  .swiper-button-next.swiper-button-disabled {
+    padding: 28px;
+    border-radius: 30px;
+    border: 2px solid;
+  }
+}
+
+@media (min-width: 980px) {
+  .scles .swiper-wrapper {
+    /* padding-top: 10px !important;
+  padding-bottom: 10px !important; */
+    padding-top: 0px !important;
+    padding-left: 0px !important;
+  }
+}
+.scles .swiper-scrollbar-drag {
+  max-width: 200px !important;
+  background-color: #f0f1f5 !important;
+}
+.scles .swiper-horizontal > .swiper-scrollbar,
+.swiper-scrollbar.swiper-scrollbar-horizontal {
+  background-color: transparent !important;
+  opacity: 1 !important;
+}
+#avs2 .swiper-backface-hidden .swiper-slide {
+  display: flex !important;
+  justify-items: center;
+}
+/* .hepslider2 .swiper-horizontal > .swiper-scrollbar, .swiper-scrollbar.swiper-scrollbar-horizontal{
+  background-color: rgb(184, 184, 230) !important;
+  opacity: 1 !important;
+  top: -2px !important;
+} */
+
+#avs .swiper-scrollbar-horizontal {
+  top: -1px !important;
+  background-color: #007ab629 !important;
+  opacity: 1 !important;
+}
+@media (min-width: 980px) {
+  #avs .swiper-scrollbar-horizontal {
+    width: 100% !important;
+    max-width: 300px !important;
+    left: 400px !important;
+  }
+}
+#avs .swiper-backface-hidden .swiper-slide {
+  display: flex !important;
+  justify-items: center;
+}
+@media (min-width: 980px) {
+  #avs .swiper-wrapper {
+    /* padding-top: 10px !important;
+    padding-bottom: 10px !important; */
+    /* padding-top: 0px!important; */
+    padding-left: 0px !important;
+  }
+}
+#avs .swiper-scrollbar-drag {
+  background-color: #007ab6 !important;
+  width: 100px !important;
+}
+.custom-image {
+  width: 100% !important; /* Forces the image to take up full width */
+  height: 301px !important; /* Fixes the height */
+  object-fit: cover; /* Ensures image covers the area without distortion */
+  border-radius: 16px !important;
 }
