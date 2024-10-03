@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image';
 import Navbar from '../navbar';
-
+import Footer from '../footer'
 import CollapseComponent from '../components/customCollapse';
 import ContractorCards from '@/app/(website)/homepage/contractorCard'
 
@@ -314,11 +314,12 @@ const Resouces = () => {
               </div>
             </div>
             <div className="w-full max-w-[323px]">
-              <img src="/resources-imges/Fram1.png" alt="" />
+              <img src="/resources-imges/Fram1.png" className='w-full' alt="" />
             </div>
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   )
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '../navbar';
 import Image from 'next/image';
 import Link from 'next/link';
-
+import Footer from '../footer'
 import BlogFaqs from '@/app/constants/blogs.json';
 
 const Blogs = () => {
@@ -64,6 +64,7 @@ const Blogs = () => {
           </button>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

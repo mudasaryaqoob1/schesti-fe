@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from '../navbar';
+import Footer from '../footer'
 
 const APIS = () => {
   return (
@@ -243,6 +244,7 @@ const APIS = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   )
 }

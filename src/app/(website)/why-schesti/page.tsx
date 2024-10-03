@@ -3,8 +3,9 @@ import React from 'react';
 import Image from 'next/image';
 
 import Navbar from '../navbar';
-import TestimonialCard from '../components/testimonialCard';
+import Footer from '../footer'
 import TestimonialSlider from '../testimonialSlider';
+import TestimonialCard from '../components/testimonialCard';
 
 const WhySchesti = () => {
   return (
@@ -526,6 +527,7 @@ const WhySchesti = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };
