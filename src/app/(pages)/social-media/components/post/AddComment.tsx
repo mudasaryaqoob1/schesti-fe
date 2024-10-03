@@ -8,7 +8,7 @@ import { Form } from 'antd';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import clsx from 'clsx';
-import ProfileAvatar from './Profile';
+import Profile from './Profile';
 import { useUser } from '@/app/hooks/useUser';
 
 type Props = {
@@ -68,8 +68,7 @@ const AddComment = ({
       )}
       onFinish={addPostCommentHandler}
     >
-      {/* <Image src="/profileAvatar.png" width={36} height={36} alt="profile" /> */}
-      <ProfileAvatar showName={false} name={user?.firstName || user?.name} avatar={user?.socialAvatar || user?.avatar} />
+      <Profile showName={false} name={user?.firstName || user?.name} avatar={user?.socialAvatar || user?.avatar} />
       <input
         autoFocus={true}
         value={content}

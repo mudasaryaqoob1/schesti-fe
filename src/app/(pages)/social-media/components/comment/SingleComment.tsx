@@ -63,12 +63,20 @@ const SingleComment = ({
     }
   };
 
+  const { socialAvatar, socialName, avatar, name, companyName, organizationName, university } = associatedCompany || {};
+
+  const fullName = socialName || name || companyName || organizationName;
+  const from = companyName || university || name;
+  const userAvatar = socialAvatar || avatar;
+
   return (
     <>
       <div className="flex gap-3 justify-between mt-1">
+
         <Profile
-          name={associatedCompany.name}
-          avatar={associatedCompany.avatar}
+          name={fullName}
+          from={from}
+          avatar={userAvatar}
           date={updatedAt}
           onClick={() => router.push(`/user/${associatedCompany._id}`)}
           isOwner={isCommentOwner}
@@ -152,7 +160,6 @@ const SingleComment = ({
       <Reactions
         id={_id}
         reactions={reactions}
-        setRefetchPost={setRefetchPost}
         isPost={false}
         userReaction={userReaction}
       />
