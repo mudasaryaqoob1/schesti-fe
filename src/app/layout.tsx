@@ -7,6 +7,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Providers } from './(pages)/providers';
 import 'react-photo-view/dist/react-photo-view.css';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
 
 const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
