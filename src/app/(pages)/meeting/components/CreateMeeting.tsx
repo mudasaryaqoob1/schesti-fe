@@ -517,6 +517,9 @@ export function CreateMeeting({
               errorMessage={formik.errors.startDate}
               fieldProps={{
                 showTime: { format: 'HH:mm' },
+                format: {
+                  format: "MMM Do, YYYY HH:mm a"
+                },
                 value: formik.values.startDate
                   ? dj(formik.values.startDate)
                   // .tz(
@@ -528,7 +531,7 @@ export function CreateMeeting({
                     'startDate',
                     dj(date)
                       // .tz((timezone as ITimezoneOption).value)
-                      .format('YYYY-MM-DDTHH:mm:ss')
+                      .toISOString()
                   );
                 },
                 // onBlur: formik.handleBlur,
@@ -537,7 +540,8 @@ export function CreateMeeting({
                     ? 'error'
                     : undefined,
                 use12Hours: true,
-
+                showNow: false,
+                allowClear: false,
                 // changeOnBlur: true,
                 // needConfirm: false,
                 disabledDate: (curr) =>
