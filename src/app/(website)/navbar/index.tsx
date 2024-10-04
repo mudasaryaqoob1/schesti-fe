@@ -76,6 +76,22 @@ const Navbar = () => {
         </Link>
       ),
     },
+    {
+      key: '9',
+      label: (
+        <Link href="/Network" className="cursor-pointer ">
+          Network
+        </Link>
+      ),
+    },
+    {
+      key: '10',
+      label: (
+        <Link href="/socialmedia" className="cursor-pointer ">
+          Social Media
+        </Link>
+      ),
+    },
   ];
   return (
     <div className="relative flex flex-col md:mx-2  max-w-screen h-[50px] md:h-[80px] z-50">
