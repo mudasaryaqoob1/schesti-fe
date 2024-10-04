@@ -39,9 +39,11 @@ const ContractorCard = ({
             <div className="font-Gilroy font-regular text-[15px] -tracking-[0.2px] text-gray opacity-70 mt-[12px] ">
               {title2}
             </div>
-            <div className="transform transition-transform duration-300 group-hover:translate-x-1">
-              <img src={imageSrc2} alt="image" />
-            </div>
+            {imageSrc2 && (
+              <div className="transform transition-transform duration-300 group-hover:translate-x-1">
+                <img src={imageSrc2} alt="Additional Image" />
+              </div>
+            )}
           </div>
         </div>
       </div>
