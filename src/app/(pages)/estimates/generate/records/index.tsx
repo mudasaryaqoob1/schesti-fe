@@ -18,6 +18,7 @@ import { downloadCrmItemsAsCSV } from '@/app/(pages)/crm/utils';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { estimateRequestService } from '@/app/services/estimates.service';
 import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
+import _ from 'lodash';
 
 interface DataType {
   key: React.Key;
@@ -85,14 +86,12 @@ const EstimateRequestTable: React.FC = () => {
           clientName: estimate?.estimateRequestIdDetail?.clientName,
           clientEmail: estimate?.estimateRequestIdDetail?.email,
           salePerson: estimate?.estimateRequestIdDetail?.salePerson
-            ? `${
-                estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''
-              } ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`
+            ? `${estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''
+            } ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`
             : 'N/A',
           estimator: estimate?.estimateRequestIdDetail?.estimator
-            ? `${
-                estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''
-              } ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`
+            ? `${estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''
+            } ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`
             : 'N/A',
           estimateRequestIdDetail: estimate.estimateRequestIdDetail?._id,
         };
@@ -182,7 +181,7 @@ const EstimateRequestTable: React.FC = () => {
         } else {
           return (
             <span className="capitalize text-red-600 bg-red-100 px-2 py-1 rounded-full">
-              {record.status}
+              {_.startCase(_.camelCase(record.status))}
             </span>
           );
         }
