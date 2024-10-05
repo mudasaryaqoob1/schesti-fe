@@ -60,6 +60,9 @@ const AddComment = ({
     }
   };
 
+  const fullName = user?.firstName || user?.name;
+  const avatar = user?.socialAvatar || user?.avatar;
+
   return (
     <Form
       className={clsx(
@@ -68,7 +71,7 @@ const AddComment = ({
       )}
       onFinish={addPostCommentHandler}
     >
-      <Profile showName={false} name={user?.firstName || user?.name} avatar={user?.socialAvatar || user?.avatar} />
+      <Profile showName={false} name={fullName} avatar={avatar} />
       <input
         autoFocus={true}
         value={content}

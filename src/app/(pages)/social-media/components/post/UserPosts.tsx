@@ -6,7 +6,11 @@ import { IPost } from '.';
 import { useParams } from 'next/navigation';
 import { useUser } from '@/app/hooks/useUser';
 
-const UserPosts = () => {
+type Props = {
+  fetchPosts?: boolean
+};
+
+const UserPosts = ({ fetchPosts }: Props) => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const user = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +29,7 @@ const UserPosts = () => {
     if (id || user?._id) {
       getUserPosts();
     }
-  }, [id]);
+  }, [id, fetchPosts]);
 
   if (isLoading) {
     <Skeleton />;

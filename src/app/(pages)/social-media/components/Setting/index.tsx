@@ -3,7 +3,7 @@ import React from 'react'
 
 const Setttings = () => {
     return (
-        <ProfileIntro />
+        <ProfileIntro isSettings />
     )
 }
 

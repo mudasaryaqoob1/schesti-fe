@@ -33,19 +33,23 @@ const UpdateProfile = ({
   const { id } = useParams();
   const [profileAvatar, setProfileAvatar] = useState<string | File>(avatar);
 
+  const updateUserInRedux = (data: any) => {
+    dispatch(dispatch(setUserAction({ ...authData, user: { ...authData.user, ...data.user } })))
+    setIsLoading(false);
+  }
+
   async function updateProfileHandler() {
     setIsLoading(true);
     if (typeof profileAvatar === 'object') {
       const { mediaFiles } = await filesUrlGenerator([profileAvatar]);
-      await userService.updateSocialProfile(id, {
+      const { data } = await userService.updateSocialProfile(id, {
         socialName: profileName,
         socialAvatar: mediaFiles[0].url,
       });
-      setIsLoading(false);
+      updateUserInRedux(data);
     } else {
       const { data } = await userService.updateSocialProfile(id, { socialName: profileName });
-      dispatch(dispatch(setUserAction({ ...authData, user: { ...authData.user, ...data.user } })))
-      setIsLoading(false);
+      updateUserInRedux(data);
     }
     setShowModal(false);
     fetchUser();
@@ -69,10 +73,10 @@ const UpdateProfile = ({
         <div className="px-6 py-3 flex items-center flex-col gap-4">
           <label
             htmlFor="avatar"
-            className="flex justify-center cursor-pointer max-w-16"
+            className="flex justify-center cursor-pointer max-w-16 relative"
           >
             <Image
-              className="rounded-full"
+              className="rounded-full border border-slate-700"
               width={60}
               height={60}
               src={
@@ -83,6 +87,13 @@ const UpdateProfile = ({
                     : URL.createObjectURL(profileAvatar as File)
               }
               alt={name}
+            />
+            <Image
+              width={16}
+              height={16}
+              src="/edit.svg"
+              className="cursor-pointer absolute right-3 bottom-3.5"
+              alt="edit"
             />
           </label>
           <input

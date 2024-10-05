@@ -95,7 +95,6 @@ const Networking = () => {
             onClick={() => setShowEmailModal(true)}
             className="text-schestiPrimary flex items-center gap-2 bg-schestiLightPrimary border border-schestiLightPrimary rounded-md font-semibold py-2 px-4 cursor-pointer"
           >
-            {' '}
             <span className="text-xl">+</span> Invite
           </button>
         </div>

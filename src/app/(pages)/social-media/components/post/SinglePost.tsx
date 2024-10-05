@@ -26,26 +26,11 @@ import ProfileAvatar from './Profile';
 type Props = {
   myFeed?: boolean;
 } & IPost;
-const SinglePost = ({
-  _id,
-  description,
-  mediaFiles,
-  feeling = '',
-  userReaction,
-  createdAt,
-  reactions,
-  associatedCompany: {
-    _id: postOwnerId = '',
-    userRole: postOwnerRole,
-    name = '',
-    companyName = '',
-    organizationName = '',
-    socialName,
-    university = '',
-    avatar = '', socialAvatar = ''
-  },
-  myFeed = false,
-}: Props) => {
+const SinglePost = (data: Props) => {
+
+  const { _id, description, mediaFiles, feeling = '', userReaction, createdAt, reactions, myFeed = false } = data;
+  const { _id: postOwnerId = '', userRole: postOwnerRole = '', socialName, name = '', university = '', companyName = '', organizationName = '', avatar = '', socialAvatar = ''
+  } = data?.associatedCompany || {};
   const [refetchPost, setRefetchPost] = useState(false);
   // const [seeMore, setSeeMore] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
@@ -61,6 +46,7 @@ const SinglePost = ({
   const [openLightbox, setOpenLightbox] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0)
   const user = useUser();
+
 
   const isPostOwner = postOwnerId === user?._id;
   const isAdmin = postOwnerRole === ('admin' as any);
