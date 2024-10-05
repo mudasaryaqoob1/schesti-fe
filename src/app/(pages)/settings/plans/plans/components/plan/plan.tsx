@@ -81,13 +81,15 @@ const SinglePlan = (props: Props) => {
     }
   }
 
+  const userPlanId = (user?.subscription && user.subscription.planId && (user.subscription.planId as IPricingPlan)._id) || '';
   const BTN =
-    user && user.planId ? (
+    user && user.subscription ? (
       <Button
-        text={user?.planId === _id ? 'Subscribed' : 'Upgrade'}
-        className={`text-white ${user?.planId === _id ? '!bg-schestiLightPrimary !text-schestiPrimaryBlack !border-schestiLightPrimary' : ''} self-stretch w-full`}
+        text={userPlanId === _id ? 'Subscribed' : 'Upgrade'}
+        className={`text-white disabled:cursor-not-allowed ${userPlanId === _id ? '!bg-schestiLightPrimary !text-schestiPrimaryBlack !border-schestiLightPrimary' : ''} self-stretch w-full`}
+        disabled={userPlanId === _id}
         onClick={() => {
-          if (_id && props.user?.planId !== _id) {
+          if (_id && userPlanId !== _id) {
             if (!user.subscription!.subscriptionId && !isInternal) {
               pricingHook.setValueToStorage(props);
               router.push('/payment');
