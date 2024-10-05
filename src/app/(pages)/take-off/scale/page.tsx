@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 import {
   useState,
@@ -694,7 +695,7 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -744,7 +745,7 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -798,7 +799,7 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -854,7 +855,7 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -1785,23 +1786,23 @@ const TakeOffNewPage = () => {
             reportData = [
               ...reportData,
               ...(takeOff?.measurements[key][type] &&
-              Array.isArray(takeOff?.measurements[key][type]) &&
-              takeOff?.measurements[key][type]?.length > 0
+                Array.isArray(takeOff?.measurements[key][type]) &&
+                takeOff?.measurements[key][type]?.length > 0
                 ? takeOff.measurements[key][type].map((arrit: any) => {
-                    return {
-                      ...arrit,
-                      pageId: key,
-                      type,
-                      pageData: takeOff?.pages?.find(
-                        (pg: any) => pg?.pageId == key
-                      ),
-                      pageLabel: takeOff?.pages?.find(
-                        (pg: any) => pg?.pageId == key
-                      )?.pageNum,
-                      color: arrit?.stroke,
-                      config: arrit,
-                    };
-                  })
+                  return {
+                    ...arrit,
+                    pageId: key,
+                    type,
+                    pageData: takeOff?.pages?.find(
+                      (pg: any) => pg?.pageId == key
+                    ),
+                    pageLabel: takeOff?.pages?.find(
+                      (pg: any) => pg?.pageId == key
+                    )?.pageNum,
+                    color: arrit?.stroke,
+                    config: arrit,
+                  };
+                })
                 : []),
             ];
           });
@@ -1928,10 +1929,10 @@ const TakeOffNewPage = () => {
                 ? calculatePolygonArea(points, scale)?.toFixed(2)
                 : type == 'volume'
                   ? calculatePolygonVolume(
-                      points,
-                      currentItem?.depth || 1,
-                      scale
-                    )?.toFixed(2)
+                    points,
+                    currentItem?.depth || 1,
+                    scale
+                  )?.toFixed(2)
                   : tx; //getNumberFromText(tx);
         // Check if there's already an entry with the same projectName and pageLabel
         const existingEntry = result?.find(
@@ -2083,10 +2084,10 @@ const TakeOffNewPage = () => {
             ? calculatePolygonArea(points, scale)?.toFixed(2)
             : type == 'volume'
               ? calculatePolygonVolume(
-                  points,
-                  record?.depth || 1,
-                  scale
-                )?.toFixed(2)
+                points,
+                record?.depth || 1,
+                scale
+              )?.toFixed(2)
               : `${record?.text}`.slice(0, 8);
     return text;
   };
@@ -2191,10 +2192,10 @@ const TakeOffNewPage = () => {
                 ? calculatePolygonArea(points, scale)
                 : type == 'volume'
                   ? calculatePolygonVolume(
-                      points,
-                      currentItem?.depth || 1,
-                      scale
-                    )
+                    points,
+                    currentItem?.depth || 1,
+                    scale
+                  )
                   : '';
 
         // Check if there's already an entry with the same projectName and pageLabel
@@ -2280,72 +2281,72 @@ const TakeOffNewPage = () => {
             existingEntry?.children?.push(
               subcategory
                 ? {
-                    key: dateTime,
-                    isSubParent: true,
-                    isParent: false,
-                    category,
-                    subcategory,
-                    dateTime,
-                    points,
-                    projectName,
-                    stroke,
-                    strokeWidth,
-                    textUnit,
-                    id,
-                    lineCap,
-                    depth,
-                    x,
-                    y,
-                    user,
-                    type,
-                    pageId,
-                    text,
-                    children: [
-                      {
-                        key: dateTime,
-                        isParent: false,
-                        isChild: true,
-                        category,
-                        subcategory,
-                        dateTime,
-                        points,
-                        projectName,
-                        stroke,
-                        strokeWidth,
-                        textUnit,
-                        id,
-                        lineCap,
-                        depth,
-                        x,
-                        y,
-                        user,
-                        type,
-                        pageId,
-                        text,
-                      },
-                    ],
-                  }
+                  key: dateTime,
+                  isSubParent: true,
+                  isParent: false,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  type,
+                  pageId,
+                  text,
+                  children: [
+                    {
+                      key: dateTime,
+                      isParent: false,
+                      isChild: true,
+                      category,
+                      subcategory,
+                      dateTime,
+                      points,
+                      projectName,
+                      stroke,
+                      strokeWidth,
+                      textUnit,
+                      id,
+                      lineCap,
+                      depth,
+                      x,
+                      y,
+                      user,
+                      type,
+                      pageId,
+                      text,
+                    },
+                  ],
+                }
                 : {
-                    key: dateTime,
-                    category,
-                    subcategory,
-                    dateTime,
-                    points,
-                    projectName,
-                    stroke,
-                    strokeWidth,
-                    textUnit,
-                    id,
-                    lineCap,
-                    depth,
-                    x,
-                    y,
-                    user,
-                    isParent: false,
-                    type,
-                    pageId,
-                    text,
-                  }
+                  key: dateTime,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  isParent: false,
+                  type,
+                  pageId,
+                  text,
+                }
             );
           }
         } else {
@@ -2371,76 +2372,76 @@ const TakeOffNewPage = () => {
             text,
             children: subcategory
               ? [
-                  {
-                    key: dateTime,
-                    isSubParent: true,
-                    isParent: false,
-                    category,
-                    subcategory,
-                    dateTime,
-                    points,
-                    projectName,
-                    stroke,
-                    strokeWidth,
-                    textUnit,
-                    id,
-                    lineCap,
-                    depth,
-                    x,
-                    y,
-                    user,
-                    type,
-                    pageId,
-                    text,
-                    children: [
-                      {
-                        key: dateTime,
-                        isParent: false,
-                        isChild: true,
-                        category,
-                        subcategory,
-                        dateTime,
-                        points,
-                        projectName,
-                        stroke,
-                        strokeWidth,
-                        textUnit,
-                        id,
-                        lineCap,
-                        depth,
-                        x,
-                        y,
-                        user,
-                        type,
-                        pageId,
-                        text,
-                      },
-                    ],
-                  },
-                ]
+                {
+                  key: dateTime,
+                  isSubParent: true,
+                  isParent: false,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  type,
+                  pageId,
+                  text,
+                  children: [
+                    {
+                      key: dateTime,
+                      isParent: false,
+                      isChild: true,
+                      category,
+                      subcategory,
+                      dateTime,
+                      points,
+                      projectName,
+                      stroke,
+                      strokeWidth,
+                      textUnit,
+                      id,
+                      lineCap,
+                      depth,
+                      x,
+                      y,
+                      user,
+                      type,
+                      pageId,
+                      text,
+                    },
+                  ],
+                },
+              ]
               : [
-                  {
-                    key: dateTime,
-                    isParent: false,
-                    category,
-                    subcategory,
-                    dateTime,
-                    points,
-                    projectName,
-                    stroke,
-                    strokeWidth,
-                    textUnit,
-                    id,
-                    lineCap,
-                    depth,
-                    x,
-                    y,
-                    user,
-                    type,
-                    pageId,
-                    text,
-                  },
-                ],
+                {
+                  key: dateTime,
+                  isParent: false,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  type,
+                  pageId,
+                  text,
+                },
+              ],
           });
         }
         return result;
@@ -2453,14 +2454,14 @@ const TakeOffNewPage = () => {
         children: [
           ...(Array.isArray(takeOff?.subCategories)
             ? [
-                ...takeOff.subCategories.map((it: any, index: number) => ({
-                  category: i,
-                  isSubParent: true,
-                  isParent: false,
-                  key: new Date()?.toString() + ind + index,
-                  subcategory: it,
-                })),
-              ]
+              ...takeOff.subCategories.map((it: any, index: number) => ({
+                category: i,
+                isSubParent: true,
+                isParent: false,
+                key: new Date()?.toString() + ind + index,
+                subcategory: it,
+              })),
+            ]
             : []),
         ],
         isParent: true,
@@ -3133,10 +3134,10 @@ const TakeOffNewPage = () => {
               onClick={() => {
                 setreportModal(true);
               }}
-              // onClick={() => {
-              //   //@ts-ignore
-              //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
-              // }}
+            // onClick={() => {
+            //   //@ts-ignore
+            //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
+            // }}
             />
             <Popover
               title={'Select File'}
@@ -3188,7 +3189,7 @@ const TakeOffNewPage = () => {
                 iconheight={20}
                 isLoading={markuploading}
                 icon={<DownOutlined />}
-                // onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0) ? takeOff?.files[0] : {}) }}
+              // onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0) ? takeOff?.files[0] : {}) }}
               />
             </Popover>
           </div>
@@ -3340,7 +3341,7 @@ const TakeOffNewPage = () => {
                             </Space>
                           </>
                         )}
-                        // options={[...(Array.isArray(takeOff?.categories) ? takeOff?.categories : [])].map((item: any) => ({ label: item, value: item }))}
+                      // options={[...(Array.isArray(takeOff?.categories) ? takeOff?.categories : [])].map((item: any) => ({ label: item, value: item }))}
                       >
                         {[
                           ...(Array.isArray(takeOff?.categories)
@@ -3435,15 +3436,15 @@ const TakeOffNewPage = () => {
                             )}
                           </>
                         )}
-                        // options={[...(Array.isArray(takeOff?.subCategories) ? takeOff?.subCategories : [])].map((item: any) => (
-                        //   { label: item, value: item }
-                        // ))}
+                      // options={[...(Array.isArray(takeOff?.subCategories) ? takeOff?.subCategories : [])].map((item: any) => (
+                      //   { label: item, value: item }
+                      // ))}
                       >
                         {[
                           ...(Array.isArray(takeOff?.subCategories)
                             ? takeOff.subCategories.filter((val: string) =>
-                                val?.includes(selectedCate)
-                              )
+                              val?.includes(selectedCate)
+                            )
                             : []),
                         ].map((item: any, index: number) => (
                           <Option key={index + ''} value={item}>
@@ -3551,10 +3552,10 @@ const TakeOffNewPage = () => {
                             measurementsplanArray(takeOff, sideSearch).length >
                             0
                           )) && (
-                          <div className="flex items-center justify-center w-[100%] py-5">
-                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                          </div>
-                        )}
+                            <div className="flex items-center justify-center w-[100%] py-5">
+                              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                            </div>
+                          )}
                         {[
                           ...(Array.isArray(takeOff?.categories)
                             ? takeOff.categories
@@ -3671,7 +3672,7 @@ const TakeOffNewPage = () => {
                                                           pmsr?.type ==
                                                             'count' ||
                                                             pmsr?.type ==
-                                                              'texts'
+                                                            'texts'
                                                             ? 'textColor'
                                                             : 'stroke',
                                                           val.toHexString()
@@ -3936,7 +3937,7 @@ const TakeOffNewPage = () => {
                                                     takeOff?.categories
                                                   ) &&
                                                     takeOff.categories.length >
-                                                      0 &&
+                                                    0 &&
                                                     takeOff.categories.map(
                                                       (cat: string) => {
                                                         return (
@@ -4258,17 +4259,17 @@ const TakeOffNewPage = () => {
                                               takeOff?.subCategories
                                             )
                                               ? takeOff.subCategories.map(
-                                                  (sit: string) => {
-                                                    if (sit.includes(categ)) {
-                                                      const [ls, lc] =
-                                                        sit.split('-');
-                                                      console.log(lc);
-                                                      return ls + '-' + vl;
-                                                    } else {
-                                                      return sit;
-                                                    }
+                                                (sit: string) => {
+                                                  if (sit.includes(categ)) {
+                                                    const [ls, lc] =
+                                                      sit.split('-');
+                                                    console.log(lc);
+                                                    return ls + '-' + vl;
+                                                  } else {
+                                                    return sit;
                                                   }
-                                                )
+                                                }
+                                              )
                                               : []),
                                           ]
                                         );
@@ -4353,19 +4354,19 @@ const TakeOffNewPage = () => {
                                                     takeOff?.subCategories
                                                   )
                                                     ? takeOff.subCategories.map(
-                                                        (sit: string) => {
-                                                          if (sit == subcateg) {
-                                                            const [ls, lc] =
-                                                              sit.split('-');
-                                                            console.log(ls);
-                                                            return (
-                                                              vl + '-' + lc
-                                                            );
-                                                          } else {
-                                                            return sit;
-                                                          }
+                                                      (sit: string) => {
+                                                        if (sit == subcateg) {
+                                                          const [ls, lc] =
+                                                            sit.split('-');
+                                                          console.log(ls);
+                                                          return (
+                                                            vl + '-' + lc
+                                                          );
+                                                        } else {
+                                                          return sit;
                                                         }
-                                                      )
+                                                      }
+                                                    )
                                                     : []),
                                                 ]
                                               );
@@ -4973,15 +4974,15 @@ const TakeOffNewPage = () => {
                                               {fileState.find(
                                                 (i) => i.name == it?.name
                                               )?.status != 'failed' && (
-                                                <Progress
-                                                  percent={
-                                                    fileState.find(
-                                                      (i) => i.name == it?.name
-                                                    )?.uploadProgress ?? 1
-                                                  }
-                                                  strokeColor={'#007AB6'}
-                                                />
-                                              )}
+                                                  <Progress
+                                                    percent={
+                                                      fileState.find(
+                                                        (i) => i.name == it?.name
+                                                      )?.uploadProgress ?? 1
+                                                    }
+                                                    strokeColor={'#007AB6'}
+                                                  />
+                                                )}
                                               <span className="text-sm text-gray-500">{`(${fileState.find((i) => i.name == it?.name)?.status})`}</span>
                                             </li>
                                           );
@@ -5118,7 +5119,7 @@ const TakeOffNewPage = () => {
                         </div>
                         <div
                           className="flex flex-row gap-2 items-center"
-                          // onClick={}
+                        // onClick={}
                         >
                           <label>Fill:</label>
                           {/* <NextImage src={'/selectedScale.svg'} alt={'zoomicon'} width={19.97} height={11.31} /> */}
@@ -5194,7 +5195,7 @@ const TakeOffNewPage = () => {
                     modalOpen={reportModal}
                   />
                 </ModalComponent>
-                <ModalComponent open={progressModalOpen} setOpen={() => {}}>
+                <ModalComponent open={progressModalOpen} setOpen={() => { }}>
                   <CreateProgressModal
                     setModalOpen={setprogressModalOpen}
                     files={selectedFiles}

@@ -35,7 +35,7 @@ const SinglePlan = (props: Props) => {
     duration,
     setSelectedPlan,
     _id,
-    isInternal
+    isInternal,
   } = props;
   const dispatch = useDispatch<AppDispatch>();
 
@@ -77,11 +77,15 @@ const SinglePlan = (props: Props) => {
         setIsLoading(false);
       }
     } else {
-      toast.error("Cannot upgrade from free plan.");
+      toast.error('Cannot upgrade from free plan.');
     }
   }
 
-  const userPlanId = (user?.subscription && user.subscription.planId && (user.subscription.planId as IPricingPlan)._id) || '';
+  const userPlanId =
+    (user?.subscription &&
+      user.subscription.planId &&
+      (user.subscription.planId as IPricingPlan)._id) ||
+    '';
   const BTN =
     user && user.subscription ? (
       <Button
@@ -95,8 +99,7 @@ const SinglePlan = (props: Props) => {
               router.push('/payment');
             } else if (isInternal) {
               upgradeToFreePlan(_id);
-            }
-            else {
+            } else {
               stripeUpgradeMutation.mutate(props);
             }
           } else {
