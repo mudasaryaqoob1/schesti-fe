@@ -179,6 +179,7 @@ export default {
     //   h8: ['32px', { lineHeight: '48px' }],
     //   h9: ['16px', { lineHeight: '29px' }],
     // },
+
   },
   plugins: [
     function ({ addVariant }) {

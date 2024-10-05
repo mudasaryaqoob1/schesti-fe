@@ -14,7 +14,7 @@ import React from 'react';
               <img src="/Avatar.svg" alt="" />
             </div>
             <div className="">
-              <div className="font-bold font-font-PlusJakartaSans text-[13.5px] text-[#181D25] leading-[17.01px] ">
+              <div className="font-bold font-font-PlusJakartaSans  text-[13.5px] text-[#181D25] leading-[17.01px] ">
                 Daianne Barros De Oliveira
               </div>
               <div className="font-normal font-font-PlusJakartaSans text-[12px] text-[#404B5A] leading-[15.12px] ">
