@@ -16,7 +16,7 @@ import { getLoggedInUserDetails } from '@/redux/authSlices/auth.thunk';
 import { AppDispatch } from '@/redux/store';
 import { AxiosError } from 'axios';
 import Image from 'next/image';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -35,12 +35,14 @@ const SinglePlan = (props: Props) => {
     duration,
     setSelectedPlan,
     _id,
+    isInternal
   } = props;
   const dispatch = useDispatch<AppDispatch>();
 
   const user = useUser();
   const pricingHook = usePricing();
   const router = useRouterHook();
+  const [isLoading, setIsLoading] = useState(false);
 
   const stripeUpgradeMutation = useMutation(
     ['upgradePlan'],
@@ -58,6 +60,27 @@ const SinglePlan = (props: Props) => {
       },
     }
   );
+
+  async function upgradeToFreePlan(planId: string) {
+    if (isInternal) {
+      setIsLoading(true);
+      try {
+        const response = await authService.httpSubscribeToFreePlan(planId);
+        if (response.data) {
+          toast.success('Plan subscribed successfully');
+          dispatch(getLoggedInUserDetails({}));
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data?.message || err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      toast.error("Cannot upgrade from free plan.");
+    }
+  }
+
   const BTN =
     user && user.planId ? (
       <Button
@@ -65,17 +88,20 @@ const SinglePlan = (props: Props) => {
         className={`text-white ${user?.planId === _id ? '!bg-schestiLightPrimary !text-schestiPrimaryBlack !border-schestiLightPrimary' : ''} self-stretch w-full`}
         onClick={() => {
           if (_id && props.user?.planId !== _id) {
-            if (!user.subscription!.subscriptionId) {
+            if (!user.subscription!.subscriptionId && !isInternal) {
               pricingHook.setValueToStorage(props);
               router.push('/payment');
-            } else {
+            } else if (isInternal) {
+              upgradeToFreePlan(_id);
+            }
+            else {
               stripeUpgradeMutation.mutate(props);
             }
           } else {
             toast.success('You are already on this plan');
           }
         }}
-        isLoading={stripeUpgradeMutation.isLoading}
+        isLoading={stripeUpgradeMutation.isLoading || isLoading}
       />
     ) : (
       <Button
