@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from '../navbar';
 import CollapseComponent from '../components/customCollapse';
 import EstimateFaqs from '@/app/constants/estimate.json';
+import Footer from '../footer'
 const Estimate = () => {
   return (
     <div>
@@ -341,6 +342,7 @@ const Estimate = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

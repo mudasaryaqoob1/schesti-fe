@@ -735,7 +735,40 @@
     ],
 
     "img2": "/blogs/blogcontennt12.png",
-    "table": "add tale",
+    "heading10": "Comparative Analysis",
+    "section": "Comparative Analysis",
+    "content": [
+      {
+        "aspect": "BIM Adoption Rate",
+        "USA": "High, especially in large-scale projects",
+        "KSA": "Rapidly increasing due to government support",
+        "Egypt": "Growing interest but still low overall"
+      },
+      {
+        "aspect": "Government Support",
+        "USA": "Established guidelines and requirements",
+        "KSA": "Strong support through Vision 2030",
+        "Egypt": "Emerging initiatives to promote BIM"
+      },
+      {
+        "aspect": "Investment in Training",
+        "USA": "Significant investment in workforce training",
+        "KSA": "Ongoing training programs in development",
+        "Egypt": "Limited but increasing through partnerships"
+      },
+      {
+        "aspect": "Industry Challenges",
+        "USA": "Resistance in some sectors",
+        "KSA": "Lack of skilled professionals",
+        "Egypt": "Lack of established standards and investment"
+      },
+      {
+        "aspect": "Future Outlook",
+        "USA": "Promising with continued advancements",
+        "KSA": "Bright, with a focus on large infrastructure",
+        "Egypt": "Promising growth potential with government support"
+      }
+    ],
 
     "heading6": "Conclusion",
     "paragraph5": "The future of BIM technology in construction holds immense potential for enhancing efficiency, collaboration, and sustainability across the globe. While the USA leads in adoption and integration, KSA is making significant strides backed by governmental support, and Egypt is beginning to explore BIM's benefits amid growing interest. As these regions continue to evolve their construction practices, BIM will play a crucial role in shaping the future of the industry, ultimately leading to better-built environments and improved project outcomes."

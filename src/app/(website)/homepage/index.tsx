@@ -391,7 +391,7 @@ const HomePage = () => {
 
       {/* Tenth Div */}
 
-      <div className="relative md:max-w-[1440px] max-w-full md:mx-auto  md:h-[470px] h-[390px] bg-blue z-0 overflow-hidden">
+      <div className="relative md:max-w-[1440px] max-w-full md:mx-auto  md:h-[470px] h-[390px] bg-schestiPrimary z-0 overflow-hidden">
         <div className="absolute md:flex hidden  inset-0 mt-2 bg-[url('/images/stars10.png')] w-[290px] sm:w-[400px] md:w-[500px] lg:w-[590px] h-full  bg-cover bg-no-repeat z-10"></div>
 
         <div className="absolute z-20 ml-4 mx-4 md:mx-0 sm:ml-[110px] md:ml-[160px] lg:ml-[210px] mt-10 sm:mt-[66px]">

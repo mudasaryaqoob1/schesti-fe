@@ -201,7 +201,9 @@ const Navbar = () => {
             Why Schesti?
           </Link>
 
-          <div className="py-2">Pricing</div>
+          <div className="py-2"><Link href="/pricing-page" className="cursor-pointer ">
+              Pricing
+            </Link></div>
           <div className="py-2">
             <Link href="/blogs" className="cursor-pointer ">
               Blogs

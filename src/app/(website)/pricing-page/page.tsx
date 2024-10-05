@@ -253,7 +253,7 @@ making and project success. Ensure precision in construction estimating with us"
             imageSrc2=""
           />
           <ContractorCards
-            imageSrc="/images/Rec6.png"
+            imageSrc="/images/Rec7.png"
             title="Estimators"
             description="Rely on accurate project cost estimates according to
  industry standards and available data, empowering informed decision
@@ -262,7 +262,7 @@ making and project success. Ensure precision in construction estimating with us"
             imageSrc2=""
           />
           <ContractorCards
-            imageSrc="/images/Rec6.png"
+            imageSrc="/images/Rec7.png"
             title="Estimators"
             description="Rely on accurate project cost estimates according to
  industry standards and available data, empowering informed decision

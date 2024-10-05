@@ -31,7 +31,7 @@ const APIS = () => {
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 pt-[47px]">
-                  <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-[24px] py-3 md:py-[15px]">
+                  <button className="bg-schestiPrimary text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-[24px] py-3 md:py-[15px]">
                     Connect with Us for Pricing
                   </button>
                 </div>
