@@ -1,12 +1,12 @@
-import { Skeleton } from 'antd'
-import React from 'react'
+import { Skeleton } from 'antd';
+import React from 'react';
 
 const SkeletonLoader = ({ className = 'my-5' }: { className?: string }) => {
-    return (
-        <div className={className}>
-            <Skeleton />
-        </div>
-    )
-}
+  return (
+    <div className={className}>
+      <Skeleton />
+    </div>
+  );
+};
 
-export default SkeletonLoader
+export default SkeletonLoader;

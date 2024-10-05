@@ -15,7 +15,7 @@ const UserPosts = () => {
   const getUserPosts = async () => {
     setIsLoading(true);
     const { data } = await socialMediaService.httpGetUserPosts({
-      id: id as string || user?._id as string,
+      id: (id as string) || (user?._id as string),
     });
     setIsLoading(false);
     setPosts(data.posts);

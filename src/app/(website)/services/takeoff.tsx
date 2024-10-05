@@ -8,8 +8,8 @@ const TakeOff = () => {
           Quantity Takeoff
         </div>
         <div className="font-bold font-Gilroy text-[20px] lg:text-h8 leading-[28px] -tracking-[1.2px] text-gray mt-2">
-          Revolutionize Your Construction Projects with SCHESTI Quantity
-          Takeoff Service
+          Revolutionize Your Construction Projects with SCHESTI Quantity Takeoff
+          Service
         </div>
         <div className="font-regular font-Gilroy text-[14px] lg:text-h2 text-gray opacity-70 mt-4 lg:mt-2">
           Takeoffs are key to predicting project costs and optimizing your bids,

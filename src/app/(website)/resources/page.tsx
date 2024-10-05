@@ -1,14 +1,14 @@
-import React from 'react'
+import React from 'react';
 import Image from 'next/image';
 import Navbar from '../navbar';
-import Footer from '../footer'
+import Footer from '../footer';
 import CollapseComponent from '../components/customCollapse';
-import ContractorCards from '@/app/(website)/homepage/contractorCard'
+import ContractorCards from '@/app/(website)/homepage/contractorCard';
 
 const Resouces = () => {
   return (
     <div>
-         <div className="w-full">
+      <div className="w-full">
         <div className="bg-[url('/resources-imges/hero.png')] bg-cover bg-center bg-no-repeat w-full ">
           <Navbar />
 
@@ -257,9 +257,7 @@ const Resouces = () => {
               </h1>
             </div>
             <div className="mt-4 px-5 xl:px-0 ">
-              <CollapseComponent
-               faqs={[]}
-              />
+              <CollapseComponent faqs={[]} />
             </div>
           </div>
         </div>
@@ -314,14 +312,14 @@ const Resouces = () => {
               </div>
             </div>
             <div className="w-full max-w-[323px]">
-              <img src="/resources-imges/Fram1.png" className='w-full' alt="" />
+              <img src="/resources-imges/Fram1.png" className="w-full" alt="" />
             </div>
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Resouces
+export default Resouces;

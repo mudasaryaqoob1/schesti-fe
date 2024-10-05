@@ -21,11 +21,15 @@ const Reactions = ({
   id,
   userReaction = null,
   reactions = [],
-  isPost = true
+  isPost = true,
 }: Props) => {
   const [showReactions, setShowReactions] = useState(false);
-  const [currentUserReaction, setCurrentUserReaction] = useState(userReaction?.type || '')
-  const [currentReactions, setCurrentReactions] = useState(reactions as IUserReaction[]);
+  const [currentUserReaction, setCurrentUserReaction] = useState(
+    userReaction?.type || ''
+  );
+  const [currentReactions, setCurrentReactions] = useState(
+    reactions as IUserReaction[]
+  );
   const user = useUser();
   const addPostReactionHandler = async ({
     type = 'like',
@@ -55,7 +59,6 @@ const Reactions = ({
         console.log(error, 'erro in post reaction...');
       }
     }
-
   };
 
   const postReactionTypes = [
@@ -87,7 +90,11 @@ const Reactions = ({
             onClick={() => {
               addPostReactionHandler({ removeReaction: true });
               setCurrentUserReaction('');
-              setCurrentReactions(prev => prev.filter(({ associatedCompany }) => associatedCompany !== user?._id));
+              setCurrentReactions((prev) =>
+                prev.filter(
+                  ({ associatedCompany }) => associatedCompany !== user?._id
+                )
+              );
             }}
             width={20}
             height={20}
@@ -100,11 +107,13 @@ const Reactions = ({
             onClick={() => {
               addPostReactionHandler({});
               setCurrentUserReaction('like');
-              setCurrentReactions(prev => prev.concat({
-                "associatedCompany": user?._id!,
-                "type": "like",
-                "_id": new Date().getTime().toString()
-              }))
+              setCurrentReactions((prev) =>
+                prev.concat({
+                  associatedCompany: user?._id!,
+                  type: 'like',
+                  _id: new Date().getTime().toString(),
+                })
+              );
             }}
             width={22}
             height={22}
@@ -115,9 +124,11 @@ const Reactions = ({
         {currentReactions.length > 0 && (
           <p className="font-medium text-xs text-schestiPrimaryBlack">
             {currentUserReaction && 'You '}
-            {(currentReactions.length > 1 && currentUserReaction) ?
-              `and ${currentReactions.length - 1} Other` : !currentUserReaction ? `${currentReactions.length}` : ''}
-
+            {currentReactions.length > 1 && currentUserReaction
+              ? `and ${currentReactions.length - 1} Other`
+              : !currentUserReaction
+                ? `${currentReactions.length}`
+                : ''}
           </p>
         )}
       </div>
@@ -133,25 +144,30 @@ const Reactions = ({
               onClick={() => {
                 addPostReactionHandler({ type });
                 setCurrentUserReaction(type);
-                setCurrentReactions(prev => {
-                  const loginUserReactionData = prev.find(({ associatedCompany }) => associatedCompany === user?._id);
+                setCurrentReactions((prev) => {
+                  const loginUserReactionData = prev.find(
+                    ({ associatedCompany }) => associatedCompany === user?._id
+                  );
                   let updatedReactions = prev;
                   if (loginUserReactionData) {
                     updatedReactions = prev.map((reactionData) => {
                       if (loginUserReactionData) {
-                        return { ...reactionData, type }
+                        return { ...reactionData, type };
                       }
-                      return reactionData
+                      return reactionData;
                     });
                   } else {
-                    updatedReactions = [...prev, {
-                      associatedCompany: user?._id!,
-                      type,
-                      _id: new Date().getTime().toString()
-                    }]
+                    updatedReactions = [
+                      ...prev,
+                      {
+                        associatedCompany: user?._id!,
+                        type,
+                        _id: new Date().getTime().toString(),
+                      },
+                    ];
                   }
                   return updatedReactions;
-                })
+                });
               }}
               key={i}
             >

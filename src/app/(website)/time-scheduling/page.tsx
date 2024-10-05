@@ -1,8 +1,7 @@
-
 import React from 'react';
 import Navbar from '../navbar';
 import CollapseComponent from '../components/customCollapse';
-import ScheduleFaqs from '@/app/constants/shedule.json'
+import ScheduleFaqs from '@/app/constants/shedule.json';
 
 const TimeScheduling = () => {
   return (
@@ -57,8 +56,8 @@ const TimeScheduling = () => {
           <div className="py-4 md:py-[99px] px-2 md:px-0 flex flex-col justify-center items-center gap-6">
             <div className="w-full max-w-[860px]">
               <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-blue_dark md:leading-[56px] md:text-center">
-                From Plan to Perfection: How SCHESTI Time Scheduling Keeps
-                Your Projects on Track
+                From Plan to Perfection: How SCHESTI Time Scheduling Keeps Your
+                Projects on Track
               </h1>
             </div>
             <div className="w-full max-w-[1050px]">
@@ -252,14 +251,17 @@ const TimeScheduling = () => {
                   equipment, and materials, ensuring effective utilization. By
                   optimizing resource use, you can cut costs and boost
                   productivity, enhancing both profitability and sustainability.
-                  Schesti tools enable precise planning and allocation,
-                  reducing waste and ensuring every project aspect is handled
-                  efficiently
+                  Schesti tools enable precise planning and allocation, reducing
+                  waste and ensuring every project aspect is handled efficiently
                 </p>
               </div>
             </div>
             <div className="w-full max-w-[577px]">
-              <img src="/timesedule-imges/advance-securty.png" className='w-full' alt="" />
+              <img
+                src="/timesedule-imges/advance-securty.png"
+                className="w-full"
+                alt=""
+              />
             </div>
           </div>
         </div>

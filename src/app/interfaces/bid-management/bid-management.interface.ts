@@ -91,7 +91,7 @@ export interface IBidManagement {
   networkUsers?: {
     userId: string;
     email: string;
-  }[]
+  }[];
 }
 
 export interface IBidManagementResponse {
@@ -147,18 +147,18 @@ export interface IBidActivity {
   user: string | IUserInterface;
   projectId: string | IBidManagement;
   status:
-  | 'clicked'
-  | 'proposal submitted'
-  | 'favourite'
-  | 'removed favourite'
-  | 'viewed details'
-  | 'sent rfi'
-  | 'sent email'
-  | 'shared on whatsapp'
-  | 'shared on facebook'
-  | 'shared on twitter'
-  | 'repost project'
-  | 'decline';
+    | 'clicked'
+    | 'proposal submitted'
+    | 'favourite'
+    | 'removed favourite'
+    | 'viewed details'
+    | 'sent rfi'
+    | 'sent email'
+    | 'shared on whatsapp'
+    | 'shared on facebook'
+    | 'shared on twitter'
+    | 'repost project'
+    | 'decline';
   createdAt: string;
   updatedAt: string;
 }

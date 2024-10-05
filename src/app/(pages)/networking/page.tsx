@@ -83,7 +83,7 @@ const Networking = () => {
                   clsx(
                     'text-sm cursor-pointer bg-transparent text-graphiteGray py-2 px-3 rounded-md',
                     i === currentNetwork &&
-                    'bg-schestiPrimary text-white font-semibold'
+                      'bg-schestiPrimary text-white font-semibold'
                   )
                 )}
               >

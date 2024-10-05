@@ -1,10 +1,10 @@
-import React from 'react'
+import React from 'react';
 import Navbar from '../navbar';
-import Footer from '../footer'
+import Footer from '../footer';
 const ContactUs = () => {
   return (
     <div>
-        <div className="w-full h-[100%] lg:pb-[180px]">
+      <div className="w-full h-[100%] lg:pb-[180px]">
         <div className="bg-[url('/contact-us-imges/Group.png')] bg-cover bg-center  lg:h-[1145px]  bg-no-repeat w-full">
           <Navbar />
           {/* Add your content here if needed */}
@@ -157,9 +157,9 @@ const ContactUs = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default ContactUs
+export default ContactUs;

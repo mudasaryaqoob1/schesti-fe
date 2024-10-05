@@ -19,7 +19,7 @@ const ExportButton = ({ loading }: { loading: boolean }) => (
     iconwidth={20}
     isLoading={loading}
   />
-)
+);
 export default function ExportAll({ bids }: Props) {
   return (
     <PDFDownloadLink

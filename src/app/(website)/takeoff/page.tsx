@@ -1,7 +1,7 @@
-'use client'
+'use client';
 import React from 'react';
 import Navbar from '../navbar';
-import TakeoffFaqs from '@/app/constants/takeoff.json'
+import TakeoffFaqs from '@/app/constants/takeoff.json';
 import CollapseComponent from '../components/customCollapse';
 
 const Takeoff = () => {

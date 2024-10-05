@@ -77,7 +77,7 @@ const Index: React.FC<ITableProps> = ({
       // Handle delete action
       console.log('Download action', record);
       handleDownloadClick(record?._id ?? null);
-    } 
+    }
   };
 
   const menu = (it: any) => (

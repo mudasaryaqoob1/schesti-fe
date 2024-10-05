@@ -20,11 +20,11 @@ import Description from '@/app/component/description';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import {
   // dayjs,
-  disabledDate
+  disabledDate,
 } from '@/app/utils/date.utils';
 import TimezoneSelect, {
   type ITimezoneOption,
-  useTimezoneSelect
+  useTimezoneSelect,
 } from 'react-timezone-select';
 import { IMeeting } from '@/app/interfaces/meeting.type';
 import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
@@ -103,9 +103,7 @@ export function CreateMeeting({
   );
   const dispatch = useDispatch<AppDispatch>();
 
-  const timezoneHook = useTimezoneSelect({
-
-  });
+  const timezoneHook = useTimezoneSelect({});
 
   const CreateMeetingSchema = Yup.object().shape({
     topic: Yup.string()
@@ -117,13 +115,13 @@ export function CreateMeeting({
     email: isInviteOptional
       ? Yup.array().of(Yup.string().email('is invalid\n'))
       : Yup.array()
-        .min(1)
-        .of(
-          Yup.string()
-            .email('is invalid email\n')
-            .required('Email is required')
-        )
-        .required('Email is required'),
+          .min(1)
+          .of(
+            Yup.string()
+              .email('is invalid email\n')
+              .required('Email is required')
+          )
+          .required('Email is required'),
     startDate: Yup.date().required('Start Time is required'),
     recurrence: Yup.lazy((value) => {
       if (!value || !value.isChecked) {
@@ -142,25 +140,25 @@ export function CreateMeeting({
   const formik = useFormik({
     initialValues: meeting
       ? {
-        topic: meeting.topic,
-        email: meeting.invitees,
-        startDate: dj(meeting.startDate)
-          // .tz((timezone as ITimezoneOption).value)
-          .format('YYYY-MM-DDTHH:mm:ss'),
-        timezoneData: timezoneHook.parseTimezone(timezone),
-      }
+          topic: meeting.topic,
+          email: meeting.invitees,
+          startDate: dj(meeting.startDate)
+            // .tz((timezone as ITimezoneOption).value)
+            .format('YYYY-MM-DDTHH:mm:ss'),
+          timezoneData: timezoneHook.parseTimezone(timezone),
+        }
       : {
-        topic: '',
-        email: [],
-        // startDate: dayjs()
-        //   .tz((timezone as ITimezoneOption).value)
-        //   .format('YYYY-MM-DDTHH:mm:ss'),
-        startDate: dj().format('YYYY-MM-DDTHH:mm:ss'),
-        recurrence: {
-          isChecked: false,
-        } as IMeeting['recurrence'],
-        timezoneData: timezoneHook.parseTimezone(timezone)
-      },
+          topic: '',
+          email: [],
+          // startDate: dayjs()
+          //   .tz((timezone as ITimezoneOption).value)
+          //   .format('YYYY-MM-DDTHH:mm:ss'),
+          startDate: dj().format('YYYY-MM-DDTHH:mm:ss'),
+          recurrence: {
+            isChecked: false,
+          } as IMeeting['recurrence'],
+          timezoneData: timezoneHook.parseTimezone(timezone),
+        },
     validationSchema: CreateMeetingSchema,
     enableReinitialize: meeting ? true : false,
     onSubmit(values) {
@@ -294,11 +292,11 @@ export function CreateMeeting({
                 formik.touched.email && Boolean(formik.errors.email)
                   ? Array.isArray(formik.errors.email)
                     ? formik.errors.email
-                      .map(
-                        (item: string, idx) =>
-                          `'${formik.values.email![idx]}' ${item}`
-                      )
-                      .toString()
+                        .map(
+                          (item: string, idx) =>
+                            `'${formik.values.email![idx]}' ${item}`
+                        )
+                        .toString()
                     : (formik.errors.email as string)
                   : ''
               }
@@ -391,7 +389,8 @@ export function CreateMeeting({
                         }
                         // @ts-ignore
                         errorMessage={
-                          recurrenceError && Boolean((recurrenceError as any).days)
+                          recurrenceError &&
+                          Boolean((recurrenceError as any).days)
                             ? (recurrenceError as any).days
                             : undefined
                         }
@@ -409,8 +408,8 @@ export function CreateMeeting({
                           value:
                             'dates' in formik.values.recurrence
                               ? formik.values.recurrence?.dates.map((date) =>
-                                dj(date)
-                              )
+                                  dj(date)
+                                )
                               : undefined,
                           multiple: true,
                           maxTagCount: 'responsive',
@@ -518,14 +517,14 @@ export function CreateMeeting({
               fieldProps={{
                 showTime: { format: 'HH:mm' },
                 format: {
-                  format: "MMM Do, YYYY HH:mm a"
+                  format: 'MMM Do, YYYY HH:mm a',
                 },
                 value: formik.values.startDate
                   ? dj(formik.values.startDate)
-                  // .tz(
-                  //   (timezone as ITimezoneOption).value
-                  // )
-                  : undefined,
+                  : // .tz(
+                    //   (timezone as ITimezoneOption).value
+                    // )
+                    undefined,
                 onChange(date) {
                   formik.setFieldValue(
                     'startDate',

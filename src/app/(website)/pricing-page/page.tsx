@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../navbar';
-import PricingCard from './pricingCard'
-import Footer from '../footer'
+import PricingCard from './pricingCard';
+import Footer from '../footer';
 import ContractorCards from '../homepage/contractorCard';
 
 const cardData = [
@@ -314,7 +314,7 @@ making and project success. Ensure precision in construction estimating with us"
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

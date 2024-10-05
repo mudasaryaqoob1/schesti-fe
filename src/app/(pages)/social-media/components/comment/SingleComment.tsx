@@ -37,7 +37,7 @@ const SingleComment = ({
   type,
   reply_to_username,
   postId,
-  setRefetchPost
+  setRefetchPost,
 }: ICommentProps) => {
   const { user } = useSelector((state: RootState) => state.auth.user);
   const router = useRouter();

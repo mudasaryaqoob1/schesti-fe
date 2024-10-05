@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../navbar';
 
-import FinancialFaqs from '@/app/constants/finantioltool.json'
+import FinancialFaqs from '@/app/constants/finantioltool.json';
 import CollapseComponent from '../components/customCollapse';
 
 const FinancialTools = () => {
@@ -136,10 +136,10 @@ const FinancialTools = () => {
                     inefficient scheduling and lack of real-time updates.
                   </p>
                   <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-lite_black leading-[16.8px] pt-5">
-                    Solution: SCHESTI platform offers real-time scheduling
-                    tools that keep your project timelines on track. With
-                    dynamic adjustments and alerts, you can avoid delays and
-                    manage your projects efficiently
+                    Solution: SCHESTI platform offers real-time scheduling tools
+                    that keep your project timelines on track. With dynamic
+                    adjustments and alerts, you can avoid delays and manage your
+                    projects efficiently
                   </p>
                 </div>
               </div>
@@ -230,10 +230,10 @@ const FinancialTools = () => {
                     project schedules off balance.
                   </p>
                   <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-lite_black leading-[16.8px] pt-5">
-                    Solution: SCHESTI flexible scheduling tools allow for
-                    quick adjustments to your project plans. Whether it is a
-                    change in scope or unforeseen delays, you can easily update
-                    the schedule and communicate changes to all stakeholders
+                    Solution: SCHESTI flexible scheduling tools allow for quick
+                    adjustments to your project plans. Whether it is a change in
+                    scope or unforeseen delays, you can easily update the
+                    schedule and communicate changes to all stakeholders
                   </p>
                 </div>
               </div>

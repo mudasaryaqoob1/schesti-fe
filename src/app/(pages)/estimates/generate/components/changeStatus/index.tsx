@@ -39,7 +39,7 @@ const ChangeStatus = ({
         reason: lostReason.status,
       };
       try {
-        setIsChangingStatus(true)
+        setIsChangingStatus(true);
         let deleteEstimateResult =
           await estimateRequestService.httpChangeGeneratedEstimateStatus(
             estimateDetail._id,
@@ -51,8 +51,8 @@ const ChangeStatus = ({
           fetchEstimates();
         }
       } catch (error) {
-        const err = error as AxiosError<{ message: string }>
-        toast.error(err.response?.data?.message)
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data?.message);
       } finally {
         setIsChangingStatus(false);
       }
@@ -181,7 +181,12 @@ const ChangeStatus = ({
       <p className="text-red-600 font-popin e font-medium text-[18px]">
         {formError}
       </p>
-      <CustomButton text="Update" className="mt-6" onClick={submitHandler} isLoading={isChangingStatus} />
+      <CustomButton
+        text="Update"
+        className="mt-6"
+        onClick={submitHandler}
+        isLoading={isChangingStatus}
+      />
     </div>
   );
 };
