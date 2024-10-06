@@ -78,7 +78,7 @@ const HomePage = () => {
               Leading the Way:
             </span>
             <div
-              className={`font-extrabold text-[24px] sm:text-[32px] md:text-[35px] xl:text-[40px] leading-[32px] sm:leading-[48px] md:leading-[56px] text-[#002B40] mt-4 sm:mt-6 `}
+              className= "font-extrabold text-[24px] sm:text-[32px] md:text-[35px] xl:text-[40px] leading-[32px] sm:leading-[48px] md:leading-[56px] text-[#002B40] mt-4 sm:mt-6 "
             >
               Elevate Your Construction Venture with Schesti: A Symphony of
               Precision and Speed, Reshaping the Land
@@ -539,7 +539,7 @@ const HomePage = () => {
             <div className="font-bold font-Gilroy text-3xl md:text-start lg:leading-[64px] sm:leading-[50px]  text-center sm:text-3xl md:text-4xl lg:text-5xl text-[#161C2D]">
               Transform Construction with SCHESTI for a Better World!
             </div>
-            <div className="font-Gilroy font-regular  text-[#161C2D] opacity-70 md:text-start text-center  lg:leading-[32px] sm:leading-[28px]  text-base lg:text-[19px] mt-[32px]">
+            <div className="font-Gilroy font-regular  text-[#161C2D] opacity-70 md:text-start text-center  lg:leading-[32px] sm:leading-[28px]  text-base lg:text-[18px] mt-[32px]">
               Empower Your Projects With Schesti: Estimating construction
               projects should not be a headache. We offer a solution that
               streamlines the process for you. Discover the ease and efficiency
@@ -558,7 +558,7 @@ const HomePage = () => {
       </div>
 
       {/* Forteen div */}
-      <div className="container px-4 mx-auto">
+      <div className="container px-4 mx-auto lg:mt-[60px]">
         <div className="flex flex-col  items-center justify-center pt-[60px]">
           <div
             className={`font-bold text-3xl sm:text-3xl md:text-4xl lg:text-[40px] text-center md:text-start   md:leading-[50px] md:-tracking-[1px] text-[#27303F] `}

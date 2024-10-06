@@ -320,6 +320,12 @@ a {
   font-weight: 700;
 }
 
+@font-face {
+  font-family: 'jakarta';
+  src: url('/font/PlusJakartaSans-Italic-VariableFont_wght.ttf');
+  font-weight: 700;
+}
+
 .container {
   max-width: 1112px;
   margin: auto;

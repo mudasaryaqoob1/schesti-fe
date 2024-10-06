@@ -158,6 +158,7 @@ export default {
       Gilroy: ['Gilroy', 'sans-serif'],
       Poppins: ['Poppins'],
       manrope: ['Manrope', 'sans-serif'],
+      jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
     },
     hovering: {
       custom: 'transition-transform duration-300 hover:scale-105',
@@ -171,7 +172,7 @@ export default {
     // },
     // fontSize: {
     //   h1: ['48px', { lineHeight: '65px' }],
-    //   h2: ['19px', { lineHeight: '32px' }],
+    //   h2: ['19px', { lineHeight: '32px' }], 
     //   h3: ['17px', { lineHeight: '29px' }],
     //   h4: ['16px', { lineHeight: '20px' }],
     //   h5: ['15px', { lineHeight: '26px' }],
