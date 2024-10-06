@@ -18,10 +18,13 @@ import {
 } from '@/redux/meeting/meeting.slice';
 import Description from '@/app/component/description';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
-import { dayjs, disabledDate } from '@/app/utils/date.utils';
+import {
+  // dayjs,
+  disabledDate,
+} from '@/app/utils/date.utils';
 import TimezoneSelect, {
-  type ITimezone,
   type ITimezoneOption,
+  useTimezoneSelect,
 } from 'react-timezone-select';
 import { IMeeting } from '@/app/interfaces/meeting.type';
 import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
@@ -95,10 +98,12 @@ export function CreateMeeting({
   isInviteOptional = false,
 }: Props) {
   const [isScheduling, setIsScheduling] = useState(false);
-  const [timezone, setTimezone] = useState<ITimezone>(
+  const [timezone, setTimezone] = useState<any>(
     Intl.DateTimeFormat().resolvedOptions().timeZone
   );
   const dispatch = useDispatch<AppDispatch>();
+
+  const timezoneHook = useTimezoneSelect({});
 
   const CreateMeetingSchema = Yup.object().shape({
     topic: Yup.string()
@@ -110,13 +115,13 @@ export function CreateMeeting({
     email: isInviteOptional
       ? Yup.array().of(Yup.string().email('is invalid\n'))
       : Yup.array()
-        .min(1)
-        .of(
-          Yup.string()
-            .email('is invalid email\n')
-            .required('Email is required')
-        )
-        .required('Email is required'),
+          .min(1)
+          .of(
+            Yup.string()
+              .email('is invalid email\n')
+              .required('Email is required')
+          )
+          .required('Email is required'),
     startDate: Yup.date().required('Start Time is required'),
     recurrence: Yup.lazy((value) => {
       if (!value || !value.isChecked) {
@@ -135,22 +140,25 @@ export function CreateMeeting({
   const formik = useFormik({
     initialValues: meeting
       ? {
-        topic: meeting.topic,
-        email: meeting.invitees,
-        startDate: dayjs(meeting.startDate)
-          .tz((timezone as ITimezoneOption).value)
-          .format('YYYY-MM-DDTHH:mm:ss'),
-      }
+          topic: meeting.topic,
+          email: meeting.invitees,
+          startDate: dj(meeting.startDate)
+            // .tz((timezone as ITimezoneOption).value)
+            .format('YYYY-MM-DDTHH:mm:ss'),
+          timezoneData: timezoneHook.parseTimezone(timezone),
+        }
       : {
-        topic: '',
-        email: [],
-        startDate: dayjs()
-          .tz((timezone as ITimezoneOption).value)
-          .format('YYYY-MM-DDTHH:mm:ss'),
-        recurrence: {
-          isChecked: false,
-        } as IMeeting['recurrence'],
-      },
+          topic: '',
+          email: [],
+          // startDate: dayjs()
+          //   .tz((timezone as ITimezoneOption).value)
+          //   .format('YYYY-MM-DDTHH:mm:ss'),
+          startDate: dj().format('YYYY-MM-DDTHH:mm:ss'),
+          recurrence: {
+            isChecked: false,
+          } as IMeeting['recurrence'],
+          timezoneData: timezoneHook.parseTimezone(timezone),
+        },
     validationSchema: CreateMeetingSchema,
     enableReinitialize: meeting ? true : false,
     onSubmit(values) {
@@ -158,8 +166,8 @@ export function CreateMeeting({
       if (meeting) {
         meetingService
           .httpUpdateMeeting(meeting._id, {
-            startDate: dayjs(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
-            endDate: dayjs(values.startDate)
+            startDate: dj(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+            endDate: dj(values.startDate)
               .add(40, 'minutes')
               .format('YYYY-MM-DDTHH:mm:ss'),
             invitees: values.email as unknown as string[],
@@ -168,6 +176,7 @@ export function CreateMeeting({
             timezone: getTimeZoneValue(timezone),
             topic: values.topic,
             recurrence: values.recurrence,
+            timezoneData: values.timezoneData,
           })
           .then((response) => {
             if (response.data) {
@@ -188,8 +197,8 @@ export function CreateMeeting({
         let roomName = `Schesti-${Math.random() * 1000}`;
         meetingService
           .httpCreateMeeting({
-            startDate: dayjs(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
-            endDate: dayjs(values.startDate)
+            startDate: dj(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+            endDate: dj(values.startDate)
               .add(40, 'minutes')
               .format('YYYY-MM-DDTHH:mm:ss'),
             invitees: values.email as unknown as string[],
@@ -198,6 +207,7 @@ export function CreateMeeting({
             topic: values.topic,
             timezone: getTimeZoneValue(timezone),
             recurrence: values.recurrence,
+            timezoneData: values.timezoneData,
           })
           .then((response) => {
             if (response.data) {
@@ -230,7 +240,7 @@ export function CreateMeeting({
     formik.resetForm();
   }
 
-  console.log('Recurrence', formik.errors.recurrence);
+  console.log('timezone', timezoneHook.parseTimezone(timezone));
   const recurrenceTouched = formik.touched.recurrence as any;
   const recurrenceError = formik.errors.recurrence as any;
   return (
@@ -282,11 +292,11 @@ export function CreateMeeting({
                 formik.touched.email && Boolean(formik.errors.email)
                   ? Array.isArray(formik.errors.email)
                     ? formik.errors.email
-                      .map(
-                        (item: string, idx) =>
-                          `'${formik.values.email![idx]}' ${item}`
-                      )
-                      .toString()
+                        .map(
+                          (item: string, idx) =>
+                            `'${formik.values.email![idx]}' ${item}`
+                        )
+                        .toString()
                     : (formik.errors.email as string)
                   : ''
               }
@@ -379,7 +389,8 @@ export function CreateMeeting({
                         }
                         // @ts-ignore
                         errorMessage={
-                          recurrenceError && Boolean((recurrenceError as any).days)
+                          recurrenceError &&
+                          Boolean((recurrenceError as any).days)
                             ? (recurrenceError as any).days
                             : undefined
                         }
@@ -397,8 +408,8 @@ export function CreateMeeting({
                           value:
                             'dates' in formik.values.recurrence
                               ? formik.values.recurrence?.dates.map((date) =>
-                                dj(date)
-                              )
+                                  dj(date)
+                                )
                               : undefined,
                           multiple: true,
                           maxTagCount: 'responsive',
@@ -505,17 +516,21 @@ export function CreateMeeting({
               errorMessage={formik.errors.startDate}
               fieldProps={{
                 showTime: { format: 'HH:mm' },
+                format: {
+                  format: 'MMM Do, YYYY HH:mm a',
+                },
                 value: formik.values.startDate
-                  ? dayjs(formik.values.startDate).tz(
-                    (timezone as ITimezoneOption).value
-                  )
-                  : undefined,
+                  ? dj(formik.values.startDate)
+                  : // .tz(
+                    //   (timezone as ITimezoneOption).value
+                    // )
+                    undefined,
                 onChange(date) {
                   formik.setFieldValue(
                     'startDate',
-                    dayjs(date)
-                      .tz((timezone as ITimezoneOption).value)
-                      .format('YYYY-MM-DDTHH:mm:ss')
+                    dj(date)
+                      // .tz((timezone as ITimezoneOption).value)
+                      .toISOString()
                   );
                 },
                 // onBlur: formik.handleBlur,
@@ -524,7 +539,8 @@ export function CreateMeeting({
                     ? 'error'
                     : undefined,
                 use12Hours: true,
-
+                showNow: false,
+                allowClear: false,
                 // changeOnBlur: true,
                 // needConfirm: false,
                 disabledDate: (curr) =>

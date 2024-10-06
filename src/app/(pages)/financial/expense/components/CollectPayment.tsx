@@ -32,7 +32,7 @@ export function CollectExpensePayment({ expense, onSuccess }: Props) {
       amount: expense.totalPrice,
       paymentMethod: expense.paymentMethod,
       transactionDate: dayjs(new Date()),
-      additionalDetails: expense.additionalDetails || "",
+      additionalDetails: expense.additionalDetails || '',
     },
     validationSchema: CollectPaymentSchema,
     onSubmit: async (values) => {

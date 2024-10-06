@@ -1,9 +1,9 @@
-'use client'
+'use client';
 import React from 'react';
 import Navbar from '../navbar';
 // import HomepageSlider from '../homepage/homepageSlider';
 import CollapseComponent from '../components/customCollapse';
-import Biddingfaqs from '@/app/constants/Biddingfaqs.json'
+import Biddingfaqs from '@/app/constants/Biddingfaqs.json';
 
 const Bidding = () => {
   return (

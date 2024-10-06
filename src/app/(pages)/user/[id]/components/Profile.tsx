@@ -30,7 +30,9 @@ const ProfileIntro = ({
   const [isLoading, setIsLoading] = useState(true);
   const getUserDetail = useCallback(async () => {
     setIsLoading(true);
-    const { data } = await userService.httpGetCompanyInfo(id as string || user?._id as string);
+    const { data } = await userService.httpGetCompanyInfo(
+      (id as string) || (user?._id as string)
+    );
     setUserData(data.user);
     setIsLoading(false);
   }, []);
@@ -62,7 +64,10 @@ const ProfileIntro = ({
       />
       <div className="w-full mt-3.5 shadow rounded-xl p-6 bg-white flex justify-between">
         <div className="flex gap-4 items-center">
-          <ArrowLeftOutlined className='text-xl cursor-pointer' onClick={() => router.push('/social-media')} />
+          <ArrowLeftOutlined
+            className="text-xl cursor-pointer"
+            onClick={() => router.push('/social-media')}
+          />
           <ProfileAvatar avatar={avatar} />
         </div>
         {user?._id === id && (

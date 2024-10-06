@@ -1,17 +1,17 @@
-'use client'
+'use client';
 import React from 'react';
 import Image from 'next/image';
 
 import Navbar from '../navbar';
-import Bidding from './bidding'
-import Networking from './networking'
-import TakeOff from './takeoff'
-import Estimate from './estimate'
-import Schedule from './schedule'
-import Financial from './financial'
-import CRM from './crm'
-import Meeting from './meeting'
-import Social from './socialmedia'
+import Bidding from './bidding';
+import Networking from './networking';
+import TakeOff from './takeoff';
+import Estimate from './estimate';
+import Schedule from './schedule';
+import Financial from './financial';
+import CRM from './crm';
+import Meeting from './meeting';
+import Social from './socialmedia';
 
 import HomepageSlider from '../homepage/homepageSlider';
 import CollapseComponent from '../components/customCollapse';
@@ -228,10 +228,10 @@ const Services = () => {
             <div>
               {/* <Numbercount targetValue={100} /> */}
               <div
-              className={`font-bold leading-[40px] text-[40px] text-center text-[#181D25] mt-[18px] `}
-            >
-              100
-            </div>
+                className={`font-bold leading-[40px] text-[40px] text-center text-[#181D25] mt-[18px] `}
+              >
+                100
+              </div>
             </div>
             <div className="font-Poppins text-[18px] leading-[18px] text-center text-[#404B5A] mt-[10px]">
               Projects Completed

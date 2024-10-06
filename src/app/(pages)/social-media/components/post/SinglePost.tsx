@@ -35,7 +35,7 @@ const SinglePost = (data: Props) => {
   // const [seeMore, setSeeMore] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
   // const [showComments, setShowComments] = useState(true);
-  let showComments = true
+  let showComments = true;
   const dispatch = useDispatch();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingPost, setIsDeletingPost] = useState(false);
@@ -44,7 +44,7 @@ const SinglePost = (data: Props) => {
   const userAvatar = socialAvatar || avatar || '/profileAvatar.png';
   const router = useRouter();
   const [openLightbox, setOpenLightbox] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0)
+  const [lightboxIndex, setLightboxIndex] = useState(0);
   const user = useUser();
 
 
@@ -90,9 +90,9 @@ const SinglePost = (data: Props) => {
   };
 
   const handleLightbox = (i: number) => {
-    setLightboxIndex(i)
+    setLightboxIndex(i);
     setOpenLightbox(true);
-  }
+  };
   return (
     <section className="w-full my-3.5 shadow relative rounded-xl p-6 bg-white">
       <WarningModal
@@ -159,7 +159,12 @@ const SinglePost = (data: Props) => {
       {/* filesimages or video view on single post */}
 
       <div className="images-section mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
-        <LightBox mediaUrls={mediaFiles} open={openLightbox} setOpen={setOpenLightbox} index={lightboxIndex} />
+        <LightBox
+          mediaUrls={mediaFiles}
+          open={openLightbox}
+          setOpen={setOpenLightbox}
+          index={lightboxIndex}
+        />
         {mediaFiles.slice(0, 3).map(({ _id, url, type }, i) => (
           <div className="relative h-44 w-auto col-span-1" key={_id}>
             {

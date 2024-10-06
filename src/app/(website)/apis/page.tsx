@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 import Navbar from '../navbar';
-import Footer from '../footer'
+import Footer from '../footer';
 
 const APIS = () => {
   return (
     <div>
-           <div className="w-full h-[100%]">
+      <div className="w-full h-[100%]">
         <div className="bg-[url('/apis-imges/Grop-hero.png')] bg-cover bg-center lg:max-h-[907px]   bg-no-repeat w-full">
           <Navbar />
           {/* Add your content here if needed */}
@@ -31,7 +31,7 @@ const APIS = () => {
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 pt-[47px]">
-                  <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-[24px] py-3 md:py-[15px]">
+                  <button className="bg-schestiPrimary text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-[24px] py-3 md:py-[15px]">
                     Connect with Us for Pricing
                   </button>
                 </div>
@@ -244,9 +244,9 @@ const APIS = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default APIS
+export default APIS;

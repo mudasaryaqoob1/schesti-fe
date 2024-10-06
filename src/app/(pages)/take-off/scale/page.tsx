@@ -1,5 +1,12 @@
+// @ts-nocheck
 'use client';
-import { useState, useContext, useEffect, useLayoutEffect, useRef } from 'react';
+import {
+  useState,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
@@ -2058,7 +2065,7 @@ const TakeOffNewPage = () => {
   };
 
   const getText = (record: any) => {
-    const { pageId, type, points } = record
+    const { pageId, type, points } = record;
     //curpage and scaling runtime here
     const curmpage = takeOff?.pages?.find((i: any) => i?.pageId == pageId);
     const scale = curmpage?.scale ?? {
@@ -2082,8 +2089,8 @@ const TakeOffNewPage = () => {
                 scale
               )?.toFixed(2)
               : `${record?.text}`.slice(0, 8);
-    return text
-  }
+    return text;
+  };
 
   const measurementsTableData = (takeOff: any, search?: string) => {
     let returningArr: any = [];
@@ -3101,7 +3108,7 @@ const TakeOffNewPage = () => {
         window.addEventListener('mouseup', onMouseUp);
       });
     }
-  }, [leftOpened])
+  }, [leftOpened]);
 
   // const [catDDOpen, setcatDDOpen] = useState(true);
   const [catopened, setcatopened] = useState<number[]>([]);
@@ -3517,128 +3524,457 @@ const TakeOffNewPage = () => {
                     rowClassName={'table-row-transparent'}
                     rootClassName="table-row-transparent"
                   /> */}
-                  <div className='w-[98%] max-h-[580px] overflow-auto border rounded-md my-2 flex flex-col' >
-                    <div className='flex bg-lavenderPurpleReplica bg-opacity-10 min-w-max' >
-                      <span className='w-[40%] min-w-[167px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1' >Name</span>
-                      <span className='w-[10%] min-w-[42px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1' >Sheet Number</span>
-                      <span className='w-[9%] min-w-[37px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1' >Measu- rement</span>
-                      <span className='w-[21%] min-w-[90px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1' >User</span>
-                      <span className='w-[13%] min-w-[58px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1' >Date</span>
-                      <span className='w-[3%] min-w-[15px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1' ></span>
+                  <div className="w-[98%] max-h-[580px] overflow-auto border rounded-md my-2 flex flex-col">
+                    <div className="flex bg-lavenderPurpleReplica bg-opacity-10 min-w-max">
+                      <span className="w-[40%] min-w-[167px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1">
+                        Name
+                      </span>
+                      <span className="w-[10%] min-w-[42px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1">
+                        Sheet Number
+                      </span>
+                      <span className="w-[9%] min-w-[37px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1">
+                        Measu- rement
+                      </span>
+                      <span className="w-[21%] min-w-[90px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1">
+                        User
+                      </span>
+                      <span className="w-[13%] min-w-[58px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1">
+                        Date
+                      </span>
+                      <span className="w-[3%] min-w-[15px] text-[10px] font-bold flex items-center justify-center text-[#475467] mx-1 py-1"></span>
                     </div>
-                    <div className='flex flex-col min-w-max' >
-                      <div className='flex flex-col min-w-max' >
-                        {
-                          (!Array.isArray(measurementsplanArray(takeOff, sideSearch)) || !(measurementsplanArray(takeOff, sideSearch).length>0)) && 
-                          <div className='flex items-center justify-center w-[100%] py-5'>
-                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                          </div>
-                        }
-                        {
-                          [...(Array.isArray(takeOff?.categories) ? takeOff.categories : []), 'Length Measurement', 'Arc Measurement', 'Area Measurement', 'Volume Measurement', 'Curve Measurement', 'Count Measurement', 'Text Measurement', 'Dynamic Measurement', 'Perimeter Measurement']
-                            .filter((ct: string) => (measurementsplanArray(takeOff, sideSearch).some((m: any) => (m?.category == ct)))).map((prct: string) => {
-                              return <>
-                                <div className='min-w-max p-2 text-[#333E4F] bg-[#475467] bg-opacity-0 font-extrabold border-b text-[10px] w-[100%]'>{prct}</div>
-                                {
-                                  [...(Array.isArray(takeOff?.subCategories) ? takeOff.subCategories : [])].filter((sct: string) => (measurementsplanArray(takeOff, sideSearch).some((m: any) => (m?.subcategory == sct)) && sct?.includes(prct))).map((prsct: string) => {
-                                    return <>
-                                      <div className='min-w-max p-2 pl-5 text-[#333E4F] bg-[#475467] bg-opacity-0 font-extrabold border-b text-[10px]'>{prsct}</div>
-                                      {
-                                        measurementsplanArray(takeOff, sideSearch).filter((gvl: any) => (gvl?.subcategory == prsct)).map((pmsr: any) => {
-                                          return <>
-                                            <div className='flex min-w-max border-b pl-6 hover:bg-[#475467] hover:bg-opacity-20 cursor-pointer'
-                                              onClick={() => {
-                                                if (pmsr?.type == 'count' || pmsr?.type == 'texts') {
-                                                  return;
-                                                }
-                                                openShap(pmsr);
-                                                const pg = takeOff?.pages?.find(
-                                                  (pgs: any) => pgs?.pageId == pmsr?.pageId
-                                                );
-                                                if (pg) {
-                                                  if (
-                                                    pmsr?.points &&
-                                                    Array.isArray(pmsr?.points) &&
-                                                    pmsr?.points?.length > 1
-                                                  ) {
-                                                    // setStageValues(record?.points[0]-100, record?.points[1]-100)
-                                                  }
-                                                  setselectedPage(pg);
-                                                  setselectedTakeOffTab('page');
-                                                  if (
-                                                    !selectedPagesList?.find(
-                                                      (i: any) => i?.pageId == pg?.pageId
-                                                    )
-                                                  ) {
-                                                    //@ts-ignore
-                                                    setselectedPagesList((ps: any) => [...ps, pg]);
-                                                  }
-                                                }
-                                              }}
-                                            >
-                                              <span className='w-[40%] min-w-[197px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1 gap-x-2' >
-                                                <ColorPicker
-                                                  onChangeComplete={(val) => {
-                                                    updateTableChangeInTakeOff(
-                                                      pmsr?.pageId,
-                                                      pmsr?.type,
-                                                      pmsr?.dateTime,
-                                                      pmsr?.type == 'count' || pmsr?.type == 'texts'
-                                                        ? 'textColor'
-                                                        : 'stroke',
-                                                      val.toHexString()
-                                                    );
+                    <div className="flex flex-col min-w-max">
+                      <div className="flex flex-col min-w-max">
+                        {(!Array.isArray(
+                          measurementsplanArray(takeOff, sideSearch)
+                        ) ||
+                          !(
+                            measurementsplanArray(takeOff, sideSearch).length >
+                            0
+                          )) && (
+                            <div className="flex items-center justify-center w-[100%] py-5">
+                              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                            </div>
+                          )}
+                        {[
+                          ...(Array.isArray(takeOff?.categories)
+                            ? takeOff.categories
+                            : []),
+                          'Length Measurement',
+                          'Arc Measurement',
+                          'Area Measurement',
+                          'Volume Measurement',
+                          'Curve Measurement',
+                          'Count Measurement',
+                          'Text Measurement',
+                          'Dynamic Measurement',
+                          'Perimeter Measurement',
+                        ]
+                          .filter((ct: string) =>
+                            measurementsplanArray(takeOff, sideSearch).some(
+                              (m: any) => m?.category == ct
+                            )
+                          )
+                          .map((prct: string) => {
+                            return (
+                              <>
+                                <div className="min-w-max p-2 text-[#333E4F] bg-[#475467] bg-opacity-0 font-extrabold border-b text-[10px] w-[100%]">
+                                  {prct}
+                                </div>
+                                {[
+                                  ...(Array.isArray(takeOff?.subCategories)
+                                    ? takeOff.subCategories
+                                    : []),
+                                ]
+                                  .filter(
+                                    (sct: string) =>
+                                      measurementsplanArray(
+                                        takeOff,
+                                        sideSearch
+                                      ).some(
+                                        (m: any) => m?.subcategory == sct
+                                      ) && sct?.includes(prct)
+                                  )
+                                  .map((prsct: string) => {
+                                    return (
+                                      <>
+                                        <div className="min-w-max p-2 pl-5 text-[#333E4F] bg-[#475467] bg-opacity-0 font-extrabold border-b text-[10px]">
+                                          {prsct}
+                                        </div>
+                                        {measurementsplanArray(
+                                          takeOff,
+                                          sideSearch
+                                        )
+                                          .filter(
+                                            (gvl: any) =>
+                                              gvl?.subcategory == prsct
+                                          )
+                                          .map((pmsr: any) => {
+                                            return (
+                                              <>
+                                                <div
+                                                  className="flex min-w-max border-b pl-6 hover:bg-[#475467] hover:bg-opacity-20 cursor-pointer"
+                                                  onClick={() => {
+                                                    if (
+                                                      pmsr?.type == 'count' ||
+                                                      pmsr?.type == 'texts'
+                                                    ) {
+                                                      return;
+                                                    }
+                                                    openShap(pmsr);
+                                                    const pg =
+                                                      takeOff?.pages?.find(
+                                                        (pgs: any) =>
+                                                          pgs?.pageId ==
+                                                          pmsr?.pageId
+                                                      );
+                                                    if (pg) {
+                                                      if (
+                                                        pmsr?.points &&
+                                                        Array.isArray(
+                                                          pmsr?.points
+                                                        ) &&
+                                                        pmsr?.points?.length > 1
+                                                      ) {
+                                                        // setStageValues(record?.points[0]-100, record?.points[1]-100)
+                                                      }
+                                                      setselectedPage(pg);
+                                                      setselectedTakeOffTab(
+                                                        'page'
+                                                      );
+                                                      if (
+                                                        !selectedPagesList?.find(
+                                                          (i: any) =>
+                                                            i?.pageId ==
+                                                            pg?.pageId
+                                                        )
+                                                      ) {
+                                                        //@ts-ignore
+                                                        setselectedPagesList(
+                                                          (ps: any) => [
+                                                            ...ps,
+                                                            pg,
+                                                          ]
+                                                        );
+                                                      }
+                                                    }
                                                   }}
-                                                  className="!w-[2px] !h-[2px] border-none"
-                                                  value={pmsr?.stroke ?? pmsr?.textColor}
-                                                  size='small' /> {pmsr?.projectName}
-                                              </span>
-                                              <span className='w-[10%] min-w-[42px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >
-                                                {takeOff?.pages?.find((pp: any) => pp?.pageId == pmsr?.pageId)?.pageNum ?? ''}
-                                              </span>
-                                              <span className='w-[9%] min-w-[37px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >{getText(pmsr)}</span>
-                                              <span className='w-[21%] min-w-[90px] text-[10px] font-bold flex items-center justify-start text-[#475467] gap-x-2 mx-1 py-1' ><Avatar size={'small'} icon={<UserOutlined />} /> {`${pmsr?.user?.name ?? pmsr?.user?.email}`?.slice(0, 10)}</span>
-                                              <span className='w-[13%] min-w-[58px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >{moment(new Date(pmsr?.dateTime)).format('DD.MM.yyyy')}</span>
-                                              <span className='w-[3%] min-w-[15px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >
-                                                <Popover
-                                                  content={
-                                                    <div className='flex flex-col'>
-                                                      <span className='font-bold cursor-pointer bg-red-600 bg-opacity-15 hover:bg-opacity-80 hover:!text-white p-2 rounded-lg px-2 flex justify-between mb-5'
-                                                        onClick={() => {
-                                                          deleteTableChangeInTakeOff(
-                                                            pmsr?.pageId,
-                                                            pmsr?.type,
-                                                            pmsr?.dateTime
-                                                          );
+                                                >
+                                                  <span className="w-[40%] min-w-[197px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1 gap-x-2">
+                                                    <ColorPicker
+                                                      onChangeComplete={(
+                                                        val
+                                                      ) => {
+                                                        updateTableChangeInTakeOff(
+                                                          pmsr?.pageId,
+                                                          pmsr?.type,
+                                                          pmsr?.dateTime,
+                                                          pmsr?.type ==
+                                                            'count' ||
+                                                            pmsr?.type ==
+                                                            'texts'
+                                                            ? 'textColor'
+                                                            : 'stroke',
+                                                          val.toHexString()
+                                                        );
+                                                      }}
+                                                      className="!w-[2px] !h-[2px] border-none"
+                                                      value={
+                                                        pmsr?.stroke ??
+                                                        pmsr?.textColor
+                                                      }
+                                                      size="small"
+                                                    />{' '}
+                                                    {pmsr?.projectName}
+                                                  </span>
+                                                  <span className="w-[10%] min-w-[42px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1">
+                                                    {takeOff?.pages?.find(
+                                                      (pp: any) =>
+                                                        pp?.pageId ==
+                                                        pmsr?.pageId
+                                                    )?.pageNum ?? ''}
+                                                  </span>
+                                                  <span className="w-[9%] min-w-[37px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1">
+                                                    {getText(pmsr)}
+                                                  </span>
+                                                  <span className="w-[21%] min-w-[90px] text-[10px] font-bold flex items-center justify-start text-[#475467] gap-x-2 mx-1 py-1">
+                                                    <Avatar
+                                                      size={'small'}
+                                                      icon={<UserOutlined />}
+                                                    />{' '}
+                                                    {`${pmsr?.user?.name ?? pmsr?.user?.email}`?.slice(
+                                                      0,
+                                                      10
+                                                    )}
+                                                  </span>
+                                                  <span className="w-[13%] min-w-[58px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1">
+                                                    {moment(
+                                                      new Date(pmsr?.dateTime)
+                                                    ).format('DD.MM.yyyy')}
+                                                  </span>
+                                                  <span className="w-[3%] min-w-[15px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1">
+                                                    <Popover
+                                                      content={
+                                                        <div className="flex flex-col">
+                                                          <span
+                                                            className="font-bold cursor-pointer bg-red-600 bg-opacity-15 hover:bg-opacity-80 hover:!text-white p-2 rounded-lg px-2 flex justify-between mb-5"
+                                                            onClick={() => {
+                                                              deleteTableChangeInTakeOff(
+                                                                pmsr?.pageId,
+                                                                pmsr?.type,
+                                                                pmsr?.dateTime
+                                                              );
+                                                            }}
+                                                          >
+                                                            Delete{' '}
+                                                            <DeleteOutlined />
+                                                          </span>
+                                                          <h3 className="text-sm font-bold">
+                                                            Edit WBS
+                                                          </h3>
+                                                          {Array.isArray(
+                                                            takeOff?.categories
+                                                          ) &&
+                                                            takeOff.categories
+                                                              .length > 0 &&
+                                                            takeOff.categories.map(
+                                                              (cat: string) => {
+                                                                return (
+                                                                  <div
+                                                                    key={cat}
+                                                                  >
+                                                                    <h3
+                                                                      onClick={() => {
+                                                                        updateTableCategory(
+                                                                          pmsr?.pageId,
+                                                                          pmsr?.type,
+                                                                          pmsr?.dateTime,
+                                                                          cat,
+                                                                          null
+                                                                        );
+                                                                      }}
+                                                                      className={`font-bold my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 rounded-lg px-2 ${pmsr?.category == cat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}
+                                                                    >
+                                                                      {cat}
+                                                                    </h3>
+                                                                    {Array.isArray(
+                                                                      takeOff?.subCategories
+                                                                    ) &&
+                                                                      takeOff.subCategories
+                                                                        .filter(
+                                                                          (
+                                                                            i: string
+                                                                          ) =>
+                                                                            i?.includes(
+                                                                              cat
+                                                                            )
+                                                                        )
+                                                                        .map(
+                                                                          (
+                                                                            subcat: string
+                                                                          ) => {
+                                                                            return (
+                                                                              <li
+                                                                                key={
+                                                                                  subcat
+                                                                                }
+                                                                                onClick={() => {
+                                                                                  updateTableCategory(
+                                                                                    pmsr?.pageId,
+                                                                                    pmsr?.type,
+                                                                                    pmsr?.dateTime,
+                                                                                    cat,
+                                                                                    subcat
+                                                                                  );
+                                                                                }}
+                                                                                className={`list-disc my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 px-2 rounded-lg ${pmsr?.subcategory == subcat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}
+                                                                              >
+                                                                                {
+                                                                                  subcat?.split(
+                                                                                    '-'
+                                                                                  )[0]
+                                                                                }
+                                                                              </li>
+                                                                            );
+                                                                          }
+                                                                        )}
+                                                                  </div>
+                                                                );
+                                                              }
+                                                            )}
+                                                        </div>
+                                                      }
+                                                      title="Actions"
+                                                      trigger="click"
+                                                    >
+                                                      <MoreOutlined
+                                                        onClick={(e) => {
+                                                          e.stopPropagation();
                                                         }}
-                                                      >Delete <DeleteOutlined /></span>
-                                                      <h3 className='text-sm font-bold' >Edit WBS</h3>
-                                                      {Array.isArray(takeOff?.categories) &&
-                                                        takeOff.categories.length > 0 &&
-                                                        takeOff.categories.map((cat: string) => {
-                                                          return (
-                                                            <div key={cat}>
-                                                              <h3
-                                                                onClick={() => {
-                                                                  updateTableCategory(
-                                                                    pmsr?.pageId,
-                                                                    pmsr?.type,
-                                                                    pmsr?.dateTime,
-                                                                    cat,
-                                                                    null
-                                                                  );
-                                                                }}
-                                                                className={`font-bold my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 rounded-lg px-2 ${pmsr?.category == cat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}
-                                                              >
-                                                                {cat}
-                                                              </h3>
-                                                              {Array.isArray(takeOff?.subCategories) &&
-                                                                takeOff.subCategories
-                                                                  .filter((i: string) => i?.includes(cat))
-                                                                  .map((subcat: string) => {
+                                                        className="cursor-pointer text-[20px]"
+                                                      />
+                                                    </Popover>
+                                                  </span>
+                                                </div>
+                                              </>
+                                            );
+                                          })}
+                                      </>
+                                    );
+                                  })}
+                                {measurementsplanArray(takeOff, sideSearch)
+                                  .filter(
+                                    (gvl: any) =>
+                                      gvl?.category == prct && !gvl?.subcategory
+                                  )
+                                  .map((pmsr: any) => {
+                                    return (
+                                      <>
+                                        <div
+                                          className="flex min-w-max border-b pl-2 hover:bg-[#475467] hover:bg-opacity-20 cursor-pointer"
+                                          onClick={() => {
+                                            if (
+                                              pmsr?.type == 'count' ||
+                                              pmsr?.type == 'texts'
+                                            ) {
+                                              return;
+                                            }
+                                            openShap(pmsr);
+                                            const pg = takeOff?.pages?.find(
+                                              (pgs: any) =>
+                                                pgs?.pageId == pmsr?.pageId
+                                            );
+                                            if (pg) {
+                                              if (
+                                                pmsr?.points &&
+                                                Array.isArray(pmsr?.points) &&
+                                                pmsr?.points?.length > 1
+                                              ) {
+                                                // setStageValues(record?.points[0]-100, record?.points[1]-100)
+                                              }
+                                              setselectedPage(pg);
+                                              setselectedTakeOffTab('page');
+                                              if (
+                                                !selectedPagesList?.find(
+                                                  (i: any) =>
+                                                    i?.pageId == pg?.pageId
+                                                )
+                                              ) {
+                                                //@ts-ignore
+                                                setselectedPagesList(
+                                                  (ps: any) => [...ps, pg]
+                                                );
+                                              }
+                                            }
+                                          }}
+                                        >
+                                          <span className="w-[40%] min-w-[197px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1 gap-x-2">
+                                            <ColorPicker
+                                              onChangeComplete={(val) => {
+                                                updateTableChangeInTakeOff(
+                                                  pmsr?.pageId,
+                                                  pmsr?.type,
+                                                  pmsr?.dateTime,
+                                                  pmsr?.type == 'count' ||
+                                                    pmsr?.type == 'texts'
+                                                    ? 'textColor'
+                                                    : 'stroke',
+                                                  val.toHexString()
+                                                );
+                                              }}
+                                              className="!w-[2px] !h-[2px] border-none"
+                                              value={
+                                                pmsr?.stroke ?? pmsr?.textColor
+                                              }
+                                              size="small"
+                                            />{' '}
+                                            {pmsr?.projectName}
+                                          </span>
+                                          <span className="w-[10%] min-w-[42px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1">
+                                            {takeOff?.pages?.find(
+                                              (pp: any) =>
+                                                pp?.pageId == pmsr?.pageId
+                                            )?.pageNum ?? ''}
+                                          </span>
+                                          <span className="w-[9%] min-w-[37px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1">
+                                            {getText(pmsr)}
+                                          </span>
+                                          <span className="w-[21%] min-w-[90px] text-[10px] font-bold flex items-center justify-start text-[#475467] gap-x-2 mx-1 py-1">
+                                            <Avatar
+                                              size={'small'}
+                                              icon={<UserOutlined />}
+                                            />{' '}
+                                            {`${pmsr?.user?.name ?? pmsr?.user?.email}`?.slice(
+                                              0,
+                                              10
+                                            )}
+                                          </span>
+                                          <span className="w-[13%] min-w-[58px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1">
+                                            {moment(
+                                              new Date(pmsr?.dateTime)
+                                            ).format('DD.MM.yyyy')}
+                                          </span>
+                                          <span className="w-[3%] min-w-[15px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1">
+                                            <Popover
+                                              content={
+                                                <div className="flex flex-col">
+                                                  <span
+                                                    className="font-bold cursor-pointer bg-red-600 bg-opacity-15 hover:bg-opacity-80 hover:!text-white p-2 rounded-lg px-2 flex justify-between mb-5"
+                                                    onClick={() => {
+                                                      deleteTableChangeInTakeOff(
+                                                        pmsr?.pageId,
+                                                        pmsr?.type,
+                                                        pmsr?.dateTime
+                                                      );
+                                                    }}
+                                                  >
+                                                    Delete <DeleteOutlined />
+                                                  </span>
+                                                  <h3 className="text-sm font-bold">
+                                                    Edit WBS
+                                                  </h3>
+                                                  {Array.isArray(
+                                                    takeOff?.categories
+                                                  ) &&
+                                                    takeOff.categories.length >
+                                                    0 &&
+                                                    takeOff.categories.map(
+                                                      (cat: string) => {
+                                                        return (
+                                                          <div key={cat}>
+                                                            <h3
+                                                              onClick={() => {
+                                                                updateTableCategory(
+                                                                  pmsr?.pageId,
+                                                                  pmsr?.type,
+                                                                  pmsr?.dateTime,
+                                                                  cat,
+                                                                  null
+                                                                );
+                                                              }}
+                                                              className={`font-bold my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 rounded-lg px-2 ${pmsr?.category == cat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}
+                                                            >
+                                                              {cat}
+                                                            </h3>
+                                                            {Array.isArray(
+                                                              takeOff?.subCategories
+                                                            ) &&
+                                                              takeOff.subCategories
+                                                                .filter(
+                                                                  (i: string) =>
+                                                                    i?.includes(
+                                                                      cat
+                                                                    )
+                                                                )
+                                                                .map(
+                                                                  (
+                                                                    subcat: string
+                                                                  ) => {
                                                                     return (
                                                                       <li
-                                                                        key={subcat}
+                                                                        key={
+                                                                          subcat
+                                                                        }
                                                                         onClick={() => {
                                                                           updateTableCategory(
                                                                             pmsr?.pageId,
@@ -3650,167 +3986,39 @@ const TakeOffNewPage = () => {
                                                                         }}
                                                                         className={`list-disc my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 px-2 rounded-lg ${pmsr?.subcategory == subcat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}
                                                                       >
-                                                                        {subcat?.split('-')[0]}
+                                                                        {
+                                                                          subcat?.split(
+                                                                            '-'
+                                                                          )[0]
+                                                                        }
                                                                       </li>
                                                                     );
-                                                                  })}
-                                                            </div>
-                                                          );
-                                                        })}
-                                                    </div>
-                                                  }
-                                                  title="Actions"
-                                                  trigger="click"
-                                                >
-                                                  <MoreOutlined
-                                                    onClick={(e) => {
-                                                      e.stopPropagation();
-                                                    }}
-                                                    className="cursor-pointer text-[20px]"
-                                                  />
-                                                </Popover>
-                                              </span>
-                                            </div>
-                                          </>
-                                        })
-                                      }
-                                    </>
-                                  })
-                                }
-                                {
-                                  measurementsplanArray(takeOff, sideSearch).filter((gvl: any) => (gvl?.category == prct && !gvl?.subcategory)).map((pmsr: any) => {
-                                    return <>
-                                    <div className='flex min-w-max border-b pl-2 hover:bg-[#475467] hover:bg-opacity-20 cursor-pointer'
-                                      onClick={() => {
-                                        if (pmsr?.type == 'count' || pmsr?.type == 'texts') {
-                                          return;
-                                        }
-                                        openShap(pmsr);
-                                        const pg = takeOff?.pages?.find(
-                                          (pgs: any) => pgs?.pageId == pmsr?.pageId
-                                        );
-                                        if (pg) {
-                                          if (
-                                            pmsr?.points &&
-                                            Array.isArray(pmsr?.points) &&
-                                            pmsr?.points?.length > 1
-                                          ) {
-                                            // setStageValues(record?.points[0]-100, record?.points[1]-100)
-                                          }
-                                          setselectedPage(pg);
-                                          setselectedTakeOffTab('page');
-                                          if (
-                                            !selectedPagesList?.find(
-                                              (i: any) => i?.pageId == pg?.pageId
-                                            )
-                                          ) {
-                                            //@ts-ignore
-                                            setselectedPagesList((ps: any) => [...ps, pg]);
-                                          }
-                                        }
-                                      }}
-                                    >
-                                      <span className='w-[40%] min-w-[197px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1 gap-x-2' >
-                                        <ColorPicker
-                                          onChangeComplete={(val) => {
-                                            updateTableChangeInTakeOff(
-                                              pmsr?.pageId,
-                                              pmsr?.type,
-                                              pmsr?.dateTime,
-                                              pmsr?.type == 'count' || pmsr?.type == 'texts'
-                                                ? 'textColor'
-                                                : 'stroke',
-                                              val.toHexString()
-                                            );
-                                          }}
-                                          className="!w-[2px] !h-[2px] border-none"
-                                          value={pmsr?.stroke ?? pmsr?.textColor}
-                                          size='small' /> {pmsr?.projectName}
-                                      </span>
-                                      <span className='w-[10%] min-w-[42px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >
-                                        {takeOff?.pages?.find((pp: any) => pp?.pageId == pmsr?.pageId)?.pageNum ?? ''}
-                                      </span>
-                                      <span className='w-[9%] min-w-[37px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >{getText(pmsr)}</span>
-                                      <span className='w-[21%] min-w-[90px] text-[10px] font-bold flex items-center justify-start text-[#475467] gap-x-2 mx-1 py-1' ><Avatar size={'small'} icon={<UserOutlined />} /> {`${pmsr?.user?.name ?? pmsr?.user?.email}`?.slice(0, 10)}</span>
-                                      <span className='w-[13%] min-w-[58px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >{moment(new Date(pmsr?.dateTime)).format('DD.MM.yyyy')}</span>
-                                      <span className='w-[3%] min-w-[15px] text-[10px] font-bold flex items-center justify-start text-[#475467] mx-1 py-1' >
-                                        <Popover
-                                          content={
-                                            <div className='flex flex-col'>
-                                              <span className='font-bold cursor-pointer bg-red-600 bg-opacity-15 hover:bg-opacity-80 hover:!text-white p-2 rounded-lg px-2 flex justify-between mb-5'
-                                                onClick={() => {
-                                                  deleteTableChangeInTakeOff(
-                                                    pmsr?.pageId,
-                                                    pmsr?.type,
-                                                    pmsr?.dateTime
-                                                  );
+                                                                  }
+                                                                )}
+                                                          </div>
+                                                        );
+                                                      }
+                                                    )}
+                                                </div>
+                                              }
+                                              title="Actions"
+                                              trigger="click"
+                                            >
+                                              <MoreOutlined
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
                                                 }}
-                                              >Delete <DeleteOutlined /></span>
-                                              <h3 className='text-sm font-bold' >Edit WBS</h3>
-                                              {Array.isArray(takeOff?.categories) &&
-                                                takeOff.categories.length > 0 &&
-                                                takeOff.categories.map((cat: string) => {
-                                                  return (
-                                                    <div key={cat}>
-                                                      <h3
-                                                        onClick={() => {
-                                                          updateTableCategory(
-                                                            pmsr?.pageId,
-                                                            pmsr?.type,
-                                                            pmsr?.dateTime,
-                                                            cat,
-                                                            null
-                                                          );
-                                                        }}
-                                                        className={`font-bold my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 rounded-lg px-2 ${pmsr?.category == cat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}
-                                                      >
-                                                        {cat}
-                                                      </h3>
-                                                      {Array.isArray(takeOff?.subCategories) &&
-                                                        takeOff.subCategories
-                                                          .filter((i: string) => i?.includes(cat))
-                                                          .map((subcat: string) => {
-                                                            return (
-                                                              <li
-                                                                key={subcat}
-                                                                onClick={() => {
-                                                                  updateTableCategory(
-                                                                    pmsr?.pageId,
-                                                                    pmsr?.type,
-                                                                    pmsr?.dateTime,
-                                                                    cat,
-                                                                    subcat
-                                                                  );
-                                                                }}
-                                                                className={`list-disc my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 px-2 rounded-lg ${pmsr?.subcategory == subcat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}
-                                                              >
-                                                                {subcat?.split('-')[0]}
-                                                              </li>
-                                                            );
-                                                          })}
-                                                    </div>
-                                                  );
-                                                })}
-                                            </div>
-                                          }
-                                          title="Actions"
-                                          trigger="click"
-                                        >
-                                          <MoreOutlined
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                            }}
-                                            className="cursor-pointer text-[20px]"
-                                          />
-                                        </Popover>
-                                      </span>
-                                    </div>
-                                  </>
-                                  })
-                                }
+                                                className="cursor-pointer text-[20px]"
+                                              />
+                                            </Popover>
+                                          </span>
+                                        </div>
+                                      </>
+                                    );
+                                  })}
                               </>
-                            })
-                        }
+                            );
+                          })}
                       </div>
                     </div>
                     {/* <div className='flex flex-col min-w-max' >
@@ -4238,7 +4446,7 @@ const TakeOffNewPage = () => {
                 const child1 = document.getElementById('left-side');
                 const child2 = document.getElementById('right-side');
                 if (child1 && child2) {
-                  console.log("click event trigger here and logic runs here")
+                  console.log('click event trigger here and logic runs here');
                   // Set the new width for child1 and adjust child2 accordingly
                   //@ts-ignore
                   child1.style.width = '27%';
@@ -4832,7 +5040,8 @@ const TakeOffNewPage = () => {
                                       onClick={() => {
                                         fileInputRef.current?.click();
                                       }}
-                                      className="text-lavenderPurpleReplica font-bold border border-transparent bg-lavenderPurpleReplica bg-opacity-10 hover:!border-lavenderPurpleReplica hover:!text-lavenderPurpleReplica">
+                                      className="text-lavenderPurpleReplica font-bold border border-transparent bg-lavenderPurpleReplica bg-opacity-10 hover:!border-lavenderPurpleReplica hover:!text-lavenderPurpleReplica"
+                                    >
                                       Select file
                                     </Button>
                                   </div>

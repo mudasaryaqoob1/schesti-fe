@@ -28,7 +28,7 @@ const UpdateProfile = ({
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const authData = useSelector((state: RootState) => state.auth)
+  const authData = useSelector((state: RootState) => state.auth);
   const [profileName, setProfileName] = useState(name);
   const { id } = useParams();
   const [profileAvatar, setProfileAvatar] = useState<string | File>(avatar);

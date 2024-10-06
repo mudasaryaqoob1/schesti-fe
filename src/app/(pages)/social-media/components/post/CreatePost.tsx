@@ -137,7 +137,7 @@ const CreatePost = () => {
     dispatch(setPostData(null));
   }
 
-  const userAvatar = user?.socialAvatar || user?.avatar || "/profileAvatar.png";
+  const userAvatar = user?.socialAvatar || user?.avatar || '/profileAvatar.png';
   const fullName = user?.socialName || user?.name || '';
 
   return (
@@ -151,14 +151,17 @@ const CreatePost = () => {
           setFeeling={setFeeling}
         />
       </ModalComponent>
-      <ModalComponent
-        setOpen={setOpenCreatePost}
-        open={openCreatePost}
-      >
+      <ModalComponent setOpen={setOpenCreatePost} open={openCreatePost}>
         <h1>Create Post</h1>
       </ModalComponent>
       <div className="flex items-center gap-2">
-        <Image src={userAvatar} className='rounded-full' width={36} height={36} alt={fullName} />
+        <Image
+          src={userAvatar}
+          className="rounded-full"
+          width={36}
+          height={36}
+          alt={fullName}
+        />
         <p className="font-medium text-graphiteGray text-sm">Create Post</p>
       </div>
 
@@ -189,24 +192,22 @@ const CreatePost = () => {
               }
               className="text-red-600 absolute -right-1 cursor-pointer rounded-full -top-1 bg-cloudWhite"
             />
-            {
-              type.includes('image') ? (
-                <Image
-                  className="rounded-md"
-                  key={i}
-                  src={url}
-                  height={100}
-                  width={100}
-                  alt={'img-' + i}
-                />
-              ) : (
-                <video
-                  className="rounded-md size-[100px] object-cover"
-                  key={i}
-                  src={url}
-                />
-              )
-            }
+            {type.includes('image') ? (
+              <Image
+                className="rounded-md"
+                key={i}
+                src={url}
+                height={100}
+                width={100}
+                alt={'img-' + i}
+              />
+            ) : (
+              <video
+                className="rounded-md size-[100px] object-cover"
+                key={i}
+                src={url}
+              />
+            )}
           </div>
         ))}
 
@@ -240,7 +241,6 @@ const CreatePost = () => {
               )}
             </div>
           ))}
-
       </div>
       <div className="upload-media-section flex flex-wrap justify-between items-center mt-3">
         <div className="flex gap-4 items-center ">
@@ -263,17 +263,19 @@ const CreatePost = () => {
             id="photo-video"
             className="hidden"
             type="file"
-            accept='image/* , video/*'
+            accept="image/* , video/*"
             onChange={({ target }) => {
               if (target.files) {
                 if (target.files.length > 0) {
                   const selectedMediaFiles = Array.from(target.files as FileList);
                   setFiles((prev) => [
                     ...prev,
-                    ...selectedMediaFiles.filter(({ type }) => (type.includes('video') || type.includes('image'))),
+                    ...selectedMediaFiles.filter(
+                      ({ type }) =>
+                        type.includes('video') || type.includes('image')
+                    ),
                   ]);
                 }
-
               }
             }}
           />

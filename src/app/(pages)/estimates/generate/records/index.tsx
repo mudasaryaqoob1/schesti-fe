@@ -18,6 +18,7 @@ import { downloadCrmItemsAsCSV } from '@/app/(pages)/crm/utils';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { estimateRequestService } from '@/app/services/estimates.service';
 import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
+import _ from 'lodash';
 
 interface DataType {
   key: React.Key;
@@ -182,7 +183,7 @@ const EstimateRequestTable: React.FC = () => {
         } else {
           return (
             <span className="capitalize text-red-600 bg-red-100 px-2 py-1 rounded-full">
-              {record.status}
+              {_.startCase(_.camelCase(record.status))}
             </span>
           );
         }
