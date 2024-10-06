@@ -1,8 +1,9 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 import React from 'react';
 import Navbar from '@/app/component/navbar/minnavbar';
 import CollapseComponent from '../components/customCollapse';
-import FAQ from  '@/app/constants/FAQ.json'
+import FAQ from '@/app/constants/FAQ.json';
 export default function FAQs() {
   return (
     <>
@@ -77,9 +78,7 @@ export default function FAQs() {
             </div>
           </div>
           <div className="">
-            <CollapseComponent
-              faqs={FAQ}
-            />
+            <CollapseComponent faqs={FAQ} />
           </div>
         </div>
       </div>

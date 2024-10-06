@@ -1,10 +1,8 @@
-import ProfileIntro from '@/app/(pages)/user/[id]/components/Profile'
-import React from 'react'
+import ProfileIntro from '@/app/(pages)/user/[id]/components/Profile';
+import React from 'react';
 
 const Setttings = () => {
-    return (
-        <ProfileIntro />
-    )
-}
+  return <ProfileIntro />;
+};
 
-export default Setttings
+export default Setttings;

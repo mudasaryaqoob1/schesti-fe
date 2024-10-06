@@ -21,6 +21,7 @@ import { HttpService } from '@/app/services/base.service';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import PaypalIntegration from './paypalIntegration';
 import { usePricing } from '../usePricing';
+import { AxiosError } from 'axios';
 
 const Payment = () => {
   const router = useRouterHook();
@@ -50,16 +51,21 @@ const Payment = () => {
     if (!stripe) {
       return;
     }
-    const response: any = await authService.httpStripeCheckout({
-      planID: selectedPLan?._id,
-      autoRenew: autoRenew,
-    });
-    const result = await stripe.redirectToCheckout({
-      sessionId: response.data.id,
-    });
-    console.log({ stripeResult: result });
-    if (result.error) {
-      toast.error('Something went wrong');
+    try {
+      const response: any = await authService.httpStripeCheckout({
+        planID: selectedPLan?._id,
+        autoRenew: autoRenew,
+      });
+      const result = await stripe.redirectToCheckout({
+        sessionId: response.data.id,
+      });
+      console.log({ stripeResult: result });
+      if (result.error) {
+        toast.error('Something went wrong');
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data.message);
     }
   };
 

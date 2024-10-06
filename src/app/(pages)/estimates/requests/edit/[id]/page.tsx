@@ -13,7 +13,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { withAuth } from '@/app/hoc/withAuth';
 import AwsS3 from '@/app/utils/S3Intergration';
-import ExistingClient from '../../existingClient';
 import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
 import { fetchUsers } from '@/redux/userSlice/user.thunk';
@@ -28,10 +27,10 @@ import { minHeading, senaryHeading } from '@/globals/tailwindvariables';
 import { estimateRequestService } from '@/app/services/estimates.service';
 import { getCompanyRolesThunk } from '@/redux/company-roles/company-roles.thunk';
 import { selectEstimateRequests } from '@/redux/estimate/estimateRequestSelector';
-import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { IUser } from '@/app/interfaces/estimateRequests/estimateAssignedUser.interface';
 import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
+import { ListCrmItems } from '@/app/(pages)/contracts/components/ListCrmItems';
 
 const clientInfoSchema: any = Yup.object().shape({
   clientName: Yup.string().required('Client Name is required!'),
@@ -288,7 +287,7 @@ const EditEstimateRequest = () => {
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap">
         <TertiaryHeading title="Edit Estimate Request" />
         <CustomWhiteButton
-          text="Add Existing Client"
+          text="Add Existing Receipt"
           className="!w-auto "
           icon="/plusblack.svg"
           iconwidth={20}
@@ -319,35 +318,31 @@ const EditEstimateRequest = () => {
                 setOpen={setShowModal}
                 destroyOnClose
               >
-                <ExistingClient
-                  setModalOpen={setShowModal}
-                  onSelectClient={({
-                    firstName,
-                    lastName,
-                    companyName,
-                    email,
-                    phone,
-                  }: IClient) => {
-                    setFieldValue('clientName', `${firstName} ${lastName}`);
-                    setFieldValue('companyName', companyName);
-                    setFieldValue('email', email);
-                    setFieldValue('phone', phone);
+                <ListCrmItems
+                  onClose={() => setShowModal(false)}
+                  onItemClick={(item) => {
+                    setFieldValue('clientName', item.name);
+                    setFieldValue('companyName', item.companyName);
+                    setFieldValue('email', item.email);
+                    setFieldValue('phone', item.phone);
+                    setShowModal(false);
                   }}
+                  title="Select Item"
                 />
               </ModalComponent>
               <Form onSubmit={handleSubmit}>
                 <div className="p-5 mt-4 border border-silverGray rounded-lg shadow-quinarGentleDepth bg-white">
                   <QuaternaryHeading
-                    title="Client Information"
+                    title="Receipt Information"
                     className="font-semibold"
                   />
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-rows-1 gap-4 mt-4">
                     <FormControl
                       control="input"
-                      label="Client Name"
+                      label="Name"
                       type="text"
                       name="clientName"
-                      placeholder="Enter Client Name"
+                      placeholder="Enter Name"
                     />
                     <FormControl
                       control="input"

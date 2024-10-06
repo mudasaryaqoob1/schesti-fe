@@ -152,11 +152,11 @@ const Navbar = () => {
             </div>
           </div>
           <Link href="/login">
-          <button className="cursor-pointer w-[77px] h-[40px] border-[#007AB6] border rounded-[24px] font-normal text-[15px] leading-[26px] text-[#007AB6] hover:bg-[#007AB6] hover:text-white transition-colors duration-300">
-            Login
-          </button>
+            <button className="cursor-pointer w-[77px] h-[40px] border-[#007AB6] border rounded-[24px] font-normal text-[15px] leading-[26px] text-[#007AB6] hover:bg-[#007AB6] hover:text-white transition-colors duration-300">
+              Login
+            </button>
           </Link>
-        
+
           <button className="w-[105px] h-[40px] font-normal text-[15px] leading-[26px] bg-[#007AB6] text-white rounded-[300px] hover:bg-transparent hover:border-[#007AB6] hover:text-[#007AB6] border border-transparent transition-colors duration-300">
             Free trial
           </button>
@@ -168,9 +168,7 @@ const Navbar = () => {
             aria-label="Open Menu"
           >
             {/* <IoMenu size={24} /> */}
-            ___
-            ___
-            ___
+            ___ ___ ___
           </button>
         </div>
       </div>
@@ -185,8 +183,7 @@ const Navbar = () => {
             onClick={() => setIsMobileMenuOpen(false)}
             aria-label="Close Menu"
           >
-            {/* <IoClose size={24} /> */}
-            X
+            {/* <IoClose size={24} /> */}X
           </button>
         </div>
         <div className="flex flex-col mx-4 text-[15px] leading-[26px]  text-[#161C2D]">
@@ -204,9 +201,11 @@ const Navbar = () => {
             Why Schesti?
           </Link>
 
-          <div className="py-2"><Link href="/pricing-page" className="cursor-pointer ">
+          <div className="py-2">
+            <Link href="/pricing-page" className="cursor-pointer ">
               Pricing
-            </Link></div>
+            </Link>
+          </div>
           <div className="py-2">
             <Link href="/blogs" className="cursor-pointer ">
               Blogs
@@ -225,28 +224,27 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex flex-col gap-3 mx-3">
-
-        <Link href="/contact-us" className="cursor-pointer ">
-          <div className="flex items-center py-2 text-[#007AB6] border border-[#007AB6] rounded-[24px] justify-center">
-      
-          <Image
-              src="/images/phone.svg"
-              width={24}
-              height={24}
-              alt="Phone"
-              className="w-6 h-6"
-            />
-            <span className="ml-2">Let’s Talk</span>
-       
-    
-          </div>
+          <Link href="/contact-us" className="cursor-pointer ">
+            <div className="flex items-center py-2 text-[#007AB6] border border-[#007AB6] rounded-[24px] justify-center">
+              <Image
+                src="/images/phone.svg"
+                width={24}
+                height={24}
+                alt="Phone"
+                className="w-6 h-6"
+              />
+              <span className="ml-2">Let’s Talk</span>
+            </div>
           </Link>
           {/* <Link href="/login" className="cursor-pointer "> */}
-          <Link href="/login"  className="cursor-pointer py-2 text-[#007AB6] border border-[#007AB6] rounded-full hover:bg-[#007AB6] hover:text-white transition-colors duration-300">
+          <Link
+            href="/login"
+            className="cursor-pointer py-2 text-[#007AB6] border border-[#007AB6] rounded-full hover:bg-[#007AB6] hover:text-white transition-colors duration-300"
+          >
             Login
           </Link>
           {/* </Link> */}
-      
+
           <button className="py-2 text-white bg-[#007AB6] rounded-full hover:bg-transparent hover:border-[#007AB6] hover:text-[#007AB6] border border-transparent transition-colors duration-300">
             Free trial
           </button>

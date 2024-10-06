@@ -43,7 +43,8 @@ const SinglePost = ({
     organizationName = '',
     socialName,
     university = '',
-    avatar = '', socialAvatar = ''
+    avatar = '',
+    socialAvatar = '',
   },
   myFeed = false,
 }: Props) => {
@@ -51,7 +52,7 @@ const SinglePost = ({
   const [seeMore, setSeeMore] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
   // const [showComments, setShowComments] = useState(true);
-  let showComments = true
+  let showComments = true;
   const dispatch = useDispatch();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingPost, setIsDeletingPost] = useState(false);
@@ -60,7 +61,7 @@ const SinglePost = ({
   const userAvatar = socialAvatar || avatar || '/profileAvatar.png';
   const router = useRouter();
   const [openLightbox, setOpenLightbox] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0)
+  const [lightboxIndex, setLightboxIndex] = useState(0);
   const user = useUser();
 
   const isPostOwner = postOwnerId === user?._id;
@@ -105,9 +106,9 @@ const SinglePost = ({
   };
 
   const handleLightbox = (i: number) => {
-    setLightboxIndex(i)
+    setLightboxIndex(i);
     setOpenLightbox(true);
-  }
+  };
   return (
     <section className="w-full my-3.5 shadow relative rounded-xl p-6 bg-white">
       <WarningModal
@@ -172,22 +173,34 @@ const SinglePost = ({
       {/* filesimages or video view on single post */}
 
       <div className="images-section mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
-        <LightBox mediaUrls={mediaFiles} open={openLightbox} setOpen={setOpenLightbox} index={lightboxIndex} />
+        <LightBox
+          mediaUrls={mediaFiles}
+          open={openLightbox}
+          setOpen={setOpenLightbox}
+          index={lightboxIndex}
+        />
         {mediaFiles.slice(0, 3).map(({ _id, url, type }, i) => (
           <div className="relative h-44 w-auto col-span-1" key={_id}>
-            {
-              type.includes('video') ? <video onClick={() => handleLightbox(i)} src={url} className="rounded-md cursor-pointer h-full w-full object-cover" /> : (
-                <Image
-                  fill={true}
-                  alt={`media-${i}`}
-                  src={url}
-                  onClick={() => handleLightbox(i)}
-                  className="rounded-md cursor-pointer shadow-sm size-24 object-cover"
-                />
-              )
-            }
+            {type.includes('video') ? (
+              <video
+                onClick={() => handleLightbox(i)}
+                src={url}
+                className="rounded-md cursor-pointer h-full w-full object-cover"
+              />
+            ) : (
+              <Image
+                fill={true}
+                alt={`media-${i}`}
+                src={url}
+                onClick={() => handleLightbox(i)}
+                className="rounded-md cursor-pointer shadow-sm size-24 object-cover"
+              />
+            )}
             {mediaFiles.length > 2 && i === 2 && (
-              <p onClick={() => handleLightbox(i)} className="absolute text-white font-semibold text-xl left-[50%] top-[50%]">
+              <p
+                onClick={() => handleLightbox(i)}
+                className="absolute text-white font-semibold text-xl left-[50%] top-[50%]"
+              >
                 +2
               </p>
             )}
@@ -204,7 +217,7 @@ const SinglePost = ({
           />
           <div
             className="flex gap-2 items-center cursor-pointer"
-          // onClick={() => setShowComments((prev) => !prev)}
+            // onClick={() => setShowComments((prev) => !prev)}
           >
             <Image
               src="/comments-01.svg"

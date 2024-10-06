@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 import ContractorCard from './contractorCard';
 import HomepageSlider from './homepageSlider';
-import Footer from '../footer'
+import Footer from '../footer';
 import BusinessOperationCard from './businessOperationCard';
 
 const HomePage = () => {
@@ -647,7 +647,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

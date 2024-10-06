@@ -28,7 +28,7 @@ const UpdateProfile = ({
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const authData = useSelector((state: RootState) => state.auth)
+  const authData = useSelector((state: RootState) => state.auth);
   const [profileName, setProfileName] = useState(name);
   const { id } = useParams();
   const [profileAvatar, setProfileAvatar] = useState<string | File>(avatar);
@@ -43,8 +43,17 @@ const UpdateProfile = ({
       });
       setIsLoading(false);
     } else {
-      const { data } = await userService.updateSocialProfile(id, { socialName: profileName });
-      dispatch(dispatch(setUserAction({ ...authData, user: { ...authData.user, ...data.user } })))
+      const { data } = await userService.updateSocialProfile(id, {
+        socialName: profileName,
+      });
+      dispatch(
+        dispatch(
+          setUserAction({
+            ...authData,
+            user: { ...authData.user, ...data.user },
+          })
+        )
+      );
       setIsLoading(false);
     }
     setShowModal(false);
