@@ -223,7 +223,7 @@ const HomePage = () => {
           />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-[80px] px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-[0px 0px 45px 0px #B6C3F140]">
+          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-[0px_0px_45px_0px_#B6C3F140]">
             <div className="font-bold font-Gilroy text-[21px] leading-[26px] -tracking-[0.5px] text-[#161C2D]">
               Revolutionize your approach to Takeoffs
             </div>
@@ -232,7 +232,7 @@ const HomePage = () => {
               project success rates
             </div>
           </div>
-          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-custom">
+          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-[0px_0px_45px_0px_#B6C3F140]">
             <div className="font-bold font-Gilroy text-[21px] leading-[26px] -tracking-[0.5px] text-[#161C2D]">
               Bid faster and more efficiently. Bid farewell to manual methods
             </div>
@@ -240,7 +240,7 @@ const HomePage = () => {
               Prevent costly estimating mistakes with digital accuracy
             </div>
           </div>
-          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-custom">
+          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-[0px_0px_45px_0px_#B6C3F140]">
             <div className="font-bold font-Gilroy text-[21px] leading-[26px] -tracking-[0.5px] text-[#161C2D]">
               Reduce takeoff duration by 55%
             </div>
@@ -249,7 +249,7 @@ const HomePage = () => {
               interface requiring no additional training
             </div>
           </div>
-          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-custom">
+          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-[0px_0px_45px_0px_#B6C3F140]">
             <div className="font-bold font-Gilroy text-[21px] leading-[26px] -tracking-[0.5px] text-[#161C2D]">
               Reduce takeoff duration by 70%
             </div>
@@ -502,7 +502,7 @@ const HomePage = () => {
           </div>
         </div>
         <div className="flex items-center justify-center mt-[72px]">
-          <button className="w-[196px] h-[56px] rounded-full border border-[#007AB6] font-Gilroy font-bold text-[17px] leading-[22px] -tracking-[0.6px] text-[#007AB6] transition-transform duration-300 hover:scale-105">
+          <button className="w-[196px] h-[56px] bg-transparent rounded-full border border-[#007AB6] font-Gilroy font-bold text-[17px] leading-[22px] -tracking-[0.6px] text-[#007AB6] transition-transform duration-300 hover:scale-105">
             Read more
           </button>
         </div>
@@ -549,7 +549,7 @@ const HomePage = () => {
               <button className="w-full lg:w-[201px] h-[57px] rounded-[39px] text-white bg-[#007AB6] font-medium font-Gilroy text-[18px] leading-[27px] transition-transform duration-300 hover:scale-105">
                 Get Started Now!
               </button>
-              <button className="w-full lg:w-[148px] h-[55px] rounded-[39px] border-2 border-[#007AB6] font-medium font-Gilroy text-[18px] leading-[27px] text-[#007AB6] transition-transform duration-300 hover:scale-105">
+              <button className="w-full lg:w-[148px] bg-transparent h-[55px] rounded-[39px] border-2 border-[#007AB6] font-medium font-popin text-[18px] leading-[27px] text-[#007AB6] transition-transform duration-300 hover:scale-105">
                 Contact us
               </button>
             </div>

@@ -152,7 +152,7 @@ const Navbar = () => {
             </div>
           </div>
           <Link href="/login">
-          <button className="cursor-pointer w-[77px] h-[40px] border-[#007AB6] border rounded-[24px] font-normal text-[15px] leading-[26px] text-[#007AB6] hover:bg-[#007AB6] hover:text-white transition-colors duration-300">
+          <button className="cursor-pointer bg-transparent  w-[77px] h-[40px] border-[#007AB6] border rounded-[24px] font-normal text-[15px] leading-[26px] text-[#007AB6] hover:bg-[#007AB6] hover:text-white transition-colors duration-300">
             Login
           </button>
           </Link>

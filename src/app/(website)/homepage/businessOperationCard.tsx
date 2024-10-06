@@ -44,10 +44,11 @@ const Minicard = () => {
     useState('Bidding');
   return (
     <div className="container py-8">
-      <div className="flex flex-wrap max-w-[964px] w-full items-center justify-between mx-auto">
+      <div className="flex flex-wrap max-w-[964px] w-full items-center justify-between mx-auto 
+]">
         {businessOperationTabs.map((tab) => (
           <div
-            className="logo-container flex-shrink-0 cursor-pointer"
+            className="flex-shrink-0 cursor-pointer logo-container "
             key={tab.title}
             onClick={() => setSchestiBusinessOperation(tab.title)}
           >
@@ -69,7 +70,7 @@ const Minicard = () => {
         ))}
       </div>
       {schestiBusinessOperation === 'Bidding' ? (
-        <div className=" mx-auto px-4 flex flex-col lg:flex-row items-center justify-between mt-10">
+        <div className="flex flex-col items-center justify-between px-4 mx-auto mt-10 lg:flex-row">
           <div className="max-w-full lg:max-w-[434px] lg:pr-4">
             <div className="font-bold text-h4 font-Gilroy tracking-[1.6px] text-blue uppercase  lg:text-xl">
               Bid Management
@@ -90,16 +91,16 @@ const Minicard = () => {
                 <img
                   src="/images/arrow.svg"
                   alt="arrow"
-                  className="transform transition-transform duration-300 group-hover:translate-x-2"
+                  className="transition-transform duration-300 transform group-hover:translate-x-2"
                 />
               </button>
             </div>
           </div>
           <div className="relative mt-8 lg:mt-0 lg:ml-4">
-            <div className="absolute hidden md:flex  -right-3 bottom-96">
+            <div className="absolute hidden md:flex -right-3 bottom-96">
               <img src="/images/up_arrow.png" alt="up arrow" />
             </div>
-            <div className="absolute hidden md:flex bottom-0 -left-4 lg:left-0">
+            <div className="absolute bottom-0 hidden md:flex -left-4 lg:left-0">
               <img src="/images/down_arrow.png" alt="down arrow" />
             </div>
             <Image
@@ -144,7 +145,7 @@ const Minicard = () => {
                 <img
                   src="/images/arrow.svg"
                   alt="arrow"
-                  className="transform transition-transform duration-300 group-hover:translate-x-2"
+                  className="transition-transform duration-300 transform group-hover:translate-x-2"
                 />
               </button>
             </div>
@@ -174,7 +175,7 @@ const Minicard = () => {
                 <img
                   src="/images/arrow.svg"
                   alt="arrow"
-                  className="transform transition-transform duration-300 group-hover:translate-x-2"
+                  className="transition-transform duration-300 transform group-hover:translate-x-2"
                 />
               </button>
             </div>
@@ -219,7 +220,7 @@ const Minicard = () => {
                 <img
                   src="/images/arrow.svg"
                   alt="arrow"
-                  className="transform transition-transform duration-300 group-hover:translate-x-2"
+                  className="transition-transform duration-300 transform group-hover:translate-x-2"
                 />
               </button>
             </div>
@@ -250,7 +251,7 @@ const Minicard = () => {
                 <img
                   src="/images/arrow.svg"
                   alt="arrow"
-                  className="transform transition-transform duration-300 group-hover:translate-x-2"
+                  className="transition-transform duration-300 transform group-hover:translate-x-2"
                 />
               </button>
             </div>
@@ -294,7 +295,7 @@ const Minicard = () => {
                 <img
                   src="/images/arrow.svg"
                   alt="arrow"
-                  className="transform transition-transform duration-300 group-hover:translate-x-2"
+                  className="transition-transform duration-300 transform group-hover:translate-x-2"
                 />
               </button>
             </div>
@@ -323,7 +324,7 @@ const Minicard = () => {
                 <img
                   src="/images/arrow.svg"
                   alt="arrow"
-                  className="transform transition-transform duration-300 group-hover:translate-x-2"
+                  className="transition-transform duration-300 transform group-hover:translate-x-2"
                 />
               </button>
             </div>
@@ -368,7 +369,7 @@ const Minicard = () => {
                 <img
                   src="/images/arrow.svg"
                   alt="arrow"
-                  className="transform transition-transform duration-300 group-hover:translate-x-2"
+                  className="transition-transform duration-300 transform group-hover:translate-x-2"
                 />
               </button>
             </div>
@@ -396,7 +397,7 @@ const Minicard = () => {
                 <img
                   src="/images/arrow.svg"
                   alt="arrow"
-                  className="transform transition-transform duration-300 group-hover:translate-x-2"
+                  className="transition-transform duration-300 transform group-hover:translate-x-2"
                 />
               </button>
             </div>
