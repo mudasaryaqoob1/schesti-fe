@@ -184,12 +184,12 @@ const Footer = () => {
               </p>
               <div className="space-y-2 mt-[20px]">
                 <p className="font-regular font-Gilroy text-[17px] -tracking-[0.2px] leading-10 text-white cursor-pointer">
-                  <Link href="/privacy" className="cursor-pointer ">
+                  <Link href="/privacys" className="cursor-pointer ">
                     Privacy Policy
                   </Link>
                 </p>
                 <p className="font-regular font-Gilroy text-[17px] -tracking-[0.2px] leading-10 text-white cursor-pointer">
-                  <Link href="/terms-conditions" className="cursor-pointer ">
+                  <Link href="/terms-condition" className="cursor-pointer ">
                     Terms & Conditions
                   </Link>
                 </p>

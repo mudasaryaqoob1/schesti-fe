@@ -5,6 +5,7 @@ import Image from 'next/image';
 import ContractorCard from './contractorCard';
 import HomepageSlider from './homepageSlider';
 import Footer from '../footer';
+import Link from 'next/link';
 import BusinessOperationCard from './businessOperationCard';
 
 const HomePage = () => {
@@ -29,7 +30,9 @@ const HomePage = () => {
             </p>
             <div className="flex flex-col gap-3 md:flex-row">
               <button className="bg-[#007AB6] font-Gilroy font-bold text-white h-[48px] md:h-[56px] shadow-[0px 4px 30px rgba(0, 122, 182, 0.1)] w-full md:w-[221px] rounded-full transition-transform duration-300 hover:scale-105 custom-button">
-                Catch the offer
+                <Link href="/pricing-page" className="cursor-pointer ">
+                  Catch the offer
+                </Link>
               </button>
 
               <button
@@ -41,14 +44,14 @@ const HomePage = () => {
                 className="w-full cursor-pointer md:w-[192px] h-[48px] md:h-[56px] shadow-[0px 4px 30px rgba(0, 122, 182, 0.1)] bg-white font-Gilroy text-[15px] md:text-[17px] leading-[20px] md:leading-[22px] text-[#007AB6] rounded-full flex items-center justify-center -tracking-[0.4px] md:-tracking-[0.6px] transition-transform duration-300 hover:scale-105"
               >
                 <div className="flex items-center space-x-2">
-                  <Image
+                  {/* <Image
                     src="/images/hero_play.svg"
                     width={19}
                     height={20}
                     alt="Play"
-                  />
+                  /> */}
                   <span className="text-[17px] font-bold leading-[22px] -tracking-[0.6px] font-Gilroy text-[#007AB6]">
-                    Watch video
+                    Get Start Now
                   </span>
                 </div>
               </button>
@@ -364,9 +367,11 @@ const HomePage = () => {
               needs
             </div>
           </div>
-          <button className="w-[150px]  sm:w-[220px] h-[50px] sm:h-[59px] rounded-full bg-[#007AB6] font-Gilroy font-bold text-white text-sm sm:text-[17px] leading-[24px] sm:leading-[32px] text-center -tracking-[0.5px] sm:-tracking-[0.6px] transition-transform duration-300 transform hover:scale-105">
-            View pricing
-          </button>
+          <Link href="/pricing-page" className="cursor-pointer">
+            <button className="w-[150px] cursor-pointer  sm:w-[220px] h-[50px] sm:h-[59px] rounded-full bg-[#007AB6] font-Gilroy font-bold text-white text-sm sm:text-[17px] leading-[24px] sm:leading-[32px] text-center -tracking-[0.5px] sm:-tracking-[0.6px] transition-transform duration-300 transform hover:scale-105">
+              View pricing
+            </button>
+          </Link>
         </div>
       </div>
 
