@@ -254,7 +254,7 @@ export default function Blogs() {
           </button>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 }

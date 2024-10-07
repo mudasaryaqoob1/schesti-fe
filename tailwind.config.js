@@ -90,7 +90,8 @@ export default {
         schestiLightGray: '#EAECF0',
         schestiPrimaryBG: '#F8F8F8',
         mercury: '#E1E5EA',
-        // blue: '#007AB6',
+
+        // blue: '[#007AB6]',
         // Slate_Blue: '#718096',
         // blue_dark: '#002B40',
         // blue_gray: '#404B5A',
@@ -157,6 +158,7 @@ export default {
       Gilroy: ['Gilroy', 'sans-serif'],
       Poppins: ['Poppins'],
       manrope: ['Manrope', 'sans-serif'],
+      jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
     },
     hovering: {
       custom: 'transition-transform duration-300 hover:scale-105',

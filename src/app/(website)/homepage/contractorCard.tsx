@@ -17,7 +17,7 @@ const ContractorCard = ({
   description,
 }: IProps) => {
   return (
-    <div className="flex flex-col max-w-[347px]   rounded-[16px] p-4 gap-6 mt-0 md:mt-[40px]">
+    <div className="flex flex-col max-w-[347px] rounded-[16px] p-4 gap-6 mt-0 md:mt-[40px]">
       <div>
         <Image
           src={imageSrc}
@@ -31,17 +31,22 @@ const ContractorCard = ({
         <div className="font-Gilroy font-bold text-[21px] leading-[26px] -tracking-[0.5px] text-gray">
           {title}
         </div>
-        <div className="font-Gilroy font-regular text-h3 -tracking-[0.2px] text-gray opacity-70 mt-[12px]">
+        <div className="font-Gilroy font-regular text-[17px] leading-[29px] -tracking-[0.2px] text-gray opacity-70 mt-[12px]">
           {description}
         </div>
-        <div className="mt-[24px] w-full">
-          <div className="flex justify-between flex-row items-center font-Gilroy font-bold text-blue  w-full">
-            <div className="font-Gilroy font-regular text-[15px] -tracking-[0.2px] text-gray opacity-70 mt-[12px] ">
+        <div className="mt-[12px] cursor-pointer group">
+          <div className="flex flex-row items-center justify-between w-full  gap-[10px] ">
+            <div className=" font-bold font-Gilroy text-[#007AB6] text-[15px] leading-[32px] items-center -tracking-[0.6px] text-gray opacity-70  ">
               {title2}
             </div>
             {imageSrc2 && (
-              <div className="transform transition-transform duration-300 group-hover:translate-x-1">
-                <img src={imageSrc2} alt="Additional Image" />
+              <div className="flex items-center transition-transform duration-300 transform group-hover:translate-x-1">
+                <Image
+                  src={imageSrc2}
+                  width={12}
+                  height={12}
+                  alt="Additional Image"
+                />
               </div>
             )}
           </div>

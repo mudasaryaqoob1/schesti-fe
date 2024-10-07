@@ -154,7 +154,9 @@ const Estimate = () => {
           <div className="w-full max-w-[598px]">
             <div className="">
               <h1 className="font-Gilroy font-bold text-[30px] md:text-[40px]  text-[#181D25] md:leading-[60px]">
-                <span className=" text-[#007AB6]">Optimize Your Estimation</span>{' '}
+                <span className=" text-[#007AB6]">
+                  Optimize Your Estimation
+                </span>{' '}
                 Workflow Generating and dispatching estimates has never been
                 quicker— <span className="text-[#007AB6]">or simpler</span>
               </h1>

@@ -2,7 +2,7 @@
 import React from 'react';
 import Navbar from '../navbar';
 import Image from 'next/image';
-import OnlinemeetingFaqs from '@/app/constants/onlinemetting.json'
+import OnlinemeetingFaqs from '@/app/constants/onlinemetting.json';
 import Footer from '../footer';
 import CollapseComponent from '../components/customCollapse';
 const OnlineMeetins = () => {
@@ -455,7 +455,7 @@ const OnlineMeetins = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

@@ -28,7 +28,9 @@ const FinancialTools = () => {
                         receivable{' '}
                       </span>
                       tasks in{' '}
-                      <span className="text-[#007AB6]">one convenient platform</span>
+                      <span className="text-[#007AB6]">
+                        one convenient platform
+                      </span>
                     </h1>
                   </div>
                   <div className=" w-full max-w-[580px]">
@@ -136,10 +138,10 @@ const FinancialTools = () => {
                     inefficient scheduling and lack of real-time updates.
                   </p>
                   <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px] pt-5">
-                    Solution: SCHESTI platform offers real-time scheduling
-                    tools that keep your project timelines on track. With
-                    dynamic adjustments and alerts, you can avoid delays and
-                    manage your projects efficiently
+                    Solution: SCHESTI platform offers real-time scheduling tools
+                    that keep your project timelines on track. With dynamic
+                    adjustments and alerts, you can avoid delays and manage your
+                    projects efficiently
                   </p>
                 </div>
               </div>
@@ -230,10 +232,10 @@ const FinancialTools = () => {
                     project schedules off balance.
                   </p>
                   <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px] pt-5">
-                    Solution: SCHESTI flexible scheduling tools allow for
-                    quick adjustments to your project plans. Whether it is a
-                    change in scope or unforeseen delays, you can easily update
-                    the schedule and communicate changes to all stakeholders
+                    Solution: SCHESTI flexible scheduling tools allow for quick
+                    adjustments to your project plans. Whether it is a change in
+                    scope or unforeseen delays, you can easily update the
+                    schedule and communicate changes to all stakeholders
                   </p>
                 </div>
               </div>
@@ -614,7 +616,7 @@ const FinancialTools = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

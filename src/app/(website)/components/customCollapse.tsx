@@ -13,7 +13,7 @@ const CollapseComponent: React.FC<Propss> = ({ faqs }) => {
       key: i,
       label: (
         <div className="flex items-center gap-6 font-bold font-Gilroy text-[12px] md:text-[18px] text-[#161C2D] md:leading-[32px]">
-          <img src='/images/simple-line-icons_question.svg' alt='tick' />
+          <img src="/images/simple-line-icons_question.svg" alt="tick" />
           {faq.title}
         </div>
       ),

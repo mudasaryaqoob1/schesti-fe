@@ -466,7 +466,7 @@ const Takeoff = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

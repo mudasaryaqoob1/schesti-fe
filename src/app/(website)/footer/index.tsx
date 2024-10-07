@@ -105,14 +105,14 @@ const Footer = () => {
                   </Link>
                 </p>
                 <p className="font-regular font-Gilroy text-[17px] -tracking-[0.2px] leading-10 text-white cursor-pointer">
-                <Link href="/Network" className="cursor-pointer ">
-          Network
-        </Link>
+                  <Link href="/Network" className="cursor-pointer ">
+                    Network
+                  </Link>
                 </p>
                 <p className="font-regular font-Gilroy text-[17px] -tracking-[0.2px] leading-10 text-white cursor-pointer">
-                <Link href="/socialmedia" className="cursor-pointer ">
-          Social Media
-        </Link>
+                  <Link href="/socialmedia" className="cursor-pointer ">
+                    Social Media
+                  </Link>
                 </p>
                 <p className="font-regular font-Gilroy text-[17px] -tracking-[0.2px] leading-10 text-white cursor-pointer">
                   <Link href="/crm" className="cursor-pointer ">
@@ -135,10 +135,7 @@ const Footer = () => {
                   </Link>
                 </p>
                 <p className="font-regular font-Gilroy text-[17px] -tracking-[0.2px] leading-10 text-white cursor-pointer">
-                  <Link
-                    href="/contract"
-                    className="cursor-pointer "
-                  >
+                  <Link href="/contract" className="cursor-pointer ">
                     Contracts
                   </Link>
                 </p>
@@ -150,9 +147,8 @@ const Footer = () => {
               </p>
               <div className="space-y-2 mt-[20px]">
                 <p className="font-regular font-Gilroy text-[17px] -tracking-[0.2px] leading-10 text-white cursor-pointer">
-                  
                   <Link href="/pricing-page" className="cursor-pointer ">
-                  Pricing
+                    Pricing
                   </Link>
                 </p>
                 <p className="font-regular font-Gilroy text-[17px] -tracking-[0.2px] leading-10 text-white cursor-pointer">
@@ -166,9 +162,8 @@ const Footer = () => {
                   </Link>
                 </p>
                 <p className="font-regular font-Gilroy text-[17px] -tracking-[0.2px] leading-10 text-white cursor-pointer">
-                 
                   <Link href="/blogs" className="cursor-pointer ">
-                  Blogs
+                    Blogs
                   </Link>
                 </p>
                 <p className="font-regular font-Gilroy text-[17px] -tracking-[0.2px] leading-10 text-white cursor-pointer">

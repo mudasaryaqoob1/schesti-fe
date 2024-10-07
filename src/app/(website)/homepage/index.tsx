@@ -2,7 +2,6 @@
 import React from 'react';
 import Navbar from '../navbar';
 import Image from 'next/image';
-
 import ContractorCard from './contractorCard';
 import HomepageSlider from './homepageSlider';
 import Footer from '../footer';
@@ -11,16 +10,16 @@ import BusinessOperationCard from './businessOperationCard';
 const HomePage = () => {
   return (
     <>
-      <div className="relative w-full bg-[url('/images/BG.png')] bg-cover ">
+      <div className="relative  w-full bg-[url('/images/BG.png')] bg-cover ">
         <Navbar />
         {/* first div */}
         <div className="max-w-[679px] ml-4 mx-4 md:mx-0 md:md-0 md:ml-[60px] lg:ml-[119px] mt-8 md:mt-[80px] lg:mt-[112px] relative flex flex-col justify-between min-h-screen ">
           <div>
-            <h1 className="text-h3 md:text-4xl lg:text-h1 font-Gilroy font-bold text-gray -tracking-[1px] md:-tracking-[1.5px] lg:-tracking-[2px] mb-4 md:mb-6 lg:mb-[26px]">
+            <h1 className="text-[17px] leading-[29px] md:text-4xl lg:text-[48px] lg:leading-[65px] font-Gilroy font-bold text-[#161C2D] -tracking-[1px] md:-tracking-[1.5px] lg:-tracking-[2px] mb-4 md:mb-6 lg:mb-[26px]">
               LEADING THE WAY: Schesti, the First Application Offering All
               Construction Services
             </h1>
-            <p className="max-w-full md:max-w-[500px] lg:max-w-[617px] font-normal font-Gilroy text-body md:text-h3 lg:text-h2 text-gray -tracking-[0.1px] md:-tracking-[0.15px] lg:-tracking-[0.2px] opacity-70 mb-6 md:mb-8 lg:mb-[64px]">
+            <p className="max-w-full md:max-w-[500px] lg:max-w-[617px] font-normal font-Gilroy text-body md:text-[17px] md:leading-[29px] lg:text-[19px] lg:leading-[32px] text-[#161C2D] -tracking-[0.1px] md:-tracking-[0.15px] lg:-tracking-[0.2px] opacity-70 mb-6 md:mb-8 lg:mb-[64px]">
               One place for all your construction needs, Schesti builds the
               future. Explore how our comprehensive suite of services can
               elevate your construction projects. Whether you are involved in
@@ -56,7 +55,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        <div className="absolute -bottom-0 md:bottom-10 right-0 transition-transform duration-300 hover:scale-125 cursor-pointer">
+        <div className="absolute lg:right-4 right-0 transition-transform duration-300 cursor-pointer -bottom-0 lg:bottom-[15px] md:bottom-10 hover:scale-125">
           <Image
             src="/images/hero_mesage.png"
             width={66}
@@ -75,18 +74,16 @@ const HomePage = () => {
           <div className="absolute top-0 right-0 w-[50px] h-[100px] sm:w-[70px] sm:h-[140px] md:w-[100px] md:h-[200px] bg-[url('/images/Dot2.png')] bg-no-repeat bg-contain" />
           <div className="absolute bottom-0 left-0 w-[50px] h-[100px] sm:w-[70px] sm:h-[140px] md:w-[100px] md:h-[200px] bg-[url('/images/Dot.png')] bg-no-repeat bg-contain" />
           <div className="text-center max-w-[90%] md:max-w-[1000px] px-2 sm:px-4">
-            <span className="text-h4 sm:text-h3 font-Gilroy text-blue tracking-[1.63px] font-bold uppercase">
+            <span className="text-[16px] leading-[20px] sm:text-[17px] sm:leading-[29px] font-Gilroy text-[#007AB6] tracking-[1.63px] font-bold uppercase">
               Leading the Way:
             </span>
-            <div
-              className={`font-extrabold text-[24px] sm:text-[32px] md:text-[35px] xl:text-[40px] leading-[32px] sm:leading-[48px] md:leading-[56px] text-[#002B40] mt-4 sm:mt-6 `}
-            >
+            <div className="font-extrabold text-[24px] sm:text-[32px] md:text-[35px] xl:text-[40px] leading-[32px] sm:leading-[48px] md:leading-[56px] text-[#002B40] mt-4 sm:mt-6 ">
               Elevate Your Construction Venture with Schesti: A Symphony of
               Precision and Speed, Reshaping the Land
             </div>
-            <div className="w-[90%] sm:w-[80%] md:w-[583px] mx-auto text-h3 sm:text-h2 font-Gilroy font-bold text-[#1A202C] mt-4 sm:mt-6 opacity-70">
+            <div className="w-[90%] sm:w-[80%] md:w-[583px] mx-auto text-[17px] leading-[29px] sm:text-[19px] sm:leading-[32px] font-Gilroy font-bold text-[#1A202C] mt-4 sm:mt-6 opacity-70">
               Elevate Your Construction Venture with Schesti:{' '}
-              <span className="text-h4 sm:text-h3 md:text-h2 font-Gilroy font-regular text-[#4A5568]">
+              <span className="text-[16px] leading-[20px] sm:text-[17px] sm:leading-[29px] md:text-[19px] md:leading-[32px] font-Gilroy font-regular text-[#4A5568]">
                 A Symphony of Precision and Speed, Reshaping the Land
               </span>
             </div>
@@ -101,7 +98,7 @@ const HomePage = () => {
           >
             What Type of Company Do You Work For in Construction?
           </div>
-          <div className="text-base md:text-lg lg:text-h2 font-Gilroy font-regular tracking-normal md:-tracking-[0.1px] lg:-tracking-[0.2px] text-center text-gray opacity-70 mt-4 lg:mt-6">
+          <div className="text-base md:text-lg lg:text-[19px] lg:leading-[32px] font-Gilroy font-regular tracking-normal md:-tracking-[0.1px] lg:-tracking-[0.2px] text-center text-[#161C2D] opacity-70 mt-4 lg:mt-6">
             Discover Construction Sector Opportunities, At SCHESTI, we provide
             tailored construction solutions for your needs, ensuring efficient
             operations and successful project outcomes - all in one place
@@ -113,46 +110,58 @@ const HomePage = () => {
             imageSrc="/images/Rec1.png"
             title="General Contractor"
             description="Find new projects, secure bids, minimize risks, and coordinate teams for efficient project management. Discover how we can revolutionize your construction processes."
-            imageSrc2=""
+            title2="Learn more"
+            imageSrc2="/images/arrow.svg"
           />
           <ContractorCard
             imageSrc="/images/Rec2.png"
             title="Sub Contractor"
             description="Track and manage labor and material costs effortlessly with automated updates, allowing you to focus on delivering quality results on time and within budget. Simplify subcontractor management with us"
+            title2="Learn more"
+            imageSrc2="/images/arrow.svg"
           />
           <ContractorCard
             imageSrc="/images/Rec3.png"
             title="Owner/Developers"
             description="Optimize project financials with detailed cost analysis and forecasting tools, empowering you to make informed decisions that drive project success. Trust our comprehensive project financial management"
+            title2="Learn more"
+            imageSrc2="/images/arrow.svg"
           />
           <ContractorCard
             imageSrc="/images/Rec4.png"
             title="Professor / Student"
             description="SCHESTi streamlines academic research projects with comprehensive project management tools, including estimating, contract management, and social media integration tailored to academic needs"
-            title2=""
+            title2="Learn more"
+            imageSrc2="/images/arrow.svg"
           />
           <ContractorCard
             imageSrc="/images/Rec5.png"
             title="Educational Institutes "
             description="Facilitate efficient project management and resource allocation, supporting educational facility development and enhancement. We aid in educational construction projects"
-            title2=""
+            title2="Learn more"
+            imageSrc2="/images/arrow.svg"
           />
           <ContractorCard
             imageSrc="/images/card6.png"
             title="Estimators"
             description="Rely on accurate project cost estimates according to industry standards and available data, empowering informed decision making and project success. Ensure precision in construction estimating with us"
-            title2=""
+            title2="Learn more"
+            imageSrc2="/images/arrow.svg"
           />
           <div className="grid justify-center gap-0 md:flex grid-col-1 sm:col-span-2 lg:col-span-3 md:gap-6 lg:gap-9 ">
             <ContractorCard
               imageSrc="/images/Rec7.png "
               title="Architect"
               description="Enhance your design process and client engagement with collaborative tools and visual planning capabilities, ensuring innovative and timely project delivery. We support architects in delivering excellence"
+              title2="Learn more"
+              imageSrc2="/images/arrow.svg"
             />
             <ContractorCard
               imageSrc="/images/Rec7.png"
               title="Vendors"
               description="Accelerate cash flows and enhance supply relationships with tools for contract management and efficient order tracking. We support vendor efficiency and relationship building"
+              title2="Learn more"
+              imageSrc2="/images/arrow.svg"
             />
           </div>
         </div>
@@ -161,12 +170,12 @@ const HomePage = () => {
       <div className="relative container_slope">
         <div className="slope-background ">
           <div className="content_slope ">
-            <div className="flex flex-col items-center justify-center w-full px-4 pt-12 mx-auto max-w-7xl md:px-0 sm:pt-16 md:pt-20 lg:pt-24">
-              <div className="text-2xl font-bold text-center sm:text-3xl md:text-4xl lg:text-[47px] font-Gilroy text-gray">
+            <div className="flex flex-col items-center justify-center w-full px-4 pt-12 max-w-8xl sm:pt-16 md:pt-20 lg:pt-24">
+              <div className="text-2xl font-bold text-center sm:text-3xl md:text-4xl lg:leading-[64px] lg:text-[48px] font-Gilroy text-[#161C2D]">
                 Schesti, the Pioneer Application Crafting Precise Estimates
                 Through AI for Exceptional Organizational Success.
               </div>
-              <div className="text-center text-base lg:text-[20px] leading-[32px] font-Gilroy font-regular opacity-65 text-[#27303F] mt-4 sm:mt-6 md:mt-8 lg:mt-10">
+              <div className="text-center text-base lg:text-[20px] leading-[23px] lg:leading-[32px] font-Gilroy font-regular opacity-65 text-[#27303F] mt-4 sm:mt-6 md:mt-8 lg:mt-10">
                 Elevate Your Construction Venture with Schesti: A Symphony of
                 Precision and Speed, Reshaping the Land
               </div>
@@ -184,102 +193,102 @@ const HomePage = () => {
             </section>
           </div>
         </div>
-        <div className="absolute right-0 md:flex hidden  -bottom-20 ">
-          <Image src="/images/star.png" width={185} height={108} alt="Star" />
+        <div className="absolute hidden -right-5 md:flex -bottom-20 ">
+          <Image src="/images/star.png" width={140} height={120} alt="Star" />
         </div>
       </div>
 
       {/* Fifth Div */}
       <div className="relative flex flex-col items-center justify-center max-w-full mt-[94px] mb-[95px] px-4 sm:px-6 lg:px-8">
         <div className="max-w-[1110px] w-full">
-          <div className="font-bold text-center text-2xl sm:text-3xl md:text-4xl lg:text-5xl md:leading-[65px] font-Gilroy text-gray">
+          <div className="font-bold text-center text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-[50px] lg:leading-[65px] font-Gilroy text-[#161C2D]">
             Eliminate costly errors in project Takeoff with Schesti
           </div>
-          <div className="p-2 font-Gilroy text-center text-base sm:text-lg md:text-xl font-regular text-gray opacity-70">
+          <div className="p-2 text-base text-center font-Gilroy sm:text-lg md:text-xl text-[#161C2D] opacity-70">
             Leverage our sophisticated Takeoff Module, seamlessly integrated
             with AI technology. Experience precision and efficiency in Building
             Estimates, ensuring your projects start on a foundation of accuracy
             and reliability.
           </div>
         </div>
-        <div className="mt-[16px] w-full flex justify-center">
+        <div className="flex justify-center w-full ">
           <Image
             src="/images/image5.png"
             width={530}
             height={443}
             alt="Image5"
-            className="max-w-full h-auto"
+            className="h-auto max-w-full"
           />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-[80px] px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-custom">
-            <div className="font-bold font-Gilroy text-[21px] leading-[26px] -tracking-[0.5px] text-gray">
+          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-[0px_0px_45px_0px_#B6C3F140]">
+            <div className="font-bold font-Gilroy text-[21px] leading-[26px] -tracking-[0.5px] text-[#161C2D]">
               Revolutionize your approach to Takeoffs
             </div>
-            <div className="font-Gilroy font-regular text-[17px] leading-[29px] -tracking-[0.2] opacity-70 text-gray">
+            <div className="font-Gilroy font-regular text-[17px] leading-[29px] -tracking-[0.2] opacity-70 text-[#161C2D]">
               Speed up takeoff creation, increase bid volume, and enhance
               project success rates
             </div>
           </div>
-          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-custom">
-            <div className="font-bold font-Gilroy text-[21px] leading-[26px] -tracking-[0.5px] text-gray">
+          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-[0px_0px_45px_0px_#B6C3F140]">
+            <div className="font-bold font-Gilroy text-[21px] leading-[26px] -tracking-[0.5px] text-[#161C2D]">
               Bid faster and more efficiently. Bid farewell to manual methods
             </div>
-            <div className="font-Gilroy font-regular text-[17px] leading-[29px] -tracking-[0.2] opacity-70 text-gray">
+            <div className="font-Gilroy font-regular text-[17px] leading-[29px] -tracking-[0.2] opacity-70 text-[#161C2D]">
               Prevent costly estimating mistakes with digital accuracy
             </div>
           </div>
-          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-custom">
-            <div className="font-bold font-Gilroy text-[21px] leading-[26px] -tracking-[0.5px] text-gray">
+          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-[0px_0px_45px_0px_#B6C3F140]">
+            <div className="font-bold font-Gilroy text-[21px] leading-[26px] -tracking-[0.5px] text-[#161C2D]">
               Reduce takeoff duration by 55%
             </div>
-            <div className="font-Gilroy font-regular text-[17px] leading-[29px] -tracking-[0.2] opacity-70 text-gray">
+            <div className="font-Gilroy font-regular text-[17px] leading-[29px] -tracking-[0.2] opacity-70 text-[#161C2D]">
               Quickly create takeoffs and generate bids with a user-friendly
               interface requiring no additional training
             </div>
           </div>
-          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-custom">
-            <div className="font-bold font-Gilroy text-[21px] leading-[26px] -tracking-[0.5px] text-gray">
+          <div className="flex flex-col p-[24px] rounded-[16px] max-w-full sm:max-w-[490px] h-auto shadow-[0px_0px_45px_0px_#B6C3F140]">
+            <div className="font-bold font-Gilroy text-[21px] leading-[26px] -tracking-[0.5px] text-[#161C2D]">
               Reduce takeoff duration by 70%
             </div>
-            <div className="font-Gilroy font-regular text-[17px] leading-[29px] -tracking-[0.2] opacity-70 text-gray">
+            <div className="font-Gilroy font-regular text-[17px] leading-[29px] -tracking-[0.2] opacity-70 text-[#161C2D]">
               Experience fast, intuitive AI-powered takeoff creation with no
               training needed
             </div>
           </div>
         </div>
-        <div className="absolute right-0 -bottom-[185px] hidden lg:block">
+        <div className="absolute  right-0 -bottom-[185px]  hidden lg:block">
           <Image
             src="/images/circle.png"
             width={200}
-            height={200}
+            height={340}
             alt="Circle"
           />
         </div>
-        <div className="absolute left-0 -bottom-[270px] hidden lg:block">
+        <div className="absolute left-0 -bottom-[240px] hidden lg:block">
           <Image
             src="/images/Circle-2.png"
             width={172}
-            height={172}
+            height={270}
             alt="Group-2"
           />
         </div>
       </div>
 
       {/* Sixth Div Not responsive */}
-      <div className="container mx-auto px-4">
+      <div className="container px-4 mx-auto">
         <div className="max-w-full md:max-w-[701px] h-auto md:h-[198px] ml-5">
-          <div className="font-semibold font-Gilroy text-h4 tracking-[1.6px] text-[#DCA70A] uppercase">
+          <div className="font-semibold font-Gilroy text-[16px] leading-[20px] tracking-[1.6px] text-[#DCA70A] uppercase">
             Why Schesti?
           </div>
-          <div className="font-bold font-Gilroy text-[24px] md:text-[32px] leading-[32px] md:leading-[48px] text-gray -tracking-[1.2px] mt-[16px] md:mt-[23px]">
+          <div className="font-bold font-Gilroy text-[24px] md:text-[32px] leading-[32px] md:leading-[48px] text-[#161C2D] -tracking-[1.2px] mt-[16px] md:mt-[23px]">
             Discover why over 1 million contractors have chosen Schesti to
             facilitate the construction of more than $1 trillion worth of
             projects annually
           </div>
         </div>
-        <div className="flex flex-col-reverse md:flex-row justify-between items-start md:items-end mt-8 md:mt-0">
-          <div className="flex items-start md:items-end w-full md:w-auto mt-8 justify-center md:justify-start">
+        <div className="flex flex-col-reverse items-start justify-between mt-8 md:flex-row md:items-end md:mt-0">
+          <div className="flex items-start justify-center w-full mt-8 md:items-end md:w-auto md:justify-start">
             <Image
               src="/images/Group-1.png"
               width={574}
@@ -298,7 +307,7 @@ const HomePage = () => {
                 className="w-full md:w-auto"
               />
             </div>
-            <div className="font-Gilroy font-regular text-base md:text-h3 text-gray opacity-70 -tracking-[0.2] text-left md:justify-start">
+            <div className="font-Gilroy font-regular text-base md:text-[17px] md:leading-[29px] text-[#161C2D] opacity-70 -tracking-[0.2] text-left md:justify-start">
               Our goal is to provide a straightforward, cost-effective,
               user-friendly, and potent solution for the cumbersome construction
               bidding process. We introduce the first invoicing modules
@@ -314,23 +323,25 @@ const HomePage = () => {
 
       {/* seven div */}
       <div className="md:mt-[245px] mt-[100px] ">
-        <div className="container mx-auto px-4">
-          <div className="relative font-bold text-center font-Gilroy text-[28px] sm:text-3xl md:text-4xl lg:text-5xl text-gray">
+        <div className="container px-4 mx-auto">
+          <div className="relative font-bold text-center font-Gilroy leading-[48px] lg:leading-[64px] text-[28px] sm:text-3xl md:text-4xl lg:text-5xl text-[#161C2D]">
             <div className="relative inline-block">
               <span className="relative z-10">SCHESTI</span>
-              <img
+              <Image
                 className="absolute inset-0 z-0 w-full h-full "
                 src="/images/yellow_path.png"
                 alt="background"
+                width={197}
+                height={46}
               />
             </div>
-            <span className="relative z-20  ml-1">
+            <span className="relative z-20 ml-1">
               revolutionizes global construction management with its advanced
               web app
             </span>
           </div>
 
-          <div className="text-center font-Gilroy font-regular text-h2 opacity-70 text-gray mt-4">
+          <div className="mt-4 text-center font-Gilroy font-regular text-[19px] lg:leading-[32px] opacity-70 text-[#161C2D]">
             Schesti streamlines your business operations by providing a central
             hub for all your clients, projects, scheduling, invoicing, and
             estimating needs. Its the ultimate tool for businesses who want to
@@ -343,17 +354,17 @@ const HomePage = () => {
 
       {/* Eight Div */}
       <div className="flex h-[176px] bg-[#E6F2F8] mt-[160px] mx-auto items-center justify-center">
-        <div className="container mx-4 sm:mx-6 md:mx-8 lg:mx-12 flex flex-col sm:flex-row items-center justify-between">
-          <div className="text-center sm:text-left mb-4 sm:mb-0">
+        <div className="container flex flex-col items-center justify-between mx-4 sm:mx-6 md:mx-8 lg:mx-12 sm:flex-row">
+          <div className="mb-4 text-center sm:text-left sm:mb-0">
             <div className="font-bold font-Gilroy text-[24px] sm:text-[32px] leading-[32px] sm:leading-[44px] -tracking-[1px] sm:-tracking-[1.2px] text-[#002B40]">
               Check out our prices
             </div>
-            <div className="font-Gilroy font-regular text-sm sm:text-h2 text-[#002B40] opacity-65">
+            <div className="font-Gilroy font-regular text-sm sm:text-[19px] sm:leading-[32px] text-[#002B40] opacity-65">
               Check out our different plans & select a plan which suits your
               needs
             </div>
           </div>
-          <button className="w-[150px]  sm:w-[220px] h-[50px] sm:h-[59px] rounded-full bg-blue font-Gilroy font-bold text-white text-sm sm:text-[17px] leading-[24px] sm:leading-[32px] text-center -tracking-[0.5px] sm:-tracking-[0.6px] transition-transform duration-300 transform hover:scale-105">
+          <button className="w-[150px]  sm:w-[220px] h-[50px] sm:h-[59px] rounded-full bg-[#007AB6] font-Gilroy font-bold text-white text-sm sm:text-[17px] leading-[24px] sm:leading-[32px] text-center -tracking-[0.5px] sm:-tracking-[0.6px] transition-transform duration-300 transform hover:scale-105">
             View pricing
           </button>
         </div>
@@ -365,7 +376,7 @@ const HomePage = () => {
           <div className="absolute md:flex hidden  inset-0  bg-[url('/images/BG99.png')] mb-10 bg-contain bg-no-repeat  mt-[190px] ml-[20px] z-10"></div>
         </div>
         <div className="relative md:max-w-[534px] mx-5 md:mx-0 text-center md:text-center xl:text-start  md:ml-[120px] xl:ml-[162px] z-20">
-          <div className=" absolute font-bold font-Gilroy text-2xl sm:text-3xl md:text-4xl lg:text-5xl md:leading-[58px] -tracking-[1.8px] text-gray mt-[33px]">
+          <div className=" absolute font-bold font-Gilroy text-2xl sm:text-3xl md:text-4xl lg:text-5xl md:leading-[58px] -tracking-[1.8px] text-[#161C2D] mt-[33px]">
             Schedule projects and create Gantt charts
           </div>
         </div>
@@ -379,7 +390,7 @@ const HomePage = () => {
               className=""
             />
           </div>
-          <div className="max-w-[520px] md:mx-0 mx-4 text-center md:text-start font-Gilroy font-regular text-base sm:text-[12px] md:text-[19px] md:leading-[32px]  -tracking-[0.2px] opacity-70 text-gray xl:mt-[70px] md:mt-[0px] md:ml-7">
+          <div className="max-w-[520px] md:mx-0 mx-4 text-center md:text-start font-Gilroy font-regular text-base sm:text-[12px] md:text-[19px] md:leading-[32px]  -tracking-[0.2px] opacity-70 text-[#161C2D] xl:mt-[70px] md:mt-[0px] md:ml-7">
             Efficiently manage your project timelines. Schedule estimates with
             ease and visualize your project plan through Gantt charts. Schesti’
             s intuitive scheduling tools provide a clear overview, helping you
@@ -396,7 +407,7 @@ const HomePage = () => {
 
         <div className="absolute z-20 ml-4 mx-4 md:mx-0 sm:ml-[110px] md:ml-[160px] lg:ml-[210px] mt-10 sm:mt-[66px]">
           <div className="max-w-full sm:max-w-[400px] md:max-w-[460px] lg:max-w-[517px]">
-            <div className="font-bold font-Gilroy text-[14px] sm:text-h4 tracking-[1.63px] text-[#FFC107] uppercase">
+            <div className="font-bold font-Gilroy text-[14px] sm:text-[16px] sm:leading-[20px] tracking-[1.63px] text-[#FFC107] uppercase">
               Post advertisements request
             </div>
             <div
@@ -406,20 +417,20 @@ const HomePage = () => {
             </div>
           </div>
           <div className="max-w-full sm:max-w-[500px]  md:max-w-[633px] lg:max-w-[733px]">
-            <div className="font-Gilroy  font-regular text-[15px] sm:text-h2  tracking-tight sm:-tracking-[0.2px] text-white opacity-70 mt-4 sm:mt-[30px]">
+            <div className="font-Gilroy  font-regular text-[15px] sm:text-[19px] sm:leading-[32px] tracking-tight sm:-tracking-[0.2px] text-white opacity-70 mt-4 sm:mt-[30px]">
               Unlock a prime advertising space for your company! Schesti offers
               exclusive opportunities for our valued partners to showcase their
               brand or promotions here.
             </div>
             <div className="mt-6 lg:mt-[40px] md:mt-[10px]  flex items-center md:items-start md:justify-start justify-center">
-              <button className="w-[160px] sm:w-[196px] h-[46px] sm:h-[56px] rounded-full border border-white text-white font-Gilroy font-bold text-[15px] sm:text-[17px] leading-[22px] transition-transform duration-300 hover:scale-105">
+              <button className="w-[160px] sm:w-[196px] h-[46px] sm:h-[56px] bg-transparent rounded-full border border-white text-white font-Gilroy font-bold text-[15px] sm:text-[17px] leading-[22px] transition-transform duration-300 hover:scale-105">
                 Request for post
               </button>
             </div>
           </div>
         </div>
 
-        <div className="absolute lg:flex hidden right-0 bottom-0 transform  translate-x-1/2 lg:translate-x-0 lg:mr-0 ">
+        <div className="absolute bottom-0 right-0 hidden transform translate-x-1/2 lg:flex lg:translate-x-0 lg:mr-0 ">
           <Image
             src="/images/young-man-10.png"
             width={547}
@@ -433,12 +444,11 @@ const HomePage = () => {
       <div className="container ">
         <div className="flex items-center justify-center mt-[83px]">
           <div className=" max-w-[505px] ">
-            <div className="font-bold font-Gilroy text-3xl  md:text-[36px] leading-[48px] -tracking-[1.2px] text-gray text-center">
+            <div className="font-bold font-Gilroy text-3xl  md:text-[36px] leading-[48px] -tracking-[1.2px] text-[#161C2D] text-center">
               Get to Know Us Better
             </div>
-            <div className="font-regular font-Gilroy mx-4 md:mx-0 text-base sm:text-lg md:text-xl -tracking-[0.2px] text-gray opacity-70 text-center mt-1 md:mt-[17px]">
-              Explore our story and values. Learn about our journey, mission,
-              and the principles that drive us
+            <div className="font-regular font-Gilroy mx-4 md:mx-0 text-base sm:text-lg md:text-xl -tracking-[0.2px] text-[#161C2D] opacity-70 text-center mt-1 md:mt-[17px]">
+              Explore our story and values. Learn about our journey,
             </div>
           </div>
         </div>
@@ -451,10 +461,10 @@ const HomePage = () => {
               alt=" "
               className="xl:w-[350px] xl:h-[301px] w-[350px] h-[301px] md:w-[250px] md:h-[200px]"
             />
-            <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2">
+            <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2">
               Oct 18, 1982
             </div>
-            <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px]  md:mt-[10px]">
+            <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px]  md:mt-[10px]">
               How to win any job you want. Get started with 5 steps.
             </div>
           </div>
@@ -466,10 +476,10 @@ const HomePage = () => {
               alt=" "
               className="xl:w-[350px] xl:h-[301px] w-[350px] h-[301px] md:w-[250px] md:h-[200px]"
             />
-            <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2 ">
+            <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2 ">
               August 08, 2007
             </div>
-            <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px] md:mt-[10px]  ">
+            <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px] md:mt-[10px]  ">
               10 ways to reduce your office work depression.
             </div>
           </div>
@@ -481,16 +491,16 @@ const HomePage = () => {
               alt=" "
               className="xl:w-[350px] xl:h-[301px] w-[350px] h-[301px] md:w-[250px] md:h-[200px]"
             />
-            <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2">
+            <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2">
               March 27, 1999
             </div>
-            <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px] md:mt-[10px]">
+            <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px] md:mt-[10px]">
               Why should you work as a team even on small projects.
             </div>
           </div>
         </div>
         <div className="flex items-center justify-center mt-[72px]">
-          <button className="w-[196px] h-[56px] rounded-full border border-blue font-Gilroy font-bold text-[17px] leading-[22px] -tracking-[0.6px] text-blue transition-transform duration-300 hover:scale-105">
+          <button className="w-[196px] h-[56px] bg-transparent rounded-full border border-[#007AB6] font-Gilroy font-bold text-[17px] leading-[22px] -tracking-[0.6px] text-[#007AB6] transition-transform duration-300 hover:scale-105">
             Read more
           </button>
         </div>
@@ -512,7 +522,7 @@ const HomePage = () => {
         </div>
       </div>
       {/* Therteen Div */}
-      <div className="container mx-auto md:px-0 px-4">
+      <div className="container px-4 mx-auto md:px-0">
         <div className="flex flex-col lg:flex-row justify-between mt-[110px]">
           <div className="mb-8 lg:mb-0">
             <Image
@@ -524,20 +534,20 @@ const HomePage = () => {
             />
           </div>
           <div className="max-w-full lg:max-w-[511px] max-lg:mx-4">
-            <div className="font-bold font-Gilroy text-3xl md:text-start lg:leading-[64px] sm:leading-[50px]  text-center sm:text-3xl md:text-4xl lg:text-5xl text-gray">
+            <div className="font-bold font-Gilroy text-3xl md:text-start lg:leading-[64px] sm:leading-[50px]  text-center sm:text-3xl md:text-4xl lg:text-5xl text-[#161C2D]">
               Transform Construction with SCHESTI for a Better World!
             </div>
-            <div className="font-Gilroy font-regular  text-gray opacity-70 md:text-start text-center  lg:leading-[32px] sm:leading-[28px]  text-base lg:text-[19px] mt-[32px]">
+            <div className="font-Gilroy font-regular  text-[#161C2D] opacity-70 md:text-start text-center  lg:leading-[32px] sm:leading-[28px]  text-base lg:text-[18px] mt-[32px]">
               Empower Your Projects With Schesti: Estimating construction
               projects should not be a headache. We offer a solution that
               streamlines the process for you. Discover the ease and efficiency
               of Schestis estimating feature today.
             </div>
             <div className="flex flex-col gap-[20px] mt-[32px] lg:flex-row lg:gap-[20px]">
-              <button className="w-full lg:w-[201px] h-[57px] rounded-[39px] text-white bg-blue font-medium font-Gilroy text-[18px] leading-[27px] transition-transform duration-300 hover:scale-105">
+              <button className="w-full lg:w-[201px] h-[57px] rounded-[39px] text-white bg-[#007AB6] font-medium font-Gilroy text-[18px] leading-[27px] transition-transform duration-300 hover:scale-105">
                 Get Started Now!
               </button>
-              <button className="w-full lg:w-[148px] h-[55px] rounded-[39px] border-2 border-blue font-medium font-Gilroy text-[18px] leading-[27px] text-blue transition-transform duration-300 hover:scale-105">
+              <button className="w-full lg:w-[148px] bg-transparent h-[55px] rounded-[39px] border-2 border-[#007AB6] font-medium font-popin text-[18px] leading-[27px] text-[#007AB6] transition-transform duration-300 hover:scale-105">
                 Contact us
               </button>
             </div>
@@ -546,12 +556,12 @@ const HomePage = () => {
       </div>
 
       {/* Forteen div */}
-      <div className="container mx-auto px-4">
+      <div className="container px-4 mx-auto lg:mt-[60px]">
         <div className="flex flex-col  items-center justify-center pt-[60px]">
           <div
             className={`font-bold text-3xl sm:text-3xl md:text-4xl lg:text-[40px] text-center md:text-start   md:leading-[50px] md:-tracking-[1px] text-[#27303F] `}
           >
-            Proven results you can <span className="text-blue">trust</span>
+            Proven results you can <span className="text-[#007AB6]">trust</span>
           </div>
           <div className="font-Gilroy font-medium text-center md:text-start text-base md:text-[20px] leading-[24px] text-[#474C59] mt-[16px]">
             Transforming Construction Management Worldwide
@@ -567,16 +577,16 @@ const HomePage = () => {
             />
             {/* <Numbercount targetValue={30} /> */}
             <div
-              className={`font-bold leading-[40px] text-[40px] text-center text-[#181D25] mt-[18px] `}
+              className={`font-bold font-popin leading-[40px] text-[40px] text-center text-[#181D25] mt-[18px] `}
             >
-              30
+              30%
             </div>
-            <div className="font-Poppins text-[18px] leading-[18px] text-center text-[#404B5A] mt-[10px]">
+            <div className="font-popin text-[18px] leading-[18px] text-center text-[#404B5A] mt-[10px]">
               Increase in Efficiency
             </div>
           </div>
 
-          <div className="hidden lg:block h-[204px] w-[1px] bg-gradient-to-b from-white via-blue to-white"></div>
+          <div className="hidden lg:block h-[204px] w-[1px] bg-gradient-to-b from-white via-[#007AB6] to-white"></div>
 
           <div className="w-full lg:w-[262px] h-[204px] flex flex-col items-center justify-center mb-8 lg:mb-0">
             <Image
@@ -588,18 +598,15 @@ const HomePage = () => {
             <div
               className={`font-bold leading-[40px] text-[40px] text-center text-[#181D25] mt-[18px] `}
             >
-              36
-            </div>
-            <div className="font-Poppins text-[18px] leading-[18px] text-center text-[#404B5A] mt-[10px]">
-              Increase in Efficiency
+              36%
             </div>
 
-            <div className="font-Poppins text-[18px] leading-[18px] text-center text-[#404B5A] mt-[10px]">
+            <div className="font-popin text-[18px] leading-[18px] text-center text-[#404B5A] mt-[10px]">
               More Bids Submitted
             </div>
           </div>
 
-          <div className="hidden lg:block h-[204px] w-[1px] bg-gradient-to-b from-white via-blue to-white"></div>
+          <div className="hidden lg:block h-[204px] w-[1px] bg-gradient-to-b from-white via-[#007AB6] to-white"></div>
 
           <div className="w-full lg:w-[262px] h-[204px] flex flex-col items-center justify-center mb-8 lg:mb-0">
             <Image
@@ -611,18 +618,15 @@ const HomePage = () => {
             <div
               className={`font-bold leading-[40px] text-[40px] text-center text-[#181D25] mt-[18px] `}
             >
-              25
-            </div>
-            <div className="font-Poppins text-[18px] leading-[18px] text-center text-[#404B5A] mt-[10px]">
-              Increase in Efficiency
+              25%
             </div>
 
-            <div className="font-Poppins text-[18px] leading-[18px] text-center text-[#404B5A] mt-[10px]">
+            <div className="font-popin text-[18px] leading-[18px] text-center text-[#404B5A] mt-[10px]">
               Higher Revenue
             </div>
           </div>
 
-          <div className="hidden lg:block h-[204px] w-[1px] bg-gradient-to-b from-white via-blue to-white"></div>
+          <div className="hidden lg:block h-[204px] w-[1px] bg-gradient-to-b from-white via-[#007AB6] to-white"></div>
 
           <div className="w-full lg:w-[262px] h-[204px] flex flex-col items-center justify-center mb-8 lg:mb-0">
             <Image
@@ -635,13 +639,10 @@ const HomePage = () => {
               <div
                 className={`font-bold leading-[40px] text-[40px] text-center text-[#181D25] mt-[18px] `}
               >
-                100
-              </div>
-              <div className="font-Poppins text-[18px] leading-[18px] text-center text-[#404B5A] mt-[10px]">
-                Increase in Efficiency
+                100K+
               </div>
             </div>
-            <div className="font-Poppins text-[18px] leading-[18px] text-center text-[#404B5A] mt-[10px]">
+            <div className="font-popin text-[18px] leading-[18px] text-center text-[#404B5A] mt-[10px]">
               Projects Completed
             </div>
           </div>

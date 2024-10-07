@@ -2124,7 +2124,7 @@ const Draw: React.FC<Props> = ({
                 // image={counterImage}
                 data={getCounterImagePath(rest?.countType ?? 'tick')}
                 stroke={
-                  selectedShape === id ? 'gray' : rest?.textColor ?? 'red'
+                  selectedShape === id ? 'gray' : (rest?.textColor ?? 'red')
                 }
                 // fill={selectedShape === id ? 'gray' : (rest?.textColor ?? 'red')}
                 // width={20}
