@@ -1,8 +1,8 @@
 import React from 'react';
 import Navbar from '../navbar';
 import CollapseComponent from '../components/customCollapse';
-import ScheduleFaqs from '@/app/constants/shedule.json';
-
+import ScheduleFaqs from '@/app/constants/shedule.json'
+import Footer from '../footer';
 const TimeScheduling = () => {
   return (
     <div>
@@ -16,12 +16,12 @@ const TimeScheduling = () => {
               <div className="">
                 <div className=" w-full max-w-[523px]">
                   <div className="pb-5">
-                    <h1 className="font-Gilroy font-bold text-[24px] md:text-[48px] tracking-[-1.2px] text-gray_dark md:leading-[56px]">
+                    <h1 className="font-Gilroy font-bold text-[24px] md:text-[48px] tracking-[-1.2px] text-[#161C2D] md:leading-[56px]">
                       Transform Your Project Timelines with Schesti
                     </h1>
                   </div>
                   <div className=" w-full max-w-[580px]">
-                    <p className="font-normal font-Gilroy text-[15px] md:text-h2 tracking-[-0.2px] text-gray_dark leading-h2">
+                    <p className="font-normal font-Gilroy text-[15px] md:text-[19px] tracking-[-0.2px] text-[#161C2D] leading-[32px]">
                       Achieve unparalleled efficiency with Schesti’s advanced
                       time scheduling tools. Enjoy real-time updates, seamless
                       integration, and predictive insights that keep your
@@ -31,10 +31,10 @@ const TimeScheduling = () => {
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 pt-8">
-                  <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                  <button className="bg-[#007AB6] text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                     Catch offer
                   </button>
-                  <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                  <button className=" border-[2px] font-Poppins  text-[#007AB6] font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                     Start your free trial
                   </button>
                 </div>
@@ -55,13 +55,13 @@ const TimeScheduling = () => {
         <div className="container ">
           <div className="py-4 md:py-[99px] px-2 md:px-0 flex flex-col justify-center items-center gap-6">
             <div className="w-full max-w-[860px]">
-              <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-blue_dark md:leading-[56px] md:text-center">
-                From Plan to Perfection: How SCHESTI Time Scheduling Keeps Your
-                Projects on Track
+              <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-[#002B40] md:leading-[56px] md:text-center">
+                From Plan to Perfection: How SCHESTI Time Scheduling Keeps
+                Your Projects on Track
               </h1>
             </div>
             <div className="w-full max-w-[1050px]">
-              <p className="font-normal font-Gilroy text-[13px] md:text-h2  text-gray leading-[34px] md:text-center">
+              <p className="font-normal font-Gilroy text-[13px] md:text-[19px]  text-[#161C2D] leading-[34px] md:text-center">
                 In construction and project management, timing is everything.
                 Delays and inefficiencies can derail even the best-planned
                 projects, leading to increased costs and strained client
@@ -79,7 +79,7 @@ const TimeScheduling = () => {
         <div className="">
           <div className=" flex flex-col items-center  py-[72px]">
             <div className="w-full max-w-[720px]">
-              <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[40px] text-dark_blue leading-[49.52px]">
+              <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[40px] text-[#27303F] leading-[49.52px]">
                 Overcoming Time Scheduling Challenges in Construction
               </h1>
             </div>
@@ -92,17 +92,17 @@ const TimeScheduling = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                     Unforeseen Delays
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                     Problem: Unexpected issues often disrupt project timelines,
                     causing costly delays
                   </p>
 
-                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-lite_black leading-[16.8px] pt-3 ">
+                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px] pt-3 ">
                     Solution: SCHESTI predictive analytics identify potential
                     delays early, allowing proactive adjustments to keep
                     projects on schedule.
@@ -123,17 +123,17 @@ const TimeScheduling = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                     Resource Misallocation
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                     Problem: Inefficient resource allocation leads to
                     bottlenecks and wasted time
                   </p>
 
-                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-lite_black leading-[16.8px] pt-3 ">
+                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px] pt-3 ">
                     Solution: SCHESTI optimizes resource management, ensuring
                     the right resources are available when needed
                   </p>
@@ -153,17 +153,17 @@ const TimeScheduling = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                     Poor Communication
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                     Problem: Lack of clear communication causes
                     misunderstandings and scheduling conflicts
                   </p>
 
-                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-lite_black leading-[16.8px] pt-3 ">
+                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px] pt-3 ">
                     Solution: SCHESTI enhances coordination with real-time
                     updates and seamless integration across teams
                   </p>
@@ -183,17 +183,17 @@ const TimeScheduling = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                     Lack of Flexibility
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                     Problem: Rigid schedules fail to adapt to changing project
                     needs
                   </p>
 
-                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-lite_black leading-[16.8px] pt-3 ">
+                  <p className="font-normal font-Gilroy text-left text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px] pt-3 ">
                     Solution: SCHESTI offers customizable scheduling, allowing
                     adjustments to meet evolving project requirements
                   </p>
@@ -215,12 +215,12 @@ const TimeScheduling = () => {
           </div>
           <div className="w-full max-w-[527px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-dark_black lg:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-[#181D25] lg:leading-[60px]">
                 Enhanced Project Coordination
               </h1>
             </div>
             <div className=" pt-[24px]">
-              <p className="font-normal font-Gilroy text-[15px] lg:text-[18px] text-blue_gray leading-[36px]">
+              <p className="font-normal font-Gilroy text-[15px] lg:text-[18px] text-[#404B5A] leading-[36px]">
                 With Schesti, elevate your project coordination to the next
                 level. Our real-time scheduling tools deliver instant updates
                 and adjustments, keeping your team aligned and focused on shared
@@ -240,12 +240,12 @@ const TimeScheduling = () => {
           <div className="flex flex-col lg:flex-row justify-between items-center gap-12 lg:gap-16 md:py-[100px] px-4 lg:px-0">
             <div className="w-full max-w-[527px]">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-dark_black md:leading-[60px]">
+                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-[#181D25] md:leading-[60px]">
                   Resource Optimization
                 </h1>
               </div>
               <div className=" pt-[24px]">
-                <p className="font-normal font-Gilroy text-[15px] md:text-[18px] text-blue_gray leading-[36px]">
+                <p className="font-normal font-Gilroy text-[15px] md:text-[18px] text-[#404B5A] leading-[36px]">
                   Maximize your resource efficiency with Schesti’s advanced
                   allocation features. Our platform strategically manages labor,
                   equipment, and materials, ensuring effective utilization. By
@@ -278,12 +278,12 @@ const TimeScheduling = () => {
           </div>
           <div className="w-full max-w-[527px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-dark_black lg:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-[#181D25] lg:leading-[60px]">
                 Predictive Insights And Customization
               </h1>
             </div>
             <div className=" pt-[24px]">
-              <p className="font-normal font-Gilroy text-[15px] lg:text-[18px] text-blue_gray leading-[36px]">
+              <p className="font-normal font-Gilroy text-[15px] lg:text-[18px] text-[#404B5A] leading-[36px]">
                 Stay ahead of potential delays with Schesti predictive
                 analytics. Our platform offers insights to anticipate challenges
                 and take proactive measures, ensuring your projects stay on
@@ -303,12 +303,12 @@ const TimeScheduling = () => {
           <div className=" flex flex-col items-center  lg:py-[60px]">
             <div className="w-full max-w-[794px] flex flex-col items-center">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-dark_blue leading-[56px]">
+                <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-[#27303F] leading-[56px]">
                   The Advantages of Efficient Time Scheduling with SCHESTI
                 </h1>
               </div>
               <div className="w-full max-w-[678px] pt-4">
-                <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[20px] text-dark_gray leading-[24px]">
+                <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[20px] text-[#474C59] leading-[24px]">
                   Discover how SCHESTI’s Time Scheduling Solutions optimize
                   project timelines, enhance productivity, and ensure timely
                   project delivery
@@ -318,17 +318,17 @@ const TimeScheduling = () => {
             <div className="flex flex-col lg:flex-row gap-3 md:pt-[40px] sm:px-16 px-4 lg:px-0 ">
               <div className="w-full gap-4 flex flex-col  items-center">
                 <div className="">
-                  <p className="font-bold font-Gilroy text-[32px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                  <p className="font-bold font-Gilroy text-[32px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                     70%
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray  leading-[29.71px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C] leading-[29.71px] text-center">
                     Increase in Schedule Adherence
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-center text-[15px] md:text-[14px]  text-dark_blue leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-center text-[15px] md:text-[14px]  text-[#27303F] leading-[16.8px]">
                     SCHESTI users report a 70% improvement in adhering to
                     project schedules, thanks to accurate and reliable time
                     management tools.
@@ -343,17 +343,17 @@ const TimeScheduling = () => {
               </div>
               <div className="w-full gap-4 flex flex-col  items-center">
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[32px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                  <p className="font-Gilroy font-bold text-[32px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                     75%
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray  leading-[29.71px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C]  leading-[29.71px] text-center">
                     Reduction in Project Delays
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                     Surveyed participants experience a 75% reduction in project
                     delays, leading to more timely project completions
                   </p>
@@ -367,17 +367,17 @@ const TimeScheduling = () => {
               </div>
               <div className="w-full gap-0 md:gap-4 flex flex-col  items-center">
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[32px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                  <p className="font-Gilroy font-bold text-[32px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                     55%
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray  leading-[29.71px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C]  leading-[29.71px] text-center">
                     Boost in Project Efficiency
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                     Clients using SCHESTI’s time scheduling solutions see a 55%
                     boost in overall project efficiency, with better resource
                     allocation and time management
@@ -393,10 +393,10 @@ const TimeScheduling = () => {
         <div className="container">
           <div className=" ">
             <div className="text-center">
-              <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-dark_black md:leading-[44.57px]">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-[#181D25] md:leading-[44.57px]">
                 Browse FAQs{' '}
               </h1>
-              <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-gray md:leading-[32px] pt-3">
+              <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] md:leading-[32px] pt-3">
                 Lorem ipsum dolor sit amet consectetur. Vitae nunc facilisis{' '}
               </h1>
             </div>
@@ -412,13 +412,13 @@ const TimeScheduling = () => {
           <div className="flex flex-col-reverse lg:flex-row justify-between items-center gap-12 py-3 md:py-[100px] md:gap-0 px-4 lg:px-0">
             <div className="w-full max-w-[511px]">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-[26px] lg:text-[48px]  text-gray_dark lg:leading-[64px]">
+                <h1 className="font-Gilroy font-bold text-[26px] lg:text-[48px]  text-[#161C2D] lg:leading-[64px]">
                   Take Control of Your Project Timeline with SCHESTI Smart
                   Scheduling
                 </h1>
               </div>
               <div className=" pt-[32px]">
-                <p className="font-normal font-Gilroy text-[15px] lg:text-h2 text-gray leading-h2">
+                <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#161C2D] leading-[32px]">
                   Optimize your project management with Schesti’s advanced time
                   scheduling solutions. Benefit from seamless integration,
                   real-time updates, and predictive insights to keep projects on
@@ -428,10 +428,10 @@ const TimeScheduling = () => {
                 </p>
               </div>
               <div className="flex flex-col md:flex-row gap-5 pt-6">
-                <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                <button className="bg-[#007AB6] text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                   Get Started Now!
                 </button>
-                <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                <button className=" border-[2px] font-Poppins  text-[#007AB6] font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                   Contact us
                 </button>
               </div>
@@ -446,6 +446,7 @@ const TimeScheduling = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

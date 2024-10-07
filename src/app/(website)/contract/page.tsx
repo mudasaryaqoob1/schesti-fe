@@ -3,6 +3,7 @@ import Navbar from '../navbar';
 import TestimonialSlider from '../testimonialSlider';
 import Contractsfaqs from '@/app/constants/contractsfaqs.json';
 import CollapseComponent from '../components/customCollapse';
+import Footer from '../footer';
 
 const Contract = () => {
   return (
@@ -17,16 +18,16 @@ const Contract = () => {
               <div className="">
                 <div className=" w-full max-w-[635px]">
                   <div className="pb-3">
-                    <h1 className="font-Gilroy font-bold text-[24px] lg:text-[48px] tracking-[-1.2px] text-gray_dark md:leading-[64px]">
+                    <h1 className="font-Gilroy font-bold text-[24px] lg:text-[48px] tracking-[-1.2px] text-[#161C2D] md:leading-[64px]">
                       EFFICIENT AND STREAMLINED{' '}
-                      <span className="bg-[url('/custumerrelation-imges/path1510.svg')] bg-contain bg-bottom pb-2 bg-no-repeat text-gray_dark">
+                      <span className="bg-[url('/custumerrelation-imges/path1510.svg')] bg-contain bg-bottom pb-2 bg-no-repeat text-[#161C2D]">
                         CONTRACT MANAGEMENT{' '}
                       </span>
                       SOLUTION
                     </h1>
                   </div>
                   <div className=" w-full max-w-[631px]">
-                    <p className="font-normal font-Gilroy text-[15px] lg:text-h2 tracking-[-0.2px]  text-gray_dark leading-h2">
+                    <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] tracking-[-0.2px]  text-[#161C2D] leading-[32px]">
                       Schesti streamlines preconstruction with integrated tools
                       for takeoff, bid monitoring, scheduling, CRM, and
                       analytics, while centralizing contractor connections. It
@@ -37,10 +38,10 @@ const Contract = () => {
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 pt-6">
-                  <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                  <button className="bg-[#007AB6] text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                     Catch offer
                   </button>
-                  <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                  <button className=" border-[2px] font-Poppins  text-[#007AB6] font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                     Start your free trial
                   </button>
                 </div>
@@ -54,13 +55,13 @@ const Contract = () => {
         <div className="container ">
           <div className="py-4 lg:py-[99px] px-2 lg:px-0 flex flex-col justify-center items-center gap-6">
             <div className="w-full max-w-[904px]">
-              <h1 className="font-Gilroy font-bold text-[24px] lg:text-[40px] text-blue_dark md:leading-[56px] md:text-center">
+              <h1 className="font-Gilroy font-bold text-[24px] lg:text-[40px] text-[#002B40] md:leading-[56px] md:text-center">
                 Instant Online Signatures with SCHESTI’s Contract Management
                 System
               </h1>
             </div>
             <div className="w-full max-w-[1050px]">
-              <p className="font-normal font-Gilroy text-[13px] lg:text-h2  text-Slate_Blue leading-[34px] md:text-center">
+              <p className="font-normal font-Gilroy text-[13px] lg:text-[19px]  text-[#718096] leading-[34px] md:text-center">
                 SCHESTI’s Contract Management System transforms contract
                 handling with integrated e-signature capabilities. Centralize
                 all your contracts and approvals in one user-friendly platform,
@@ -85,12 +86,12 @@ const Contract = () => {
           </div>
           <div className="w-full max-w-[580px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-dark_black md:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-[#181D25] md:leading-[60px]">
                 Fast and Secure E-Signature
               </h1>
             </div>
             <div className=" pt-[24px]">
-              <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-Slate_Blue leading-[36px]">
+              <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#718096] leading-[36px]">
                 E-signatures enable parties to sign contracts instantly and
                 securely online, eliminating the need for physical paperwork and
                 speeding up the approval process. SCHESTI’s comprehensive
@@ -108,12 +109,12 @@ const Contract = () => {
           <div className="flex flex-col lg:flex-row justify-between items-center gap-12 md:gap-0 md:py-[100px] px-4 lg:px-0">
             <div className="w-full max-w-[589px]">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-[30px] md:text-[40px]  text-dark_black md:leading-[60px]">
+                <h1 className="font-Gilroy font-bold text-[30px] md:text-[40px]  text-[#181D25] md:leading-[60px]">
                   Complete Contract Lifecycle Management
                 </h1>
               </div>
               <div className=" pt-[24px]">
-                <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-Slate_Blue leading-[36px]">
+                <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#718096] leading-[36px]">
                   Contract lifecycle management covers all stages from creation
                   to signing and tracking, ensuring organized and efficient
                   contract handling. SCHESTI offers integrated tools that manage
@@ -146,12 +147,12 @@ const Contract = () => {
           </div>
           <div className="w-full max-w-[589px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-dark_black md:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-[#181D25] md:leading-[60px]">
                 Integration with Other Management Systems
               </h1>
             </div>
             <div className=" pt-[24px]">
-              <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-Slate_Blue leading-[36px]">
+              <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#718096] leading-[36px]">
                 Integration with CRM and accounting systems boosts contract
                 management efficiency by synchronizing data and improving
                 workflow. SCHESTI seamlessly integrates with these platforms,
@@ -169,7 +170,7 @@ const Contract = () => {
           <div className="">
             <div className=" flex flex-col items-center  py-[72px]">
               <div className="w-full max-w-[744px]">
-                <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[40px] text-dark_blue leading-[49.52px]">
+                <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[40px] text-[#27303F] leading-[49.52px]">
                   SCHESTI: Tackling Complex Contract Management Issues with Ease
                 </h1>
               </div>
@@ -182,17 +183,17 @@ const Contract = () => {
                     />
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                       Complex Contract Creation and Tracking
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-Slate_Blue leading-[16.8px]">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#718096] leading-[16.8px]">
                       Creating, tracking, and managing contracts can be
                       cumbersome and prone to errors, leading to delays and
                       compliance issues
                     </p>
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-lite_black leading-[19.41px] pt-3">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-[#4A5568] leading-[19.41px] pt-3">
                       SCHESTI’s contract management system streamlines the
                       entire process by automating contract creation, tracking,
                       and updates. Users can easily draft, review, and manage
@@ -215,17 +216,17 @@ const Contract = () => {
                     />
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                       Complex Client Management
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-Slate_Blue leading-[16.8px]">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#718096] leading-[16.8px]">
                       Traditional signing methods are slow and can cause delays,
                       while security concerns about e-signatures can be a
                       barrier
                     </p>
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-lite_black leading-[19.41px] pt-3">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-[#4A5568] leading-[19.41px] pt-3">
                       SCHESTI integrates a secure e-signature system that
                       enables instant and secure online contract signing. With
                       robust encryption and identity verification, SCHESTI
@@ -248,17 +249,17 @@ const Contract = () => {
                     />
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                       Improving Team Collaboration
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-Slate_Blue leading-[16.8px]">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#718096] leading-[16.8px]">
                       Monitoring compliance and managing contractual obligations
                       can be complex, often leading to missed deadlines and
                       potential disputes
                     </p>
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-lite_black leading-[19.41px] pt-3">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-[#4A5568] leading-[19.41px] pt-3">
                       SCHESTI’s contract management tools offer comprehensive
                       tracking of obligations, deadlines, and milestones.
                       Automated reminders and detailed compliance tracking
@@ -281,16 +282,16 @@ const Contract = () => {
                     />
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                       Managing Client Data
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-Slate_Blue leading-[16.8px]">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#718096] leading-[16.8px]">
                       Managing contracts in isolation from CRM or accounting
                       systems can lead to inefficiencies and data discrepancies
                     </p>
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-lite_black leading-[19.41px] pt-3">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-[#4A5568] leading-[19.41px] pt-3">
                       SCHESTI seamlessly integrates with CRM and accounting
                       software, providing a unified platform where contract
                       information syncs with client data and financial details.
@@ -309,12 +310,12 @@ const Contract = () => {
         <div className="flex  flex-col md:flex-row  items-center justify-between gap-12 md:gap-0 px-2 md:py-[60px] md:px-0">
           <div className=" w-full max-w-[683.5px]">
             <div className="pb-4">
-              <h1 className="font-Gilroy font-bold text-[30px] md:text-h1 text-gray_dark md:leading-h1">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[48px] text-[#161C2D] md:leading-[65px]">
                 Top contractors worldwide rely on Schesti
               </h1>
             </div>
             <div className=" w-full max-w-[500px]">
-              <p className="font-normal font-Gilroy text-h2  text-gray leading-h2">
+              <p className="font-normal font-Gilroy text-[19px]  text-[#161C2D] leading-[32px]">
                 Discover why over 1 million contractors have chosen Schesti to
                 facilitate the construction of more than $1 trillion worth of
                 projects annually
@@ -334,13 +335,13 @@ const Contract = () => {
             <div className=" flex flex-col items-center  py-[72px]">
               <div className="w-full max-w-[678px] flex flex-col items-center">
                 <div className="">
-                  <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-dark_blue leading-[56px]">
+                  <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-[#27303F] leading-[56px]">
                     The Benefits of SCHESTI <br />
                     Contract Management Solution
                   </h1>
                 </div>
                 <div className="w-full max-w-[678px] pt-4">
-                  <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[19px] text-Slate_Blue leading-[32px]">
+                  <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[19px] text-[#718096] leading-[32px]">
                     Discover how SCHESTI’s Contract Management System simplifies
                     contract handling, enhances compliance, and accelerates
                     approval processes
@@ -350,19 +351,19 @@ const Contract = () => {
               <div className="flex flex-col md:flex-row gap-3 md:pt-[40px]">
                 <div className="w-full gap-4 flex flex-col  items-center">
                   <div className="">
-                    <p className="font-bold font-Gilroy text-[18px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                    <p className="font-bold font-Gilroy text-[18px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                       70%
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray  leading-[29.71px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C]  leading-[29.71px] text-center">
                       Faster Contract
                       <br />
                       Execution
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[15px] md:text-[16px]  text-lite_black leading-[19.41px]">
+                    <p className="font-normal font-Gilroy text-center text-[15px] md:text-[16px]  text-[#4A5568] leading-[19.41px]">
                       SCHESTI’s contract management system speeds up contract
                       processing by 70%, thanks to automated workflows and
                       efficient e-signature integration
@@ -377,18 +378,18 @@ const Contract = () => {
                 </div>
                 <div className="w-full gap-4 flex flex-col  items-center">
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                       65%
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray  leading-[29.71px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C] leading-[29.71px] text-center">
                       Reduced Errors &<br />
                       Compliance Issues
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-lite_black leading-[19.41px]">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-[#4A5568] leading-[19.41px]">
                       With SCHESTI’s robust contract management tools,
                       experience a 65% reduction in errors and compliance
                       issues, ensuring accurate and timely contract execution
@@ -403,18 +404,18 @@ const Contract = () => {
                 </div>
                 <div className="w-full gap-0 md:gap-4 flex flex-col  items-center">
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                       60%
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray  leading-[29.71px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C]  leading-[29.71px] text-center">
                       Improved Tracking & <br />
                       Monitoring
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-lite_black leading-[19.41px]">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-[#4A5568] leading-[19.41px]">
                       Achieve a 60% improvement in tracking contractual
                       obligations and milestones, thanks to SCHESTI’s
                       comprehensive monitoring and reminder features
@@ -431,10 +432,10 @@ const Contract = () => {
         <div className="container">
           <div className=" ">
             <div className="text-center">
-              <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-dark_black md:leading-[44.57px]">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-[#181D25] md:leading-[44.57px]">
                 Browse FAQs{' '}
               </h1>
-              <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-gray md:leading-[32px] pt-3">
+              <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] md:leading-[32px] pt-3">
                 Easily find answers to common questions with our comprehensive
                 FAQs section.{' '}
               </h1>
@@ -458,13 +459,13 @@ const Contract = () => {
             </div>
             <div className="w-full max-w-[511px]">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[48px]  text-gray lg:leading-[64px]">
+                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[48px]  text-[#161C2D] lg:leading-[64px]">
                   Secure and Fast Contract Handling with SCHESTI’s <br />
                   E-Signature System
                 </h1>
               </div>
               <div className=" pt-[32px] w-full max-w-[375px]">
-                <p className="font-normal font-Gilroy text-[15px] lg:text-h2 text-gray leading-h2">
+                <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#161C2D] leading-[32px]">
                   Elevate your contract management with SCHESTI. Secure, fast,
                   and hassle-free e-signatures are just a click away. Simplify
                   your workflow and boost efficiency—revolutionize your contract
@@ -472,10 +473,10 @@ const Contract = () => {
                 </p>
               </div>
               <div className="flex flex-col md:flex-row gap-5 pt-8">
-                <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                <button className="bg-[#007AB6] text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                   Get Started Now!
                 </button>
-                <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                <button className=" border-[2px] font-Poppins  text-[#007AB6] font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                   Contact us
                 </button>
               </div>
@@ -483,6 +484,7 @@ const Contract = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

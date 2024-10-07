@@ -1,9 +1,10 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client';
 import React from 'react';
-import Navbar from '@/app/component/navbar/minnavbar';
+import Navbar from '../navbar';
 import CollapseComponent from '../components/customCollapse';
-import FAQ from '@/app/constants/FAQ.json';
+import FAQ from  '@/app/constants/FAQ.json'
+import Footer from '../footer';
 export default function FAQs() {
   return (
     <>
@@ -14,18 +15,18 @@ export default function FAQs() {
             <div className=" flex flex-col items-center gap-[22px]">
               <div className="flex flex-col justify-center items-center gap-3">
                 <div className="">
-                  <p className="font-normal font-Gilroy text-[15px] md:text-h2  text-blue leading-[32px]">
+                  <p className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#007AB6] leading-[32px]">
                     Resources
                   </p>
                 </div>
                 <div className="">
                   {' '}
-                  <h1 className="font-Gilroy font-bold text-[30px] md:text-h1 tracking-[-1.2px] text-gray_dark md:leading-[56px]">
+                  <h1 className="font-Gilroy font-bold text-[30px] md:text-[48px] tracking-[-1.2px] text-[#161C2D] md:leading-[56px]">
                     FAQ’s & Troubleshooting
                   </h1>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-[15px] md:text-h2  text-gray_dark leading-[32px]">
+                  <p className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] leading-[32px]">
                     Access helpful articles and tips for resolving common
                     issues.
                   </p>
@@ -54,7 +55,7 @@ export default function FAQs() {
           <div className="">
             <div className=" w-full max-w-[1100px] flex flex-col items-center pb-[40px]">
               <div className="pb-6 ">
-                <h1 className="font-Gilroy font-bold text-[24px] md:text-[48px]  text-dark_black md:leading-[64px] text-center">
+                <h1 className="font-Gilroy font-bold text-[24px] md:text-[48px]  text-[#181D25] md:leading-[64px] text-center">
                   Explore Our Frequently Asked Questions
                 </h1>
               </div>
@@ -98,13 +99,13 @@ export default function FAQs() {
             </div>
             <div className="w-full max-w-[511px]">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-[30px] md:text-[48px]  text-dark_black md:leading-[64px]">
+                <h1 className="font-Gilroy font-bold text-[30px] md:text-[48px]  text-[#181D25] md:leading-[64px]">
                   Experience Unmatched CRM Power with SCHESTI
                   <br /> —Take the Leap!
                 </h1>
               </div>
               <div className=" pt-[24px]">
-                <p className="font-normal font-Gilroy text-[15px] md:text-h2 text-gray leading-h2">
+                <p className="font-normal font-Gilroy text-[15px] md:text-[19px] text-[#161C2D] leading-[32px]">
                   Empower Your Projects With Schesti: Estimating construction
                   projects shouldn't be a headache. We offers a solution that
                   streamlines the process for you. Discover the ease and
@@ -112,10 +113,10 @@ export default function FAQs() {
                 </p>
               </div>
               <div className="flex flex-col md:flex-row gap-5 pt-6">
-                <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                <button className="bg-[#007AB6] text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                   Get Started Now!
                 </button>
-                <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                <button className=" border-[2px] font-Poppins  text-[#007AB6] font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                   Contact us
                 </button>
               </div>
@@ -123,6 +124,7 @@ export default function FAQs() {
           </div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 }

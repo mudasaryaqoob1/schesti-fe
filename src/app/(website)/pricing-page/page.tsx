@@ -91,7 +91,7 @@ const Prcing = () => {
 
       <div className="container">
         <div className="flex items-center justify-center mt-[17px]">
-          <div className="font-bold font-Gilroy text-3xl md:text-[48px] leading-[65px] tracking-[-2px] text-gray text-center">
+          <div className="font-bold font-Gilroy text-3xl md:text-[48px] leading-[65px] tracking-[-2px] text-[#161C2D] text-center">
             Exclusive Schesti Subscriptions, A gateway to Unparalleled
             Excellence in Field Service
           </div>
@@ -100,25 +100,25 @@ const Prcing = () => {
           <div className="">
             <div className="mt-[30px] flex flex-col justify-center items-center ">
               <div
-                className="inline-flex justify-between mb-10 rounded-md shadow-sm w-full max-w-[365px] h-[60px] bg-[#E6F2F8]"
+                className="inline-flex justify-between mb-10 rounded-[39px] shadow-sm w-full max-w-[365px] h-[60px] bg-[#E6F2F8]"
                 role="group"
               >
                 <button
                   type="button"
-                  className="px-[21px] m-[6px]  py-[14px] text-black text-sm font-medium rounded-[1000px] bg-blue   hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-blue"
+                  className="px-[21px] m-[6px]  py-[14px] text-black text-[14px] font-medium rounded-[1000px] bg-[#007AB6]   hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-[#007AB6]"
                 >
                   Individual Plan
                 </button>
                 <button
                   type="button"
-                  className="px-[21px] m-[6px]  py-[14px]  text-sm font-medium text-[#101828] rounded-[1000px] bg-transparent  hover:bg-blue hover:text-orange-300 focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-gray dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-blue"
+                  className="px-[21px] m-[6px]  py-[14px]  text-[14px] font-medium text-[#101828] rounded-[1000px] bg-transparent  hover:bg-[#007AB6] hover:text-orange-300 focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-[#161C2D] dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-[#007AB6]"
                 >
                   Enterprise Plan
                 </button>
               </div>
               <div className=" flex items-center justify-center ">
                 <label className="inline-flex gap-[28px] items-center cursor-pointer">
-                  <span className="ms-3 text-[18.06px] leading-[21.86px] font-medium text-gray-900 dark:text-gray peer-checked:text-[#101828]">
+                  <span className="ms-3 text-[18.06px] leading-[21.86px] font-medium text-gray-900 dark:text-[#161C2D] peer-checked:text-[#101828]">
                     Monthly
                   </span>
                   <input
@@ -127,7 +127,7 @@ const Prcing = () => {
                     className="sr-only peer"
                   ></input>
                   <div className="relative w-[64px] h-7 bg-[#2f7da7] peer-focus:outline-none   rounded-full peer  peer-checked:after:translate-x-[38px] rtl:peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300  after:rounded-full after:h-6 after:w-6 after:transition-all "></div>
-                  <span className="ms-3 text-[18.06px] leading-[21.86px] font-medium text-gray-900 dark:text-gray peer-checked:text-[#101828]">
+                  <span className="ms-3 text-[18.06px] leading-[21.86px] font-medium text-gray-900 dark:text-[#161C2D] peer-checked:text-[#101828]">
                     Yearly
                   </span>
                 </label>
@@ -169,7 +169,7 @@ const Prcing = () => {
                 </p>
               </div>
               <div className="mt-8">
-                <button className="bg-[#E6F2F8] text-blue font-medium text-[18px] font-Poppins leading-[27px] rounded-[400px] px-6 py-[14px] md:py-[15px]">
+                <button className="bg-[#E6F2F8] text-[#007AB6] font-medium text-[18px] font-Poppins leading-[27px] rounded-[400px] px-6 py-[14px] md:py-[15px]">
                   Schedule a Meeting
                 </button>
               </div>
@@ -192,7 +192,7 @@ const Prcing = () => {
           >
             What Type of Company Do You Work For in Construction?
           </div>
-          <div className="text-base md:text-lg lg:text-h2 font-Gilroy font-regular tracking-normal md:-tracking-[0.1px] lg:-tracking-[0.2px] text-center text-gray opacity-70 mt-4 lg:mt-6">
+          <div className="text-base md:text-lg lg:text-[19px] font-Gilroy font-regular tracking-normal md:-tracking-[0.1px] lg:-tracking-[0.2px] text-center text-[#161C2D] opacity-70 mt-4 lg:mt-6">
             Discover Construction Sector Opportunities, At SCHESTI, we provide
             tailored construction solutions for your needs, ensuring efficient
             operations and successful project outcomes - all in one place
@@ -273,7 +273,7 @@ making and project success. Ensure precision in construction estimating with us"
         </div>
       </div>
       <div className="flex items-center justify-center mt-[72px]">
-        <button className="w-[196px] h-[56px] rounded-full border border-blue font-Gilroy font-bold text-[17px] leading-[22px] -tracking-[0.6px] text-blue transition-transform duration-300 hover:scale-105">
+        <button className="w-[196px] h-[56px] rounded-full border border-[#007AB6] font-Gilroy font-bold text-[17px] leading-[22px] -tracking-[0.6px] text-[#007AB6] transition-transform duration-300 hover:scale-105">
           See more
         </button>
       </div>
@@ -299,7 +299,7 @@ making and project success. Ensure precision in construction estimating with us"
                 </p>
               </div>
               <div className="mt-8">
-                <button className="bg-[#E6F2F8] text-blue font-medium text-[18px] font-Poppins leading-[27px] rounded-[400px] px-6 py-[14px] md:py-[16px]">
+                <button className="bg-[#E6F2F8] text-[#007AB6] font-medium text-[18px] font-Poppins leading-[27px] rounded-[400px] px-6 py-[14px] md:py-[16px]">
                   Request for post
                 </button>
               </div>
