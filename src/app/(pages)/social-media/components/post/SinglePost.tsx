@@ -3,7 +3,6 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Comments from '../comment';
 import { IPost } from '.';
-import { truncate } from 'lodash';
 import { socialMediaService } from '@/app/services/social-media.service';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -27,29 +26,13 @@ import ProfileAvatar from './Profile';
 type Props = {
   myFeed?: boolean;
 } & IPost;
-const SinglePost = ({
-  _id,
-  description,
-  mediaFiles,
-  feeling = '',
-  userReaction,
-  createdAt,
-  reactions,
-  associatedCompany: {
-    _id: postOwnerId = '',
-    userRole: postOwnerRole,
-    name = '',
-    companyName = '',
-    organizationName = '',
-    socialName,
-    university = '',
-    avatar = '',
-    socialAvatar = '',
-  },
-  myFeed = false,
-}: Props) => {
+const SinglePost = (data: Props) => {
+
+  const { _id, description, mediaFiles, feeling = '', userReaction, createdAt, reactions, myFeed = false } = data;
+  const { _id: postOwnerId = '', userRole: postOwnerRole = '', socialName, name = '', university = '', companyName = '', organizationName = '', avatar = '', socialAvatar = ''
+  } = data?.associatedCompany || {};
   const [refetchPost, setRefetchPost] = useState(false);
-  const [seeMore, setSeeMore] = useState(false);
+  // const [seeMore, setSeeMore] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
   // const [showComments, setShowComments] = useState(true);
   let showComments = true;
@@ -63,6 +46,7 @@ const SinglePost = ({
   const [openLightbox, setOpenLightbox] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const user = useUser();
+
 
   const isPostOwner = postOwnerId === user?._id;
   const isAdmin = postOwnerRole === ('admin' as any);
@@ -149,6 +133,8 @@ const SinglePost = ({
         from={isAdmin ? '' : from}
       />
       {description && (
+        <div className="description mt-3 text-steelGray text-xs" dangerouslySetInnerHTML={{ __html: description }}></div>)}
+      {/* {description && (
         <div className="flex description mt-3 text-steelGray text-xs">
           <p>
             {truncate(description, {
@@ -168,7 +154,7 @@ const SinglePost = ({
             )}{' '}
           </p>
         </div>
-      )}
+      )} */}
 
       {/* filesimages or video view on single post */}
 
@@ -181,26 +167,19 @@ const SinglePost = ({
         />
         {mediaFiles.slice(0, 3).map(({ _id, url, type }, i) => (
           <div className="relative h-44 w-auto col-span-1" key={_id}>
-            {type.includes('video') ? (
-              <video
-                onClick={() => handleLightbox(i)}
-                src={url}
-                className="rounded-md cursor-pointer h-full w-full object-cover"
-              />
-            ) : (
-              <Image
-                fill={true}
-                alt={`media-${i}`}
-                src={url}
-                onClick={() => handleLightbox(i)}
-                className="rounded-md cursor-pointer shadow-sm size-24 object-cover"
-              />
-            )}
-            {mediaFiles.length > 2 && i === 2 && (
-              <p
-                onClick={() => handleLightbox(i)}
-                className="absolute text-white font-semibold text-xl left-[50%] top-[50%]"
-              >
+            {
+              type.includes('video') ? <video onClick={() => handleLightbox(i)} src={url} className="rounded-md cursor-pointer h-full w-full object-cover" /> : (
+                <Image
+                  fill={true}
+                  alt={`media-${i}`}
+                  src={url}
+                  onClick={() => handleLightbox(i)}
+                  className="rounded-md cursor-pointer shadow-sm size-24 object-cover"
+                />
+              )
+            }
+            {(mediaFiles.length > 3 && i === 2) && (
+              <p onClick={() => handleLightbox(i)} className="absolute text-white font-semibold text-xl left-[50%] top-[50%]">
                 +2
               </p>
             )}
@@ -212,12 +191,11 @@ const SinglePost = ({
           <Reactions
             id={_id}
             reactions={reactions}
-            setRefetchPost={setRefetchPost}
             userReaction={userReaction}
           />
           <div
             className="flex gap-2 items-center cursor-pointer"
-            // onClick={() => setShowComments((prev) => !prev)}
+          // onClick={() => setShowComments((prev) => !prev)}
           >
             <Image
               src="/comments-01.svg"

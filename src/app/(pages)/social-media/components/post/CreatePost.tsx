@@ -16,6 +16,7 @@ import ModalComponent from '@/app/component/modal';
 import FeelingActivityFeature from './FeelingActivity';
 import { userService } from '@/app/services/user.service';
 import { useUser } from '@/app/hooks/useUser';
+import ReactQuill from 'react-quill';
 
 type IPost = {
   mediaFiles: IMediaFile[];
@@ -163,13 +164,21 @@ const CreatePost = () => {
         />
         <p className="font-medium text-graphiteGray text-sm">Create Post</p>
       </div>
-      <textarea
+
+      <ReactQuill
+        value={description}
+        placeholder='What’s in your mind...'
+        onChange={setDescription}
+        className='h-32 mt-3'
+        modules={{ toolbar: false }}
+      />
+      {/* <textarea
         value={description}
         onChange={({ target }) => setDescription(target.value)}
         rows={5}
         className="w-full placeholder:text-coolGray border border-mercury rounded-md mt-3 p-3"
         placeholder="What’s in your mind..."
-      />
+      /> */}
 
       {/* small old image or video irls to view in create or update post*/}
       <div className="media-list-section mt-3 flex flex-wrap gap-2">
@@ -258,10 +267,7 @@ const CreatePost = () => {
             onChange={({ target }) => {
               if (target.files) {
                 if (target.files.length > 0) {
-                  const selectedMediaFiles = Array.from(
-                    target.files as FileList
-                  );
-                  console.log(selectedMediaFiles, 'selected fmed', files);
+                  const selectedMediaFiles = Array.from(target.files as FileList);
                   setFiles((prev) => [
                     ...prev,
                     ...selectedMediaFiles.filter(
@@ -295,7 +301,6 @@ const CreatePost = () => {
           <CustomButton
             isLoading={isFilesUploading}
             onClick={() => (postData ? updatePost() : createPost())}
-            // onClick={() => setOpenCreatePost(true)}
             text={postData ? 'Update' : 'Create'}
             className="max-w-16 flex justify-center bg-lavenderPurpleReplica text-xs text-white"
           />

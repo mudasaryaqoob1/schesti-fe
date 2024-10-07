@@ -8,11 +8,15 @@ import { userService } from '@/app/services/user.service';
 import Loader from '@/app/component/loader';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import ProfileAvatar from '@/app/(pages)/social-media/components/post/Profile';
+import { voidFc } from '@/app/utils/types';
 
 type Props = {
-  userId?: boolean;
+  isSettings?: boolean;
+  fetchPosts?: voidFc
 };
-const ProfileIntro = ({ userId }: Props) => {
+const ProfileIntro = ({
+  isSettings, fetchPosts = () => { }
+}: Props) => {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const { id = '' } = useParams();
@@ -53,7 +57,10 @@ const ProfileIntro = ({ userId }: Props) => {
         avatar={avatar}
         showModal={showModal}
         setShowModal={setShowModal}
-        fetchUser={() => setFetchUser((prev) => !prev)}
+        fetchUser={() => {
+          setFetchUser((prev) => !prev);
+          fetchPosts();
+        }}
       />
       <div className="w-full mt-3.5 shadow rounded-xl p-6 bg-white flex justify-between">
         <div className="flex gap-4 items-center">
@@ -73,16 +80,16 @@ const ProfileIntro = ({ userId }: Props) => {
             alt="edit"
           />
         )}
-        {!id && userId && (
-          <Image
-            onClick={() => setShowModal(true)}
-            width={20}
-            height={20}
-            src="/edit.svg"
-            className="cursor-pointer"
-            alt="edit"
-          />
-        )}
+
+        {isSettings && <Image
+          onClick={() => setShowModal(true)}
+          width={20}
+          height={20}
+          src="/edit.svg"
+          className="cursor-pointer"
+          alt="edit"
+        />}
+
       </div>
     </>
   );

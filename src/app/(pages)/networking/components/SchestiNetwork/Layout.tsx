@@ -6,7 +6,7 @@ import NoData from '../NoData';
 import { useSelector } from 'react-redux';
 import { networkingService } from '@/app/services/networking.service';
 import { NetworkSearchTypes } from '../../page';
-import Loader from '@/app/component/loader';
+import SkeletonLoader from '@/app/component/loader/Skeleton';
 const lodash = require('lodash');
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
 
 const Layout = ({ userRole }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [schestiUsers, setSchestiUsers] = useState([]);
+  const [schestiUsers, setSchestiUsers] = useState<[] | null>(null);
   const [searchText, setSearchText] = useState('');
   const [locationText, setLocationText] = useState('');
   const { schestiNetwork } = useSelector((state: any) => state.network);
@@ -79,9 +79,9 @@ const Layout = ({ userRole }: Props) => {
           setLocationText(locationText);
         }}
       />
-      {isLoading ? (
-        <Loader />
-      ) : schestiUsers.length > 0 ? (
+      {!schestiUsers || isLoading ? (
+        <SkeletonLoader />
+      ) : (schestiUsers.length > 0 ? (
         <div className="grid grid-cols-3 gap-4">
           {schestiUsers.map((userData: any, i: number) => (
             <SingleUserCard key={i} {...userData} />
@@ -89,7 +89,7 @@ const Layout = ({ userRole }: Props) => {
         </div>
       ) : (
         <NoData />
-      )}
+      ))}
       {filters.totalPages > 0 && (
         <div className="mt-1 flex justify-center">
           <Pagination
