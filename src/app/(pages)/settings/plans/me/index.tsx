@@ -33,7 +33,7 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
   const getUserDetail = useCallback(async () => {
     setIsLoading(true);
     try {
-      // let { data } = 
+      // let { data } =
       await userService.httpGetCompanyDetail();
     } catch (error) {
       console.log(error);
@@ -54,8 +54,8 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
 
   const remainingDays = userData
     ? moment
-      .unix(userData.subscription!.currentPeriodEnd)
-      .diff(moment(), 'days')
+        .unix(userData.subscription!.currentPeriodEnd)
+        .diff(moment(), 'days')
     : 0;
   return (
     <>
@@ -99,8 +99,9 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
 
                   <div className="flex mt-5 justify-end w-full">
                     {remainingDays ? (
-                      <p className="font-semibold text-[14px]  text-[#EC2224]">{`Expires in ${remainingDays} day${remainingDays !== 1 ? 's' : ''
-                        }`}</p>
+                      <p className="font-semibold text-[14px]  text-[#EC2224]">{`Expires in ${remainingDays} day${
+                        remainingDays !== 1 ? 's' : ''
+                      }`}</p>
                     ) : null}
                   </div>
                 </div>

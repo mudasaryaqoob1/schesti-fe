@@ -1,9 +1,9 @@
-'use client'
+'use client';
 import React from 'react';
 import Image from 'next/image';
 
 import Navbar from '../navbar';
-import Footer from '../footer'
+import Footer from '../footer';
 import TestimonialSlider from '../testimonialSlider';
 import TestimonialCard from '../components/testimonialCard';
 
@@ -527,7 +527,7 @@ const WhySchesti = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

@@ -26,8 +26,16 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
   }
   const meetings = state.filter((item) => {
     const current = moment.tz(getClientLocalTimezone());
-    const endMeeting = moment(item.endDate).tz(item.timezone);
-    return current.isBefore(endMeeting);
+
+    // Convert meeting end time to user's local timezone
+    const endMeetingInUserTimezone = moment
+      .tz(item.endDate, item.timezone)
+      .clone()
+      .tz(getClientLocalTimezone());
+
+    // Check if current time (user's timezone) is before the meeting end time (converted to user's timezone)
+    const isBeforeEnd = current.isBefore(endMeetingInUserTimezone);
+    return isBeforeEnd;
   });
   return (
     <div>

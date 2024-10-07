@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '../navbar';
 import Image from 'next/image';
 import Link from 'next/link';
-import Footer from '../footer'
+import Footer from '../footer';
 import BlogFaqs from '@/app/constants/blogs.json';
 
 const Blogs = () => {
@@ -24,7 +24,7 @@ const Blogs = () => {
         </div>
         <div className=" relative pt-10">
           <div className="px-4 xl:px-0">
-            <img src="/blogs-img/hero.png" className='w-full' alt="" />
+            <img src="/blogs-img/hero.png" className="w-full" alt="" />
           </div>
           <div className=" absolute bottom-10 w-full max-w-[720px] pl-10 ">
             <h1 className="font-sans font-semibold text-[24px] md:text-[36px]  text-white md:leading-[40px] ">
@@ -64,7 +64,7 @@ const Blogs = () => {
           </button>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

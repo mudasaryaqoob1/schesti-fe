@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '../navbar';
 import CollapseComponent from '../components/customCollapse';
 import EstimateFaqs from '@/app/constants/estimate.json';
-import Footer from '../footer'
+import Footer from '../footer';
 const Estimate = () => {
   return (
     <div>
@@ -182,8 +182,23 @@ const Estimate = () => {
       </div>
       {/* seven */}
       <div className="container">
-          <div className="py-[60px]">
-            <div className="w-full max-w-[794px] mx-auto flex flex-col items-center">
+        <div className="py-[60px]">
+          <div className="w-full max-w-[794px] mx-auto flex flex-col items-center">
+            <div className="">
+              <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-dark_blue leading-[56px] px-5 md:px-0">
+                the benefits of precise and efficient estimating with SCHESTI
+              </h1>
+            </div>
+            <div className="w-full max-w-[616px] pt-4">
+              <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[20px] text-dark_blue leading-[24px]">
+                See how SCHESTI’s estimating solutions can transform your
+                project planning, whose accuracy and streamline you are
+                estimating process
+              </h1>
+            </div>
+          </div>
+          <div className="flex flex-col lg:flex-row gap-3 px-5 lg:px-0 md:pt-[40px]">
+            <div className="w-full gap-4 flex flex-col  items-center">
               <div className="">
                 <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-[#27303F] leading-[56px] px-5 md:px-0">
                   the benefits of precise and efficient estimating with SCHESTI
@@ -224,7 +239,7 @@ const Estimate = () => {
               </div>
               <div className="lg:flex hidden h-[320px]">
                 <img
-                  src="/finantial-tool-imges/bedding-page-imges-lines.png"
+                  src="/finantial-tool-imges/finantail-managment-logo3.svg"
                   alt=""
                 />
               </div>
@@ -253,9 +268,29 @@ const Estimate = () => {
                   </p>
                 </div>
               </div>
-              <div className="lg:flex hidden h-[320px]">
+              <div className="">
+                <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray leading-[29.71px] text-center">
+                  Reduction in Estimating time
+                </p>
+              </div>
+              <div className="">
+                <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-blue_gray leading-[16.8px]">
+                  Surveyed clients experience an average reduction of 55% in the
+                  time required to generate estimates, thanks to SCHESTI’s
+                  efficient processes
+                </p>
+              </div>
+            </div>
+            <div className="lg:flex hidden h-[320px]">
+              <img
+                src="/finantial-tool-imges/bedding-page-imges-lines.png"
+                alt=""
+              />
+            </div>
+            <div className="w-full gap-4 flex flex-col  items-center">
+              <div className="">
                 <img
-                  src="/finantial-tool-imges/bedding-page-imges-lines.png"
+                  src="/finantial-tool-imges/finantail-managment-logo2.svg"
                   alt=""
                 />
               </div>
@@ -286,6 +321,7 @@ const Estimate = () => {
               </div>
             </div>
           </div>
+        </div>
       </div>
       {/* nine secyion */}
       <div className="py-[120px]">
@@ -342,7 +378,7 @@ const Estimate = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

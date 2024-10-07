@@ -23,7 +23,7 @@ const SchestiPosts = () => {
   }, [fetchPosts]);
 
   if (isLoading) {
-    return <SkeletonLoader />
+    return <SkeletonLoader />;
   }
 
   return (
@@ -37,12 +37,10 @@ const SchestiPosts = () => {
 
 export default SchestiPosts;
 
-
-
 export interface IUserReaction {
   type: string;
   associatedCompany: string;
-  _id: string
+  _id: string;
 }
 export interface IPost {
   _id: string;

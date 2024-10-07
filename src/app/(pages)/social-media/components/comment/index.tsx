@@ -56,9 +56,9 @@ const Comments = ({
       setComments(
         reply_to_username
           ? postComments.map((comment: IComment) => ({
-            ...comment,
-            reply_to_username,
-          }))
+              ...comment,
+              reply_to_username,
+            }))
           : postComments
       );
       if (setTotalComments) setTotalComments(postComments.length);

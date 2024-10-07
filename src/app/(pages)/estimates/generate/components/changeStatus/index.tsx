@@ -5,6 +5,8 @@ import { Radio } from 'antd';
 import { TextAreaComponent } from '@/app/component/textarea';
 import CustomButton from '@/app/component/customButton/button';
 import { estimateRequestService } from '@/app/services/estimates.service';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 interface IProps {
   setChangeStatusDrawer: Function;
@@ -23,6 +25,7 @@ const ChangeStatus = ({
     status: '',
     reason: '',
   });
+  const [isChangingStatus, setIsChangingStatus] = useState(false);
 
   const submitHandler = async () => {
     setFormError('');
@@ -35,14 +38,23 @@ const ChangeStatus = ({
         status: estimateStatus === 'lost' ? lostReason.status : estimateStatus,
         reason: lostReason.status,
       };
-      let deleteEstimateResult =
-        await estimateRequestService.httpChangeGeneratedEstimateStatus(
-          estimateDetail._id,
-          dataObj
-        );
-      if (deleteEstimateResult.statusCode === 200) {
-        setChangeStatusDrawer(false);
-        fetchEstimates();
+      try {
+        setIsChangingStatus(true);
+        let deleteEstimateResult =
+          await estimateRequestService.httpChangeGeneratedEstimateStatus(
+            estimateDetail._id,
+            dataObj
+          );
+
+        if (deleteEstimateResult.statusCode === 200) {
+          setChangeStatusDrawer(false);
+          fetchEstimates();
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data?.message);
+      } finally {
+        setIsChangingStatus(false);
       }
     }
   };
@@ -169,7 +181,12 @@ const ChangeStatus = ({
       <p className="text-red-600 font-popin e font-medium text-[18px]">
         {formError}
       </p>
-      <CustomButton text="Update" className="mt-6" onClick={submitHandler} />
+      <CustomButton
+        text="Update"
+        className="mt-6"
+        onClick={submitHandler}
+        isLoading={isChangingStatus}
+      />
     </div>
   );
 };

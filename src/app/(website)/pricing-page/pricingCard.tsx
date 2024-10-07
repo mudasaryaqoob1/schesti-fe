@@ -9,7 +9,12 @@ interface PricingCardProps {
 }
 
 // Using the PricingCardProps interface for typing the component props
-const PricingCard: React.FC<PricingCardProps> = ({ title, price, features, buttonText }) => {
+const PricingCard: React.FC<PricingCardProps> = ({
+  title,
+  price,
+  features,
+  buttonText,
+}) => {
   return (
     <div className="bg-white rounded-[18.06px] shadow-[0px_0px_62.45px_0px_#373C4F1C] max-w-[363px] mx-auto p-[29px]">
       <h3 className="text-[19.87px] leading-[24.04px] text-[#101828] font-inter  font-medium mb-[21.67px]">{title}</h3>

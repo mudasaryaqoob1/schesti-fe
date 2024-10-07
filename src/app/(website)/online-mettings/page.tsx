@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React from 'react';
 import Navbar from '../navbar';
 import Image from 'next/image';
@@ -31,9 +31,9 @@ const OnlineMeetins = () => {
                   <div className=" w-full max-w-[570px]">
                     <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] tracking-[-0.2px]  text-[#161C2D] leading-[32px]">
                       Facilitate seamless connections and enhance productivity
-                      with Schesti secure, reliable video conferencing
-                      platform. Unite teams from anywhere with advanced features
-                      like shared planning, resource allocation, and real-time
+                      with Schesti secure, reliable video conferencing platform.
+                      Unite teams from anywhere with advanced features like
+                      shared planning, resource allocation, and real-time
                       communication tools.
                     </p>
                   </div>
@@ -340,9 +340,9 @@ const OnlineMeetins = () => {
                 </div>
                 <div className="">
                   <p className="font-normal font-Gilroy text-center text-[15px] md:text-[14px]  text-lite_black leading-[16.8px]">
-                    Users of SCHESTI online meeting tools report a 65%
-                    increase in meeting efficiency, with better organization and
-                    faster decision-making
+                    Users of SCHESTI online meeting tools report a 65% increase
+                    in meeting efficiency, with better organization and faster
+                    decision-making
                   </p>
                 </div>
               </div>

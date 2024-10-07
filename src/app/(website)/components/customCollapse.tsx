@@ -25,7 +25,6 @@ const CollapseComponent: React.FC<Propss> = ({ faqs }) => {
     };
   });
 
-
   const onChange = (key: string | string[]) => {
     console.log(key);
   };

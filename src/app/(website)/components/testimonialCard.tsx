@@ -1,6 +1,6 @@
 import React from 'react';
 
- const TestimonialCard = () => {
+const TestimonialCard = () => {
   return (
     <>
       <div className={`w-full pl-[18px] flex flex-col gap-[24px] `}>
@@ -50,5 +50,4 @@ import React from 'react';
   );
 };
 
-
-export default TestimonialCard
+export default TestimonialCard;

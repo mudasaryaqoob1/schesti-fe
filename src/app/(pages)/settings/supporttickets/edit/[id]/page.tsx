@@ -42,11 +42,11 @@ const validationSchema = Yup.object({
 const initialValues = {
   title: '',
   description: '',
-  file : {
-    name : "",
-    fileType : "",
-    url : ""
-  }
+  file: {
+    name: '',
+    fileType: '',
+    url: '',
+  },
 };
 
 const EditSupportTicket = () => {

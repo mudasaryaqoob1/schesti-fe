@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '../navbar';
 import CollapseComponent from '../components/customCollapse';
@@ -252,14 +251,17 @@ const TimeScheduling = () => {
                   equipment, and materials, ensuring effective utilization. By
                   optimizing resource use, you can cut costs and boost
                   productivity, enhancing both profitability and sustainability.
-                  Schesti tools enable precise planning and allocation,
-                  reducing waste and ensuring every project aspect is handled
-                  efficiently
+                  Schesti tools enable precise planning and allocation, reducing
+                  waste and ensuring every project aspect is handled efficiently
                 </p>
               </div>
             </div>
             <div className="w-full max-w-[577px]">
-              <img src="/timesedule-imges/advance-securty.png" className='w-full' alt="" />
+              <img
+                src="/timesedule-imges/advance-securty.png"
+                className="w-full"
+                alt=""
+              />
             </div>
           </div>
         </div>

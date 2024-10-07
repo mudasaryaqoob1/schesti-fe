@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../navbar';
 
-import FinancialFaqs from '@/app/constants/finantioltool.json'
+import FinancialFaqs from '@/app/constants/finantioltool.json';
 import CollapseComponent from '../components/customCollapse';
 import Footer from '../footer';
 const FinancialTools = () => {

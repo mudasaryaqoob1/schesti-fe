@@ -192,9 +192,9 @@ const ViewEstimateDetail = () => {
       estimateDetailsSummary?.totalBidDetail?.overheadAndProfit,
       estimateDetailsSummary?.totalBidDetail?.bondFee,
       estimateDetailsSummary?.totalCost +
-      estimateDetailsSummary?.totalBidDetail?.bondFee +
-      estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
-      estimateDetailsSummary?.totalBidDetail?.materialTax,
+        estimateDetailsSummary?.totalBidDetail?.bondFee +
+        estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
+        estimateDetailsSummary?.totalBidDetail?.materialTax,
     ];
 
     setCsvData([
@@ -498,28 +498,28 @@ const ViewEstimateDetail = () => {
         <div>
           {estimatesRecord?.length
             ? estimatesRecord.map((estimate: any) => (
-              <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <QuaternaryHeading
-                      title={estimate.title}
-                      className="font-semibold"
-                    />
+                <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <QuaternaryHeading
+                        title={estimate.title}
+                        className="font-semibold"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <QuaternaryHeading
+                        title={`Total Cost: ${currency.format(
+                          estimate.totalCostForTitle
+                        )}`}
+                        className="font-semibold"
+                      />
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <QuaternaryHeading
-                      title={`Total Cost: ${currency.format(
-                        estimate.totalCostForTitle
-                      )}`}
-                      className="font-semibold"
-                    />
+                  <div className="estimateTable_container">
+                    <EstimatesTable estimates={estimate.scopeItems} />
                   </div>
                 </div>
-                <div className="estimateTable_container">
-                  <EstimatesTable estimates={estimate.scopeItems} />
-                </div>
-              </div>
-            ))
+              ))
             : null}
         </div>
 
@@ -567,9 +567,9 @@ const ViewEstimateDetail = () => {
             className="font-semibold"
             title={`${currency.format(
               estimateDetailsSummary?.totalCost +
-              estimateDetailsSummary?.totalBidDetail?.bondFee +
-              estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
-              estimateDetailsSummary?.totalBidDetail?.materialTax
+                estimateDetailsSummary?.totalBidDetail?.bondFee +
+                estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
+                estimateDetailsSummary?.totalBidDetail?.materialTax
             )}`}
           />
         </div>

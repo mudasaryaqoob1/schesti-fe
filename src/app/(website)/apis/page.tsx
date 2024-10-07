@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 import Navbar from '../navbar';
-import Footer from '../footer'
+import Footer from '../footer';
 
 const APIS = () => {
   return (
     <div>
-           <div className="w-full h-[100%]">
+      <div className="w-full h-[100%]">
         <div className="bg-[url('/apis-imges/Grop-hero.png')] bg-cover bg-center lg:max-h-[907px]   bg-no-repeat w-full">
           <Navbar />
           {/* Add your content here if needed */}
@@ -244,9 +244,9 @@ const APIS = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default APIS
+export default APIS;

@@ -87,6 +87,11 @@ export interface IBidManagement {
   rfiDeadline?: IRFIDeadline;
 
   sendInMyNetwork?: boolean;
+
+  networkUsers?: {
+    userId: string;
+    email: string;
+  }[];
 }
 
 export interface IBidManagementResponse {
