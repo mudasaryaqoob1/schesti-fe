@@ -4,6 +4,7 @@ import Navbar from '../navbar';
 import CRMFaqs from '@/app/constants/crm.json';
 // import HomepageSlider from '../homepage/homepageSlider';
 import CollapseComponent from '../components/customCollapse';
+import Footer from '../footer';
 
 const CRM = () => {
   return (
@@ -18,9 +19,9 @@ const CRM = () => {
               <div className=" flex flex-col items-center md:pt-[60px]">
                 <div className=" w-full  flex flex-col items-center">
                   <div className="pb-5">
-                    <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-center text-gray_dark md:leading-[60px]">
+                    <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-center text-[#161C2D] md:leading-[60px]">
                       SCHETSI OFFERS THE{' '}
-                      <span className="bg-[url('/custumer-managment-page-imeges/custumer-hero-heding-img.svg')] bg-contain bg-bottom pb-2 bg-no-repeat text-blue">
+                      <span className="bg-[url('/custumer-managment-page-imeges/custumer-hero-heding-img.svg')] bg-contain bg-bottom pb-2 bg-no-repeat text-[#007AB6]">
                         PREMIER CRM SOFTWARE{' '}
                       </span>
                       TAILORED FOR THE EVOLVING NEEDS OF YOUR CONSTRUCTION
@@ -28,7 +29,7 @@ const CRM = () => {
                     </h1>
                   </div>
                   <div className=" w-full max-w-[850px] relative">
-                    <p className="font-normal font-Gilroy text-[15px] md:text-[18px]  text-gray_dark leading-[28px] text-center">
+                    <p className="font-normal font-Gilroy text-[15px] md:text-[18px]  text-[#161C2D] leading-[28px] text-center">
                       Our CRM platform provides a suite of complimentary tools
                       designed to seamlessly integrate your data, teams, and
                       customers onto a unified platform. Harness the power of
@@ -44,10 +45,10 @@ const CRM = () => {
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 pt-[47px]">
-                  <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-[56px] py-3 md:py-[15px]">
+                  <button className="bg-[#007AB6] text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-[56px] py-3 md:py-[15px]">
                     Catch offer
                   </button>
-                  <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                  <button className=" border-[2px] font-Poppins  text-[#007AB6] font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                     Start your free trial
                   </button>
                 </div>
@@ -73,13 +74,13 @@ const CRM = () => {
           </div>
           <div className="py-4 md:py-[99px] px-3 md:px-0 flex flex-col justify-center items-center gap-6 relative">
             <div className="w-full max-w-[616px] px-3 lg:px-0">
-              <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-blue_dark md:leading-[56px] md:text-center">
+              <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-[#002B40] md:leading-[56px] md:text-center">
                 Master Your Projects <br />
                 with SCHESTI’s All Inclusive CRM
               </h1>
             </div>
             <div className="w-full max-w-[1050px] px-3 lg:px-0 ">
-              <p className="font-normal font-Gilroy text-[13px] md:text-h2  text-gray leading-[34px] md:text-center">
+              <p className="font-normal font-Gilroy text-[13px] md:text-[19px]  text-[#161C2D] leading-[34px] md:text-center">
                 SCHESTI’s Construction CRM is designed to streamline all aspects
                 of your client management. It consolidates customers, partners,
                 suppliers, accounts, and contacts into one intuitive platform,
@@ -105,12 +106,12 @@ const CRM = () => {
           </div>
           <div className="w-full max-w-[580px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-dark_black lg:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-[#181D25] lg:leading-[60px]">
                 Centralized Project Management and Client Tracking
               </h1>
             </div>
             <div className=" pt-[24px]">
-              <p className="font-normal font-Gilroy text-[15px] lg:text-[18px] text-Slate_Blue lg:leading-[36px]">
+              <p className="font-normal font-Gilroy text-[15px] lg:text-[18px] text-[#718096] lg:leading-[36px]">
                 SCHESTI CRM centralizes all project-related and client
                 information into one platform. This integration allows
                 construction companies to efficiently track project progress,
@@ -130,12 +131,12 @@ const CRM = () => {
           <div className="flex flex-col lg:flex-row justify-between items-center gap-12 md:gap-0 md:py-[100px] px-4 lg:px-0">
             <div className="w-full max-w-[589px]">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-dark_black lg:leading-[60px]">
+                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-[#181D25] lg:leading-[60px]">
                   Streamlined Communication and Collaboration
                 </h1>
               </div>
               <div className=" pt-[24px]">
-                <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-Slate_Blue leading-[36px]">
+                <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#718096] leading-[36px]">
                   SCHESTI’s CRM enhances internal communication and team
                   collaboration by providing a unified platform for sharing
                   project updates, client information, and documentation. This
@@ -169,12 +170,12 @@ const CRM = () => {
           </div>
           <div className="w-full max-w-[589px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-dark_black lg:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-[#181D25] lg:leading-[60px]">
                 Automated Workflow and Task Management
               </h1>
             </div>
             <div className=" pt-[24px]">
-              <p className="font-normal font-Gilroy text-[15px] lg:text-[18px] text-Slate_Blue lg:leading-[36px]">
+              <p className="font-normal font-Gilroy text-[15px] lg:text-[18px] text-[#718096] lg:leading-[36px]">
                 SCHESTI’s CRM automates routine tasks such as scheduling,
                 reminders, and follow-ups, and supports workflow automation for
                 bid management, contract tracking, and client communications.
@@ -193,7 +194,7 @@ const CRM = () => {
           <div className="">
             <div className=" flex flex-col items-center  py-[72px]">
               <div className="w-full max-w-[744px]">
-                <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[40px] text-dark_blue leading-[49.52px]">
+                <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[40px] text-[#002B40] leading-[49.52px]">
                   SCHESTI’s CRM: The Pillar of Strong Client Relations in
                   Construction
                 </h1>
@@ -207,18 +208,18 @@ const CRM = () => {
                     />
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                       Tracking Client Interactions
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-Slate_Blue leading-[16.8px]">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#718096] leading-[16.8px]">
                       Maintaining a complete and accurate record of client
                       interactions, including project updates and changes, can
                       be difficult, leading to communication gaps and missed
                       opportunities
                     </p>
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-lite_black leading-[19.41px] pt-5">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-[#4A5568] leading-[19.41px] pt-5">
                       SCHESTI’s CRM ensures that all client interactions,
                       including site meetings, updates, and requests, are logged
                       and easily accessible. This provides a comprehensive view
@@ -241,18 +242,18 @@ const CRM = () => {
                     />
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                       Complex Client Management
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-Slate_Blue leading-[16.8px]">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#718096] leading-[16.8px]">
                       Managing client relationships and interactions in
                       construction projects can be time consuming and complex
                       due to the numerous stakeholders and project phases
                       involved
                     </p>
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-lite_black leading-[19.41px] pt-5">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-[#4A5568] leading-[19.41px] pt-5">
                       SCHESTI’s CRM streamlines client management in
                       construction by centralizing all client information
                       related to projects. It enables seamless tracking of
@@ -275,17 +276,17 @@ const CRM = () => {
                     />
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                       Improving Team Collaboration
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-Slate_Blue leading-[16.8px]">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#718096] leading-[16.8px]">
                       Lack of a unified system can lead to poor coordination and
                       information silos among team members, which is critical in
                       large-scale construction projects
                     </p>
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-lite_black leading-[19.41px] pt-5">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-[#4A5568] leading-[19.41px] pt-5">
                       SCHESTI’s CRM provides a single platform for sharing
                       client and project information, ensuring that all team
                       members, including contractors, architects, and project
@@ -308,18 +309,18 @@ const CRM = () => {
                     />
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                       Managing Client Data
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-Slate_Blue leading-[16.8px]">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#718096] leading-[16.8px]">
                       MDisjointed systems and manual processes can make it
                       challenging to manage and analyze client data effectively,
                       particularly when dealing with multiple contractors and
                       suppliers
                     </p>
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-lite_black leading-[19.41px] pt-5">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-[#4A5568] leading-[19.41px] pt-5">
                       SCHESTI’s CRM centralizes all client and project data,
                       offering powerful reporting tools to analyze and gain
                       insights. This helps in making informed decisions,
@@ -338,12 +339,12 @@ const CRM = () => {
           <div className="">
             <div className=" w-full max-w-[683.5px]">
               <div className="pb-4">
-                <h1 className="font-Gilroy font-bold text-[30px] md:text-h1 text-gray_dark md:leading-h1">
+                <h1 className="font-Gilroy font-bold text-[30px] md:text-h1 text-[#161C2D] md:leading-h1">
                   Top contractors worldwide rely on Schesti
                 </h1>
               </div>
               <div className=" w-full max-w-[500px]">
-                <p className="font-normal font-Gilroy text-h2  text-gray leading-h2">
+                <p className="font-normal font-Gilroy text-h2  text-[#161C2D] leading-h2">
                   Discover why over 1 million contractors have chosen Schesti to
                   facilitate the construction of more than $1 trillion worth of
                   projects annually
@@ -368,12 +369,12 @@ const CRM = () => {
             <div className=" flex flex-col items-center  py-[72px]">
               <div className="w-full max-w-[794px] flex flex-col items-center">
                 <div className="">
-                  <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-dark_blue leading-[56px]">
+                  <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-[#002B40] leading-[56px]">
                     The Benefits of SCHESTI CRM Solution
                   </h1>
                 </div>
                 <div className="w-full max-w-[678px] pt-4">
-                  <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[19px] text-dark_blue leading-[32px]">
+                  <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[19px] text-[#002B40] leading-[32px]">
                     Discover how SCHESTI’s CRM Solutions streamline client
                     interactions, improve data accuracy, and boost overall
                     project efficiency
@@ -383,17 +384,17 @@ const CRM = () => {
               <div className="flex flex-col lg:flex-row gap-3 md:pt-[40px] px-8 lg:px-0">
                 <div className="w-full gap-4 flex flex-col  items-center">
                   <div className="">
-                    <p className="font-bold font-Gilroy text-[18px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                    <p className="font-bold font-Gilroy text-[18px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                       65%
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray  leading-[29.71px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C]  leading-[29.71px] text-center">
                       Enhanced Client Relationships
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[15px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                    <p className="font-normal font-Gilroy text-center text-[15px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                       SCHESTI’s CRM solution revolutionizes client management in
                       construction projects. By streamlining communication and
                       personalizing engagement, it boosts client retention rates
@@ -410,17 +411,17 @@ const CRM = () => {
                 </div>
                 <div className="w-full gap-4 flex flex-col  items-center">
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                       55%
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray  leading-[29.71px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C]  leading-[29.71px] text-center">
                       Faster Project Communication
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                       Experience a 55% reduction in time spent managing client
                       communications and project updates. SCHESTI’s CRM tools
                       streamline interactions and provide instant access to
@@ -437,17 +438,17 @@ const CRM = () => {
                 </div>
                 <div className="w-full gap-0 md:gap-4 flex flex-col  items-center">
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                       60%
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray  leading-[29.71px] text-center">
+                    <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C]  leading-[29.71px] text-center">
                       Improved Project Insights
                     </p>
                   </div>
                   <div className="">
-                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                    <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                       Achieve a 60% improvement in the accuracy and engagement
                       of client data related to construction projects. SCHESTI’s
                       CRM enhances data quality and provides valuable insights,
@@ -466,10 +467,10 @@ const CRM = () => {
         <div className="container">
           <div className=" ">
             <div className="text-center">
-              <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-dark_black md:leading-[44.57px]">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-[#181D25] md:leading-[44.57px]">
                 Browse FAQs{' '}
               </h1>
-              <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-gray md:leading-[32px] pt-3">
+              <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] md:leading-[32px] pt-3">
                 Easily find answers to common questions with our comprehensive
                 FAQs section.{' '}
               </h1>
@@ -493,13 +494,13 @@ const CRM = () => {
             </div>
             <div className="w-full max-w-[511px]">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[48px]  text-dark_black lg:leading-[64px]">
+                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[48px]  text-[#181D25] lg:leading-[64px]">
                   Experience Unmatched CRM Power with SCHESTI
                   <br /> —Take the Leap!
                 </h1>
               </div>
               <div className=" pt-[24px]">
-                <p className="font-normal font-Gilroy text-[15px] lg:text-h2 text-gray lg:leading-h2">
+                <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#161C2D] lg:leading-[32px]">
                   Empower Your Projects With Schesti: Estimating construction
                   projects shouldn not be a headache. We offers a solution that
                   streamlines the process for you. Discover the ease and
@@ -507,10 +508,10 @@ const CRM = () => {
                 </p>
               </div>
               <div className="flex flex-col md:flex-row gap-5 pt-6">
-                <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                <button className="bg-[#007AB6] text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                   Get Started Now!
                 </button>
-                <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                <button className=" border-[2px] font-Poppins  text-[#007AB6] font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                   Contact us
                 </button>
               </div>
@@ -518,6 +519,7 @@ const CRM = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

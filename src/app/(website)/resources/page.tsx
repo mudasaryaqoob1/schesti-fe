@@ -18,7 +18,7 @@ const Resouces = () => {
               <div className="">
                 <div className=" w-full max-w-[541px]">
                   <div className="pb-5 relative">
-                    <h1 className="font-Gilroy font-bold text-[24px] md:text-[48px] tracking-[-2px] text-gray_dark md:leading-[65px] ">
+                    <h1 className="font-Gilroy font-bold text-[24px] md:text-[48px] tracking-[-2px] text-[#161C2D] md:leading-[65px] ">
                       Find solutions to your queries or submit a support request
                     </h1>
                     <span className=" absolute right-[150px] bottom-[33px]">
@@ -44,12 +44,12 @@ const Resouces = () => {
         <div className="flex flex-col md:flex-row items-center gap-12 md:gap-0 pt-[106px] px-4 lg:px-0 relative">
           <div className="w-full max-w-[469px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[30px] md:text-h1 tracking-[-1.8px] text-gray_dark leading-[58px]">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[48px] tracking-[-1.8px] text-[#161C2D] leading-[58px]">
                 Schesti objectives
               </h1>
             </div>
             <div className="w-full max-w-[517px] pt-[24px]">
-              <p className="font-normal font-Gilroy text-[15px] md:text-[18px] tracking-[-0.2px] text-gray_dark leading-[32px]">
+              <p className="font-normal font-Gilroy text-[15px] md:text-[18px] tracking-[-0.2px] text-[#161C2D] leading-[32px]">
                 Lorem ipsum dolor sit amet consectetur. In donec tellus nunc
                 habitant vitae pellentesque. Bibendum imperdiet adipiscing
                 praesent a nunc in. Eu diam convallis dolor accumsan urna
@@ -74,10 +74,10 @@ const Resouces = () => {
       {/* third section */}
       <div className="flex flex-col items-center gap-4 mt-10 lg:mt-20 px-4 md:px-6 lg:px-0">
         <div className="text-center max-w-lg lg:max-w-[505px]">
-          <h2 className="font-bold text-[28px] md:text-[36px] lg:text-[40px] text-[#181D25] tracking-tighter">
+          <h1 className="font-bold text-[28px] md:text-[36px] lg:text-[40px] text-[#181D25] tracking-tighter">
             Upcoming events
-          </h2>
-          <p className="text-base md:text-lg lg:text-h2 font-Gilroy text-gray opacity-70 mt-4 lg:mt-6">
+          </h1>
+          <p className="text-base md:text-lg lg:text-[19px] font-Gilroy text-[#161C2D] opacity-70 mt-4 lg:mt-6">
             Lorem ipsum dolor sit amet consectetur. Donec ultrices pretium
             convallis massa. Amet aliquam eget et enim sit.
           </p>
@@ -135,10 +135,10 @@ const Resouces = () => {
       <div className="container ">
         <div className="flex items-center justify-center mt-[97px]">
           <div className=" max-w-[503px] ">
-            <div className="font-bold font-Gilroy text-3xl  md:text-[36px] leading-[48px] -tracking-[1.2px] text-gray text-center">
+            <div className="font-bold font-Gilroy text-3xl  md:text-[36px] leading-[48px] -tracking-[1.2px] text-[#161C2D] text-center">
               Related Arcticles
             </div>
-            <div className="font-regular font-Gilroy mx-4 md:mx-0 text-base sm:text-lg md:text-xl -tracking-[0.2px] text-gray opacity-70 text-center mt-1 md:mt-[17px]">
+            <div className="font-regular font-Gilroy mx-4 md:mx-0 text-base sm:text-lg md:text-xl -tracking-[0.2px] text-[#161C2D] opacity-70 text-center mt-1 md:mt-[17px]">
               Explore our story and values. Learn about our journey, mission,
               and the principles that drive us
             </div>
@@ -154,10 +154,10 @@ const Resouces = () => {
                 alt=" "
                 className=""
               />
-              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2">
+              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2">
                 Oct 18, 1982
               </div>
-              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px]  md:mt-[10px]">
+              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px]  md:mt-[10px]">
                 How to win any job you want. Get started with 5 steps.
               </div>
             </div>
@@ -169,10 +169,10 @@ const Resouces = () => {
                 alt=" "
                 className=""
               />
-              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2 ">
+              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2 ">
                 August 08, 2007
               </div>
-              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px] md:mt-[10px]  ">
+              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px] md:mt-[10px]  ">
                 10 ways to reduce your office work depression.
               </div>
             </div>
@@ -184,10 +184,10 @@ const Resouces = () => {
                 alt=" "
                 className=""
               />
-              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2">
+              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2">
                 March 27, 1999
               </div>
-              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px] md:mt-[10px]">
+              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px] md:mt-[10px]">
                 Why should you work as a team even on small projects.
               </div>
             </div>
@@ -199,10 +199,10 @@ const Resouces = () => {
                 alt=" "
                 className=""
               />
-              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2">
+              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2">
                 Oct 18, 1982
               </div>
-              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px]  md:mt-[10px]">
+              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px]  md:mt-[10px]">
                 How to win any job you want. Get started with 5 steps.
               </div>
             </div>
@@ -214,10 +214,10 @@ const Resouces = () => {
                 alt=" "
                 className=""
               />
-              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2 ">
+              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2 ">
                 August 08, 2007
               </div>
-              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px] md:mt-[10px]  ">
+              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px] md:mt-[10px]  ">
                 10 ways to reduce your office work depression.
               </div>
             </div>
@@ -229,17 +229,17 @@ const Resouces = () => {
                 alt=" "
                 className=""
               />
-              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2">
+              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2">
                 March 27, 1999
               </div>
-              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px] md:mt-[10px]">
+              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px] md:mt-[10px]">
                 Why should you work as a team even on small projects.
               </div>
             </div>
           </div>
         </div>
         <div className="flex items-center justify-center mt-[72px]">
-          <button className="w-[196px] h-[56px] rounded-full border border-blue font-Gilroy font-bold text-[17px] leading-[22px] -tracking-[0.6px] text-blue transition-transform duration-300 hover:scale-105">
+          <button className="w-[196px] h-[56px] rounded-full border border-[#007AB6] font-Gilroy font-bold text-[17px] leading-[22px] -tracking-[0.6px] text-[#007AB6] transition-transform duration-300 hover:scale-105">
             See more
           </button>
         </div>
@@ -249,10 +249,10 @@ const Resouces = () => {
         <div className="container">
           <div className=" ">
             <div className="text-center">
-              <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-dark_black md:leading-[44.57px]">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-[#181D25] md:leading-[44.57px]">
                 Browse FAQs and Troubleshooting
               </h1>
-              <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-gray md:leading-[32px] pt-3">
+              <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] md:leading-[32px] pt-3">
                 Lorem ipsum dolor sit amet consectetur. Vitae nunc facilisis
               </h1>
             </div>
@@ -279,7 +279,7 @@ const Resouces = () => {
               </p>
             </div>
             <div className="">
-              <button className="bg-white text-blue font-medium text-[17px] font-Poppins leading-[22px] rounded-[300px] px-[55px] py-4 md:py-[15px]">
+              <button className="bg-white text-[#007AB6] font-medium text-[17px] font-Poppins leading-[22px] rounded-[300px] px-[55px] py-4 md:py-[15px]">
                 Send message
               </button>
             </div>
@@ -292,13 +292,13 @@ const Resouces = () => {
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-0 justify-between px-7 md:px-0">
             <div className="">
               <div className="w-full max-w-[715px] pb-[42px]">
-                <h1 className="font-Plus-Jakarta-Sans font-bold text-[24px] md:text-[40px] text-left tracking-[-0.2px] text-gray_dark md:leading-[63px] ">
+                <h1 className="font-Plus-Jakarta-Sans font-bold text-[24px] md:text-[40px] text-left tracking-[-0.2px] text-[#161C2D] md:leading-[63px] ">
                   Discover Schesti-{' '}
-                  <span className="text-blue">
+                  <span className="text-[#007AB6]">
                     The Ultimate Solution for Construction
                   </span>
                 </h1>
-                <p className="font-normal pt-6 font-Poppins text-[15px] md:text-[18px] text-gray_dark leading-[36px] text-left">
+                <p className="font-normal pt-6 font-Poppins text-[15px] md:text-[18px] text-[#161C2D] leading-[36px] text-left">
                   Empower Your Projects With Schesti: Estimating construction
                   projects shouldn be a headache. We offers a solution that
                   streamlines the process for you. Discover the ease and
@@ -306,7 +306,7 @@ const Resouces = () => {
                 </p>
               </div>
               <div className="">
-                <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[36px] rounded-[40px] px-[24px] py-4 md:py-[15px]">
+                <button className="bg-[#007AB6] text-white font-medium text-[18px] font-Poppins leading-[36px] rounded-[40px] px-[24px] py-4 md:py-[15px]">
                   Get start with Schesti
                 </button>
               </div>
