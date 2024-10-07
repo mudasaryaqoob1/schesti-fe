@@ -3,6 +3,7 @@ import React from 'react';
 import Navbar from '../navbar';
 import Image from 'next/image';
 import OnlinemeetingFaqs from '@/app/constants/onlinemetting.json'
+import Footer from '../footer';
 import CollapseComponent from '../components/customCollapse';
 const OnlineMeetins = () => {
   return (
@@ -20,15 +21,15 @@ const OnlineMeetins = () => {
               <div className="">
                 <div className=" w-full max-w-[570px] relative">
                   <div className="pb-5">
-                    <h1 className="font-Gilroy font-bold text-[24px] lg:text-[40px] tracking-[-1.2px] text-gray_dark lg:leading-[56px]">
+                    <h1 className="font-Gilroy font-bold text-[24px] lg:text-[40px] tracking-[-1.2px] text-[#161C2D] lg:leading-[56px]">
                       EFFORTLESS COLLABORATION: WITH SCHESTI RELIABLE{' '}
-                      <span className="bg-[url('/custumer-managment-page-imeges/bidding-hero-heding-img.svg')] bg-contain bg-bottom pb-2 bg-no-repeat text-gray_dark">
+                      <span className="bg-[url('/custumer-managment-page-imeges/bidding-hero-heding-img.svg')] bg-contain bg-bottom pb-2 bg-no-repeat text-[#161C2D]">
                         ONLINE MEETINGS
                       </span>
                     </h1>
                   </div>
                   <div className=" w-full max-w-[570px]">
-                    <p className="font-normal font-Gilroy text-[15px] lg:text-h2 tracking-[-0.2px]  text-gray_dark leading-h2">
+                    <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] tracking-[-0.2px]  text-[#161C2D] leading-[32px]">
                       Facilitate seamless connections and enhance productivity
                       with Schesti secure, reliable video conferencing
                       platform. Unite teams from anywhere with advanced features
@@ -41,10 +42,10 @@ const OnlineMeetins = () => {
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 pt-6">
-                  <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                  <button className="bg-schestiPrimary text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                     Catch offer
                   </button>
-                  <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                  <button className=" border-[2px] font-Poppins  text-schestiPrimary font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                     Start your free trial
                   </button>
                 </div>
@@ -58,13 +59,13 @@ const OnlineMeetins = () => {
         <div className="container ">
           <div className="py-4 lg:py-[99px] px-2 md:px-0 flex flex-col justify-center items-center gap-6">
             <div className="w-full max-w-[790px]">
-              <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-blue_dark md:leading-[56px] md:text-center">
+              <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-[#002B40] md:leading-[56px] md:text-center">
                 Elevate your meetings with SCHESTI: Seamless online
                 collaboration
               </h1>
             </div>
             <div className="w-full max-w-[1050px]">
-              <p className="font-normal font-Gilroy text-[13px] md:text-h2  text-dark_blue leading-[34px] md:text-center">
+              <p className="font-normal font-Gilroy text-[13px] md:text-[19px]  text-[#27303F] leading-[34px] md:text-center">
                 Elevate your meeting experience with superior online
                 collaboration tools. Highlight quality video and audio on a user
                 friendly platform designed for smooth and efficient meetings,
@@ -82,7 +83,7 @@ const OnlineMeetins = () => {
         <div className="">
           <div className=" flex flex-col items-center  py-[72px]">
             <div className="w-full max-w-[1036px]">
-              <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[40px] text-dark_blue leading-[49.52px]">
+              <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[40px] text-[#27303F] leading-[49.52px]">
                 Mastering meetings with SCHESTI scheduling, communication, and
                 engagement
               </h1>
@@ -96,7 +97,7 @@ const OnlineMeetins = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                     Difficulty in coordinating Meeting Schedules
                   </p>
                 </div>
@@ -128,7 +129,7 @@ const OnlineMeetins = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                     Ineffective communication during meetings
                   </p>
                 </div>
@@ -160,7 +161,7 @@ const OnlineMeetins = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                     Managing meeting records and follow ups
                   </p>
                 </div>
@@ -192,7 +193,7 @@ const OnlineMeetins = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                     Difficulty in engaging remote participants
                   </p>
                 </div>
@@ -226,12 +227,12 @@ const OnlineMeetins = () => {
           </div>
           <div className="w-full max-w-[527px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[30px] md:text-[40px]  text-dark_black md:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[40px]  text-[#181D25] md:leading-[60px]">
                 Efficient Meeting Scheduling
               </h1>
             </div>
             <div className=" pt-[24px]">
-              <p className="font-normal font-Gilroy text-[15px] md:text-[18px] text-blue_gray leading-[36px]">
+              <p className="font-normal font-Gilroy text-[15px] md:text-[18px] text-[#404B5A] leading-[36px]">
                 Our platform utilizes advanced algorithms to optimize meeting
                 schedules based on availability, enhancing time management for
                 construction projects. By ensuring timely participation and
@@ -248,12 +249,12 @@ const OnlineMeetins = () => {
           <div className="flex flex-col lg:flex-row justify-between items-center gap-12 md:gap-12 md:py-[100px] px-4 lg:px-0">
             <div className="w-full max-w-[527px]">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-dark_black md:leading-[60px]">
+                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[40px]  text-[#181D25] md:leading-[60px]">
                   Real-Time Collaboration and Advanced Security
                 </h1>
               </div>
               <div className=" pt-[24px]">
-                <p className="font-normal font-Gilroy text-[15px] lg:text-[18px] text-blue_gray leading-[36px]">
+                <p className="font-normal font-Gilroy text-[15px] lg:text-[18px] text-[#404B5A] leading-[36px]">
                   Our platform fosters seamless teamwork with features like
                   virtual whiteboards, screen sharing, and file collaboration
                   tools, essential for effective project planning. Automated
@@ -313,12 +314,12 @@ const OnlineMeetins = () => {
           <div className=" flex flex-col items-center  py-[72px]">
             <div className="w-full max-w-[794px] flex flex-col items-center">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-dark_blue leading-[56px]">
+                <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-[#27303F] leading-[56px]">
                   The Benefits of Seamless Online Meetings with SCHESTI
                 </h1>
               </div>
               <div className="w-full max-w-[664px] pt-4">
-                <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[19px] text-dark_blue leading-[32px]">
+                <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[19px] text-[#27303F] leading-[32px]">
                   Explore how SCHESTI Online Meeting Solutions enhance
                   collaboration, streamline communication, and boost
                   productivity across your projects
@@ -328,12 +329,12 @@ const OnlineMeetins = () => {
             <div className="flex flex-col md:flex-row gap-3 md:pt-[40px]  px-3 md:px-0">
               <div className="w-full gap-4 flex flex-col  items-center">
                 <div className="">
-                  <p className="font-bold font-Gilroy text-[32px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                  <p className="font-bold font-Gilroy text-[32px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                     65%
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray  leading-[29.71px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C]  leading-[29.71px] text-center">
                     Increase in Meeting Efficiency
                   </p>
                 </div>
@@ -353,12 +354,12 @@ const OnlineMeetins = () => {
               </div>
               <div className="w-full gap-4 flex flex-col  items-center">
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[32px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                  <p className="font-Gilroy font-bold text-[32px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                     60%
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray  leading-[29.71px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C]  leading-[29.71px] text-center">
                     Reduction in Meeting Scheduling Conflicts
                   </p>
                 </div>
@@ -378,12 +379,12 @@ const OnlineMeetins = () => {
               </div>
               <div className="w-full gap-0 md:gap-4 flex flex-col  items-center">
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[32px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                  <p className="font-Gilroy font-bold text-[32px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                     70%
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray  leading-[29.71px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C]  leading-[29.71px] text-center">
                     Improvement in Team Collaboration
                   </p>
                 </div>
@@ -403,10 +404,10 @@ const OnlineMeetins = () => {
       <div className="container">
         <div className=" ">
           <div className="text-center">
-            <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-dark_black md:leading-[44.57px]">
+            <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-[#181D25] md:leading-[44.57px]">
               Browse FAQs{' '}
             </h1>
-            <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-gray md:leading-[32px] pt-3">
+            <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] md:leading-[32px] pt-3">
               Lorem ipsum dolor sit amet consectetur. Vitae nunc facilisis{' '}
             </h1>
           </div>
@@ -421,12 +422,12 @@ const OnlineMeetins = () => {
           <div className="flex flex-col lg:flex-row justify-between items-center gap-12 py-3 md:py-[120px] md:gap-0 px-4 lg:px-0">
             <div className="w-full max-w-[511px]">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[48px]  text-dark_black md:leading-[64px]">
+                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[48px]  text-[#181D25] md:leading-[64px]">
                   Upgrade Your Meetings to Perfection
                 </h1>
               </div>
               <div className=" pt-[24px]">
-                <p className="font-normal font-Gilroy text-[15px] lg:text-h2 text-gray leading-h2">
+                <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#161C2D] leading-[32px]">
                   Transform your online meetings with efficient scheduling,
                   top-notch collaboration tools, robust security, insightful
                   analytics, accurate transcription, and superior video and
@@ -436,10 +437,10 @@ const OnlineMeetins = () => {
                 </p>
               </div>
               <div className="flex flex-col md:flex-row gap-5 pt-6">
-                <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                <button className="bg-schestiPrimary text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                   Get Started Now!
                 </button>
-                <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                <button className=" border-[2px] font-Poppins  text-schestiPrimary font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                   Contact us
                 </button>
               </div>
@@ -454,6 +455,7 @@ const OnlineMeetins = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

@@ -12,13 +12,13 @@ const CollapseComponent: React.FC<Propss> = ({ faqs }) => {
     return {
       key: i,
       label: (
-        <div className="flex items-center gap-6 font-bold font-Gilroy text-[12px] md:text-[18px] text-gray md:leading-[32px]">
+        <div className="flex items-center gap-6 font-bold font-Gilroy text-[12px] md:text-[18px] text-[#161C2D] md:leading-[32px]">
           <img src='/images/simple-line-icons_question.svg' alt='tick' />
           {faq.title}
         </div>
       ),
       children: (
-        <p className="w-full font-normal font-Gilroy text-[12px] md:text-h2 text-gray leading-h2 md:px-[64px]">
+        <p className="w-full font-normal font-Gilroy text-[12px] md:text-[19px] text-[#161C2D] leading-[32px] md:px-[64px]">
           {faq.paragraph}
         </p>
       ),

@@ -2,6 +2,7 @@
 import React from 'react';
 import Navbar from '@/app/component/navbar/minnavbar';
 import Image from 'next/image';
+import Footer from '../footer';
 export default function Blogs() {
   return (
     <>
@@ -11,7 +12,7 @@ export default function Blogs() {
           {/* Add your content here if needed */}
           <div className="container">
             <div className="pt-[499px] px-4 lg:px-0">
-              <h1 className="font-Gilroy font-bold text-[24px] md:text-[60px] tracking-[-2px]  text-gray md:leading-[65px] ">
+              <h1 className="font-Gilroy font-bold text-[24px] md:text-[60px] tracking-[-2px]  text-[#161C2D] md:leading-[65px] ">
                 Blog title
               </h1>
               <p className="font-Gilroy font-normal text-[14px] md:text-[16px] pt-4  text-[#555B6D] md:leading-[32px]">
@@ -142,10 +143,10 @@ export default function Blogs() {
       <div className="container ">
         <div className="flex items-center justify-center mt-[80px]">
           <div className=" max-w-[503px] ">
-            <div className="font-bold font-Gilroy text-3xl  md:text-[36px] leading-[48px] -tracking-[-1.2px] text-gray text-center">
+            <div className="font-bold font-Gilroy text-3xl  md:text-[36px] leading-[48px] -tracking-[-1.2px] text-[#161C2D] text-center">
               Related Blogs
             </div>
-            <div className="px-4 lg:px-0 font-regular font-Gilroy mx-4 md:mx-0 text-base sm:text-lg md:text-[19px] -tracking-[0.2px] text-gray text-center pt-1 md:pt-[17px]">
+            <div className="px-4 lg:px-0 font-regular font-Gilroy mx-4 md:mx-0 text-[16px] sm:text-lg md:text-[19px] -tracking-[0.2px] text-[#161C2D] text-center pt-1 md:pt-[17px]">
               Explore our story and values. Learn about our journey, mission,
               and the principles that drive us
             </div>
@@ -162,10 +163,10 @@ export default function Blogs() {
                 alt=" "
                 className=""
               />
-              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2">
+              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2">
                 Oct 18, 1982
               </div>
-              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px]  md:mt-[10px]">
+              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px]  md:mt-[10px]">
                 How to win any job you want. Get started with 5 steps.
               </div>
             </div>
@@ -177,10 +178,10 @@ export default function Blogs() {
                 alt=" "
                 className=""
               />
-              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2 ">
+              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2 ">
                 August 08, 2007
               </div>
-              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px] md:mt-[10px]  ">
+              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px] md:mt-[10px]  ">
                 10 ways to reduce your office work depression.
               </div>
             </div>
@@ -192,10 +193,10 @@ export default function Blogs() {
                 alt=" "
                 className=""
               />
-              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2">
+              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2">
                 March 27, 1999
               </div>
-              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px] md:mt-[10px]">
+              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px] md:mt-[10px]">
                 Why should you work as a team even on small projects.
               </div>
             </div>
@@ -207,10 +208,10 @@ export default function Blogs() {
                 alt=" "
                 className=""
               />
-              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2">
+              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2">
                 Oct 18, 1982
               </div>
-              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px]  md:mt-[10px]">
+              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px]  md:mt-[10px]">
                 How to win any job you want. Get started with 5 steps.
               </div>
             </div>
@@ -223,10 +224,10 @@ export default function Blogs() {
                 alt=" "
                 className=""
               />
-              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2 ">
+              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2 ">
                 August 08, 2007
               </div>
-              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px] md:mt-[10px]  ">
+              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px] md:mt-[10px]  ">
                 10 ways to reduce your office work depression.
               </div>
             </div>
@@ -238,21 +239,22 @@ export default function Blogs() {
                 alt=" "
                 className=""
               />
-              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-gray opacity-70 md:mt-[22px] mt-2">
+              <div className="font-Gilroy font-regular text-[15px] leading-[26px] -tracking-[0.1] text-[#161C2D] opacity-70 md:mt-[22px] mt-2">
                 March 27, 1999
               </div>
-              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-gray -tracking-[0.5px] md:mt-[10px]">
+              <div className="font-bold font-Gilroy text-[21px] leading-[32px] text-[#161C2D] -tracking-[0.5px] md:mt-[10px]">
                 Why should you work as a team even on small projects.
               </div>
             </div>
           </div>
         </div>
         <div className="flex items-center justify-center mt-[72px]">
-          <button className="w-[196px] h-[56px] rounded-full border border-blue font-Gilroy font-bold text-[17px] leading-[22px] -tracking-[0.6px] text-blue transition-transform duration-300 hover:scale-105">
+          <button className="w-[196px] h-[56px] rounded-full border border-schestiPrimary font-Gilroy font-bold text-[17px] leading-[22px] -tracking-[0.6px] text-schestiPrimary transition-transform duration-300 hover:scale-105">
             See more
           </button>
         </div>
       </div>
+      <Footer/>
     </>
   );
 }

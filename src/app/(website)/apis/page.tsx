@@ -15,12 +15,12 @@ const APIS = () => {
               <div className=" flex flex-col items-center md:pt-[123px]">
                 <div className=" w-full  flex flex-col items-center">
                   <div className="pb-5">
-                    <h1 className="font-Gilroy font-bold text-[24px] md:text-[48px] text-center text-gray_dark md:leading-[65px]">
+                    <h1 className="font-Gilroy font-bold text-[24px] md:text-[48px] text-center text-[#161C2D] md:leading-[65px]">
                       Industry-Leading API Solutions
                     </h1>
                   </div>
                   <div className=" w-full max-w-[899px]">
-                    <p className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-gray_dark leading-[32px] text-center">
+                    <p className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] leading-[32px] text-center">
                       Discover Schesti, the leading provider of API solutions
                       tailored specifically for the construction industry. Our
                       platform offers a premier API designed for backend
@@ -31,7 +31,7 @@ const APIS = () => {
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 pt-[47px]">
-                  <button className="bg-schestiPrimary text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-[24px] py-3 md:py-[15px]">
+                  <button className="bg-schestiPrimary text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-[24px] py-3 md:py-[15px]">
                     Connect with Us for Pricing
                   </button>
                 </div>
@@ -49,12 +49,12 @@ const APIS = () => {
           <div className="flex justify-center">
             <div className="w-full max-w-[801px] pt-[131px] flex flex-col items-center">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[36px] tracking-[-1.2px] text-gray leading-[48px]">
+                <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[36px] tracking-[-1.2px] text-[#161C2D] leading-[48px]">
                   Schesti APIs: Streamlining Construction Workflows
                 </h1>
               </div>
               <div className="w-full max-w-[613.51px] pt-4">
-                <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[19px] tracking-[-0.2px] text-gray leading-[32px]">
+                <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[19px] tracking-[-0.2px] text-[#161C2D] leading-[32px]">
                   Schesti API suite streamlines construction processes—from
                   quantity takeoff to time scheduling—enhancing efficiency
                   across all trades
@@ -79,13 +79,13 @@ const APIS = () => {
                   </div>
                   <div className="w-full max-w-[490px]">
                     <div className=" pb-2">
-                      <h1 className="font-Gilroy font-bold text-[21px] leading-[32px] text-gray">
+                      <h1 className="font-Gilroy font-bold text-[21px] leading-[32px] text-[#161C2D]">
                         Takeoff API
                       </h1>
                     </div>
                     <div className="">
                       {' '}
-                      <p className="font-normal font-Gilroy text-[12px] md:text-[17px] text-gray leading-[29px]">
+                      <p className="font-normal font-Gilroy text-[12px] md:text-[17px] text-[#161C2D] leading-[29px]">
                         API for Quantity Takeoff: Streamline quantity takeoff
                         processes for all construction trades
                       </p>
@@ -98,13 +98,13 @@ const APIS = () => {
                   </div>
                   <div className="w-full max-w-[490px]">
                     <div className=" pb-2">
-                      <h1 className="font-Gilroy font-bold text-[21px] leading-[32px] text-gray">
+                      <h1 className="font-Gilroy font-bold text-[21px] leading-[32px] text-[#161C2D]">
                         Schedule API
                       </h1>
                     </div>
                     <div className="">
                       {' '}
-                      <p className="font-normal font-Gilroy text-[12px] md:text-[17px] text-gray leading-[29px]">
+                      <p className="font-normal font-Gilroy text-[12px] md:text-[17px] text-[#161C2D] leading-[29px]">
                         API for Time Schedule: Efficiently manage project
                         timelines across various sectors
                       </p>
@@ -117,13 +117,13 @@ const APIS = () => {
                   </div>
                   <div className="w-full max-w-[490px]">
                     <div className=" pb-2">
-                      <h1 className="font-Gilroy font-bold text-[21px] leading-[32px] text-gray">
+                      <h1 className="font-Gilroy font-bold text-[21px] leading-[32px] text-[#161C2D]">
                         CRM API
                       </h1>
                     </div>
                     <div className="">
                       {' '}
-                      <p className="font-normal font-Gilroy text-[12px] md:text-[17px] text-gray leading-[29px]">
+                      <p className="font-normal font-Gilroy text-[12px] md:text-[17px] text-[#161C2D] leading-[29px]">
                         API for CRM Modules: Enhance customer relationship
                         management with specialized modules for
                         <br /> construction
@@ -143,13 +143,13 @@ const APIS = () => {
                   </div>
                   <div className="w-full max-w-[490px]">
                     <div className=" pb-2">
-                      <h1 className="font-Gilroy font-bold text-[21px] leading-[32px] text-gray">
+                      <h1 className="font-Gilroy font-bold text-[21px] leading-[32px] text-[#161C2D]">
                         Contract Management API
                       </h1>
                     </div>
                     <div className="">
                       {' '}
-                      <p className="font-normal font-Gilroy text-[12px] md:text-[17px] text-gray leading-[29px]">
+                      <p className="font-normal font-Gilroy text-[12px] md:text-[17px] text-[#161C2D] leading-[29px]">
                         API for Electronic Contract Signature: Simplify contract
                         signing processes with our electronic signature API
                       </p>
@@ -162,13 +162,13 @@ const APIS = () => {
                   </div>
                   <div className="w-full max-w-[539px]">
                     <div className=" pb-2">
-                      <h1 className="font-Gilroy font-bold text-[21px] leading-[32px] text-gray">
+                      <h1 className="font-Gilroy font-bold text-[21px] leading-[32px] text-[#161C2D]">
                         Invoicing API
                       </h1>
                     </div>
                     <div className="">
                       {' '}
-                      <p className="font-normal font-Gilroy text-[12px] md:text-[17px] text-gray leading-[29px]">
+                      <p className="font-normal font-Gilroy text-[12px] md:text-[17px] text-[#161C2D] leading-[29px]">
                         API for Invoicing: Automate invoicing tasks for smoother
                         financial transactions
                       </p>
@@ -181,13 +181,13 @@ const APIS = () => {
                   </div>
                   <div className="w-full max-w-[539px]">
                     <div className=" pb-2">
-                      <h1 className="font-Gilroy font-bold text-[21px] leading-[32px] text-gray">
+                      <h1 className="font-Gilroy font-bold text-[21px] leading-[32px] text-[#161C2D]">
                         Estimates API
                       </h1>
                     </div>
                     <div className="">
                       {' '}
-                      <p className="font-normal font-Gilroy text-[12px] md:text-[17px] text-gray leading-[29px]">
+                      <p className="font-normal font-Gilroy text-[12px] md:text-[17px] text-[#161C2D] leading-[29px]">
                         API for Construction Estimates: Generate accurate
                         construction estimates with our dedicated API
                       </p>
@@ -212,13 +212,13 @@ const APIS = () => {
           <div className="flex flex-col-reverse lg:flex-row justify-between items-center gap-12 py-3 md:py-[100px] md:gap-0 px-4 lg:px-0">
             <div className="w-full max-w-[511px]">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-[26px] lg:text-[48px]  text-gray_dark md:leading-[64px]">
+                <h1 className="font-Gilroy font-bold text-[26px] lg:text-[48px]  text-[#161C2D] md:leading-[64px]">
                   Schesti: The Ultimate API Solution for Construction Software
                   Developers
                 </h1>
               </div>
               <div className=" pt-[32px]">
-                <p className="font-normal font-Gilroy text-[15px] lg:text-h2 text-gray leading-h2">
+                <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#161C2D] leading-8">
                   Partner with Schesti and revolutionize your construction
                   software development experience. Contact us today to learn
                   more about our pricing options and unleash the full potential
@@ -226,10 +226,10 @@ const APIS = () => {
                 </p>
               </div>
               <div className="flex flex-col md:flex-row gap-5 pt-6">
-                <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                <button className="bg-schestiPrimary text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                   Get Started Now!
                 </button>
-                <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                <button className=" border-[2px] font-Poppins  text-schestiPrimary font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                   Contact us
                 </button>
               </div>

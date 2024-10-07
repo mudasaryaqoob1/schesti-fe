@@ -4,6 +4,7 @@ import Navbar from '../navbar';
 // import HomepageSlider from '../homepage/homepageSlider';
 import CollapseComponent from '../components/customCollapse';
 import Biddingfaqs from '@/app/constants/Biddingfaqs.json'
+import Footer from '../footer';
 
 const Bidding = () => {
   return (
@@ -19,15 +20,15 @@ const Bidding = () => {
               <div className="">
                 <div className=" w-full max-w-[580px]">
                   <div className="pb-5">
-                    <h1 className="font-Gilroy font-bold text-[24px] lg:text-h1 tracking-[-1.2px] text-gray_dark md:leading-h1">
+                    <h1 className="font-Gilroy font-bold text-[24px] lg:text-[48px] tracking-[-1.2px] text-[#161C2D] md:leading-[65px]">
                       SIMPLIFY AND STREAMLINE YOUR{' '}
-                      <span className="bg-[url('/bedding-page-imges/bidding-hero-heding-img.svg')] bg-contain bg-bottom bg-no-repeat text-blue">
+                      <span className="bg-[url('/bedding-page-imges/bidding-hero-heding-img.svg')] bg-contain bg-bottom bg-no-repeat text-schestiPrimary">
                         BIDDING
                       </span>
                     </h1>
                   </div>
                   <div className=" w-full max-w-[580px]">
-                    <p className="font-normal font-Gilroy text-[15px] md:text-h2  text-gray_dark leading-h2">
+                    <p className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] leading-[32px]">
                       Schesti streamlines preconstruction with integrated tools
                       for takeoff, bid monitoring, scheduling, CRM, and
                       analytics, while centralizing contractor connections. It
@@ -38,10 +39,10 @@ const Bidding = () => {
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 pt-6">
-                  <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                  <button className="bg-schestiPrimary text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                     Catch offer
                   </button>
-                  <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                  <button className=" border-[2px] font-Poppins  text-schestiPrimary font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                     Start your free trial
                   </button>
                 </div>
@@ -55,12 +56,12 @@ const Bidding = () => {
         <div className="container ">
           <div className="py-4 md:py-[136px] px-2 md:px-0 flex flex-col justify-center items-center gap-6">
             <div className="w-full max-w-[703px]">
-              <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-blue_dark md:leading-[56px] md:text-center">
+              <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-[#002B40] md:leading-[56px] md:text-center">
                 Elevate your bid management experience with SCHESTI
               </h1>
             </div>
             <div className="w-full max-w-[1008px]">
-              <p className="font-normal font-Gilroy text-[13px] md:text-h2  text-gray leading-h1 md:text-center">
+              <p className="font-normal font-Gilroy text-[13px] md:text-[19px]  text-[#161C2D] leading-[32px] md:text-center">
                 Discover the next generation of bid management with SCHESTI, Our
                 platform revolutionizes how you handle construction projects by
                 delivering exceptional speed, precision, and customization,
@@ -77,12 +78,12 @@ const Bidding = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-12 md:gap-0 px-4 lg:px-0 pt-3">
           <div className="w-full max-w-[550px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[30px] md:text-[38px]  text-dark_black md:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[38px]  text-[#181D25] md:leading-[60px]">
                 Centralize All Your Connections in One Place
               </h1>
             </div>
             <div className=" pt-[24px]">
-              <p className="font-normal font-Gilroy text-[15px] md:text-h2 text-gray leading-h2">
+              <p className="font-normal font-Gilroy text-[15px] md:text-[19px] text-[#161C2D] leading-[32px]">
                 Say goodbye to the frustration of misplaced business cards. With
                 Schesti, you gain the ability to oversee all your contractor
                 connections effortlessly from a unified platform. Plus, forging
@@ -113,12 +114,12 @@ const Bidding = () => {
           </div>
           <div className="w-full max-w-[539px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[26px] lg:text-[38px]  text-dark_black lg:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[26px] lg:text-[38px]  text-[#181D25] lg:leading-[60px]">
                 Accurate Data And Advanced Analytics
               </h1>
             </div>
             <div className=" pt-[24px]">
-              <p className="font-normal font-Gilroy text-[13px] lg:text-h2 text-gray leading-h2">
+              <p className="font-normal font-Gilroy text-[13px] lg:text-[19px] text-[#161C2D] leading-[32px]">
                 Access up to date, precise data and smooth analytics to improve
                 estimate accuracy and forecasts. Utilize advanced technology to
                 search for new projects and opportunities, gaining insights that
@@ -135,12 +136,12 @@ const Bidding = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-12 xl:gap-8 px-4 lg:px-0 pt-3">
           <div className="w-full max-w-[550px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[26px] lg:text-[38px]  text-dark_black lg:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[26px] lg:text-[38px]  text-[#181D25] lg:leading-[60px]">
                 Effortless Project Coordination And Proposal Mastery
               </h1>
             </div>
             <div className=" pt-[24px]">
-              <p className="font-normal font-Gilroy text-[14px] lg:text-h2 text-gray leading-h2">
+              <p className="font-normal font-Gilroy text-[14px] lg:text-[19px] text-[#161C2D] leading-[32px]">
                 Integrate with other construction tools to manage all aspects of
                 your project, from design to delivery. Enhance estimates and
                 effectively manage relationships with key stakeholders through a
@@ -163,7 +164,7 @@ const Bidding = () => {
         <div className="">
           <div className=" flex flex-col items-center  py-[72px]">
             <div className="w-full max-w-[879px]">
-              <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[40px] px-3 md:px-0 text-dark_blue leading-[49.52px]">
+              <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[40px] px-3 md:px-0 text-[#002B40] leading-[49.52px]">
                 Conquering Bid Management hurdles & maximizing efficiency with
                 SCHESTI
               </h1>
@@ -177,7 +178,7 @@ const Bidding = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[32px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[32px] text-center">
                     Complicated Bid Prepration
                   </p>
                 </div>
@@ -208,7 +209,7 @@ const Bidding = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[32px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[32px] text-center">
                     Difficulty in tracking bid status
                   </p>
                 </div>
@@ -239,7 +240,7 @@ const Bidding = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[32px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[32px] text-center">
                     Challenges in collaborating on bids
                   </p>
                 </div>
@@ -270,7 +271,7 @@ const Bidding = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[32px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[32px] text-center">
                     Inconsistent bid quality
                   </p>
                 </div>
@@ -292,25 +293,25 @@ const Bidding = () => {
         </div>
       </div>
       {/* seven section  */}
-      <div className="bg-gray_white">
+      <div className="bg-[#F5F6FA]">
         <div className="container">
           <div className=" py-[90px]">
             <div className="">
               <div className=" w-full max-w-[1100px] flex flex-col items-center pb-[61px]">
                 <div className="pb-5 ">
-                  <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] tracking-[-1.2px] text-dark_black md:leading-[60px] text-center">
+                  <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] tracking-[-1.2px] text-[#181D25] md:leading-[60px] text-center">
                     Streamline Operations and Boost Efficiency Automate mundane
                     tasks that consume precious time
                   </h1>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 pt-[37px]">
-                  <button className="bg-blue text-white font-medium text-[16px] font-Poppins leading-[24px] rounded-[300px] px-6 py-3 md:py-[15px]">
+                  <button className="bg-schestiPrimary text-white font-medium text-[16px] font-Poppins leading-[24px] rounded-[300px] px-6 py-3 md:py-[15px]">
                     General Contractors
                   </button>
-                  <button className=" border-[2px] font-Poppins  text-blue font-medium text-[16px] leading-[24px] rounded-lg px-6 py-[14px]">
+                  <button className=" border-[2px] font-Poppins  text-schestiPrimary font-medium text-[16px] leading-[24px] rounded-lg px-6 py-[14px]">
                     Sub Contractors
                   </button>
-                  <button className=" border-[2px] font-Poppins  text-blue font-medium text-[16px] leading-[24px] rounded-lg px-6 py-[14px]">
+                  <button className=" border-[2px] font-Poppins  text-schestiPrimary font-medium text-[16px] leading-[24px] rounded-lg px-6 py-[14px]">
                     Owners
                   </button>
                 </div>
@@ -327,12 +328,12 @@ const Bidding = () => {
                 </div>
                 <div className="w-full max-w-[575px]">
                   <div className="">
-                    <h1 className="font-bold font-PlusJakartaSans text-[30px] md:text-[40px]  text-dark_black md:leading-[60px]">
+                    <h1 className="font-bold font-PlusJakartaSans text-[30px] md:text-[40px]  text-[#181D25] md:leading-[60px]">
                       General Contractors
                     </h1>
                   </div>
                   <div className=" pt-[20px]">
-                    <p className="font-normal font-Gilroy text-[15px] md:text-h2 text-gray_dark leading-h2">
+                    <p className="font-normal font-Gilroy text-[15px] md:text-[19px] text-[#161C2D] leading-[32px]">
                       For General Contractors, the process of posting new
                       projects is streamlined to just 2 minutes with Schesti!
                       Instantly, Schesti aligns projects and subcontractors
@@ -354,12 +355,12 @@ const Bidding = () => {
           <div className=" flex flex-col items-center  py-[72px]">
             <div className="w-full max-w-[879px] flex flex-col items-center">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-dark_blue leading-[49.52px]">
+                <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-[#002B40] leading-[49.52px]">
                   The advantages of streamlined bid management with SCHESTI
                 </h1>
               </div>
               <div className="w-full max-w-[688px] pt-4">
-                <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[19px] text-dark_blue leading-[32px]">
+                <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[19px] text-[#002B40] leading-[32px]">
                   Discover how SCHESTI’s bid management solutions can enhance
                   your bidding process, increase efficiency, and improve project
                   outcomes
@@ -369,12 +370,12 @@ const Bidding = () => {
             <div className="flex flex-col md:flex-row gap-3 md:pt-[40px]">
               <div className="w-full gap-4 flex flex-col  items-center">
                 <div className="">
-                  <p className="font-bold font-Gilroy text-[28px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                  <p className="font-bold font-Gilroy text-[28px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                     65%
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[29.71px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[29.71px] text-center">
                     Increase in bid accuracy
                   </p>
                 </div>
@@ -393,12 +394,12 @@ const Bidding = () => {
               </div>
               <div className="w-full gap-4 flex flex-col  items-center">
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[28px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                  <p className="font-Gilroy font-bold text-[28px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                     60%
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[29.71px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[29.71px] text-center">
                     Reduction in bid preparation time
                   </p>
                 </div>
@@ -418,12 +419,12 @@ const Bidding = () => {
               </div>
               <div className="w-full gap-0 md:gap-4 flex flex-col  items-center">
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[28px] md:text-[64px] text-dark_black  leading-[86px] text-center">
+                  <p className="font-Gilroy font-bold text-[28px] md:text-[64px] text-[#181D25]  leading-[86px] text-center">
                     65%
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[29.71px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[29.71px] text-center">
                     Higher win rates on bids
                   </p>
                 </div>
@@ -444,12 +445,12 @@ const Bidding = () => {
           <div className="">
             <div className=" w-full max-w-[683.5px]">
               <div className="pb-4">
-                <h1 className="font-Gilroy font-bold text-[30px] md:text-h1 text-gray_dark md:leading-h1">
+                <h1 className="font-Gilroy font-bold text-[30px] md:text-[48px] text-[#161C2D] md:leading-[65px]">
                   Top contractors worldwide rely on Schesti
                 </h1>
               </div>
               <div className=" w-full max-w-[500px]">
-                <p className="font-normal font-Gilroy text-h2  text-gray leading-h2">
+                <p className="font-normal font-Gilroy text-[19px]  text-[#161C2D] leading-[32px]">
                   Discover why over 1 million contractors have chosen Schesti to
                   facilitate the construction of more than $1 trillion worth of
                   projects annually
@@ -471,10 +472,10 @@ const Bidding = () => {
       <div className="container">
         <div className=" ">
           <div className="text-center">
-            <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-dark_black md:leading-[44.57px]">
+            <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-[#181D25] md:leading-[44.57px]">
               Browse FAQs{' '}
             </h1>
-            <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-gray md:leading-[32px] pt-3">
+            <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] md:leading-[32px] pt-3">
               Lorem ipsum dolor sit amet consectetur. Vitae nunc facilisis{' '}
             </h1>
           </div>
@@ -497,12 +498,12 @@ const Bidding = () => {
             </div>
             <div className="w-full max-w-[511px]">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-[26px] lg:text-[48px]  text-dark_black lg:leading-[64px]">
+                <h1 className="font-Gilroy font-bold text-[26px] lg:text-[48px]  text-[#181D25] lg:leading-[64px]">
                   Achieve optimal bid management with SCHESTI’s solutions
                 </h1>
               </div>
               <div className=" pt-[24px]">
-                <p className="font-normal font-Gilroy text-[13px] lg:text-h2 text-gray leading-h2">
+                <p className="font-normal font-Gilroy text-[13px] lg:text-[19px] text-[#161C2D] leading-[32px]">
                   Take your bidding to next level! With SCHESTI’s, leverage
                   cutting edge bit management technology to submit accurate,
                   efficient bids and boost your project when rate, experience
@@ -511,10 +512,10 @@ const Bidding = () => {
                 </p>
               </div>
               <div className="flex flex-col md:flex-row gap-5 pt-6">
-                <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                <button className="bg-schestiPrimary text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                   Get Started Now!
                 </button>
-                <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                <button className=" border-[2px] font-Poppins  text-schestiPrimary font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                   Contact us
                 </button>
               </div>
@@ -522,6 +523,7 @@ const Bidding = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

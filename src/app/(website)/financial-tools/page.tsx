@@ -3,7 +3,7 @@ import Navbar from '../navbar';
 
 import FinancialFaqs from '@/app/constants/finantioltool.json'
 import CollapseComponent from '../components/customCollapse';
-
+import Footer from '../footer';
 const FinancialTools = () => {
   return (
     <div>
@@ -18,7 +18,7 @@ const FinancialTools = () => {
               <div className="">
                 <div className=" w-full max-w-[523px]">
                   <div className="pb-5">
-                    <h1 className="font-Gilroy font-bold text-[24px] md:text-[48px] tracking-[-1.2px] text-gray_dark md:leading-[56px]">
+                    <h1 className="font-Gilroy font-bold text-[24px] md:text-[48px] tracking-[-1.2px] text-[#161C2D] md:leading-[56px]">
                       Consolidate your{' '}
                       <span className="bg-[url('/custumer-managment-page-imeges/bidding-hero-heding-img.svg')] bg-contain bg-bottom bg-no-repeat text-[#D93E24]">
                         payable
@@ -28,21 +28,21 @@ const FinancialTools = () => {
                         receivable{' '}
                       </span>
                       tasks in{' '}
-                      <span className="text-blue">one convenient platform</span>
+                      <span className="text-[#007AB6]">one convenient platform</span>
                     </h1>
                   </div>
                   <div className=" w-full max-w-[580px]">
-                    <p className="font-normal font-Gilroy text-[15px] md:text-h2 tracking-[-0.2px] text-gray_dark leading-h2">
+                    <p className="font-normal font-Gilroy text-[15px] md:text-[19px] tracking-[-0.2px] text-[#161C2D] leading-[32px]">
                       Generate and dispatch project cost estimates with enhanced
                       ease and precision
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4 pt-8">
-                  <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                  <button className="bg-[#007AB6] text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                     Catch offer
                   </button>
-                  <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                  <button className=" border-[2px] font-Poppins  text-[#007AB6] font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                     Start your free trial
                   </button>
                 </div>
@@ -63,13 +63,13 @@ const FinancialTools = () => {
         <div className="container ">
           <div className="py-4 md:py-[99px] px-2 md:px-0 flex flex-col justify-center items-center gap-6">
             <div className="w-full max-w-[938px]">
-              <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-blue_dark md:leading-[56px] md:text-center">
+              <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-[#002B40] md:leading-[56px] md:text-center">
                 Navigate Financial Challenges with Ease:
                 <br /> Schesti Smart Solutions Await
               </h1>
             </div>
             <div className="w-full max-w-[1008px]">
-              <p className="font-normal font-Gilroy text-[13px] md:text-h2  text-gray leading-[34px] md:text-center">
+              <p className="font-normal font-Gilroy text-[13px] md:text-[19px]  text-[#161C2D] leading-[34px] md:text-center">
                 Experience the power of seamless financial integration with
                 Schesti. Our platform revolutionizes how you manage your
                 finances, offering precise budgeting, insightful forecasting,
@@ -113,7 +113,7 @@ const FinancialTools = () => {
         <div className="">
           <div className=" flex flex-col items-center  py-[72px]">
             <div className="w-full max-w-[855px] px-5 md:px-0">
-              <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[40px] text-dark_blue leading-[49.52px]">
+              <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[40px] text-[#002B40] leading-[49.52px]">
                 Stay Ahead with SCHESTI’s Financial Solutions
               </h1>
             </div>
@@ -126,16 +126,16 @@ const FinancialTools = () => {
                   />
                 </div>
                 <div className="w-full">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                     Optimized Project Scheduling
                   </p>
                 </div>
                 <div className="w-full">
-                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                     Problem: Many construction projects face delays due to
                     inefficient scheduling and lack of real-time updates.
                   </p>
-                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-lite_black leading-[16.8px] pt-5">
+                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px] pt-5">
                     Solution: SCHESTI platform offers real-time scheduling
                     tools that keep your project timelines on track. With
                     dynamic adjustments and alerts, you can avoid delays and
@@ -157,17 +157,17 @@ const FinancialTools = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                     Resource Allocation Challenges
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                     Problem: Allocating resources effectively is a common
                     challenge in construction, often leading to overspending or
                     underutilization.
                   </p>
-                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-lite_black leading-[16.8px] pt-5">
+                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px] pt-5">
                     Solution: SCHESTI provides a comprehensive resource
                     management system, allowing you to allocate resources
                     optimally. This ensures that all team members and equipment
@@ -187,17 +187,17 @@ const FinancialTools = () => {
                   <img src="/finantial-tool-imges/logo3.svg" alt="" />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                     Coordination Across Multiple Teams
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                     Problem: Coordinating schedules across different teams and
                     subcontractors can lead to miscommunication and project
                     delays.
                   </p>
-                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-lite_black leading-[16.8px] pt-5">
+                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px] pt-5">
                     Solution: SCHESTI integrates all team schedules into a
                     single platform, facilitating seamless communication and
                     coordination. This integration helps prevent
@@ -220,16 +220,16 @@ const FinancialTools = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-dark_black  leading-[36px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#181D25]  leading-[36px] text-center">
                     Handling Unexpected Changes
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-lite_black leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px]">
                     Problem: Unexpected changes and disruptions can throw
                     project schedules off balance.
                   </p>
-                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-lite_black leading-[16.8px] pt-5">
+                  <p className="font-normal font-Gilroy text-justify text-[12px] md:text-[14px]  text-[#4A5568] leading-[16.8px] pt-5">
                     Solution: SCHESTI flexible scheduling tools allow for
                     quick adjustments to your project plans. Whether it is a
                     change in scope or unforeseen delays, you can easily update
@@ -253,12 +253,12 @@ const FinancialTools = () => {
           </div>
           <div className="w-full max-w-[590px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[30px] md:text-[40px]  text-dark_black md:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[40px]  text-[#181D25] md:leading-[60px]">
                 Financial Precision
               </h1>
             </div>
             <div className=" pt-[12px]">
-              <p className="font-normal font-Gilroy text-[15px] md:text-h2 text-blue_gray leading-h2">
+              <p className="font-normal font-Gilroy text-[15px] md:text-[19px] text-[#404B5A] leading-[32px]">
                 Streamline finances & unlock growth with our cloud accounting
                 solutions.
               </p>
@@ -269,7 +269,7 @@ const FinancialTools = () => {
                   <img src="/finantial-tool-imges/check.svg" alt="" />
                 </div>
                 <div className="w-full max-w-[539px]">
-                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-blue_gray leading-[30px]">
+                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-[#404B5A] leading-[30px]">
                     Schesti financial tools provide precise tracking of all
                     expenditures and incomes, significantly reducing errors
                   </p>
@@ -280,7 +280,7 @@ const FinancialTools = () => {
                   <img src="/finantial-tool-imges/check.svg" alt="" />
                 </div>
                 <div className="w-full max-w-[539px]">
-                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-blue_gray leading-[30px]">
+                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-[#404B5A] leading-[30px]">
                     The platform offers real-time updates and detailed analytics
                     for effective cash flow monitoring
                   </p>
@@ -291,7 +291,7 @@ const FinancialTools = () => {
                   <img src="/finantial-tool-imges/check.svg" alt="" />
                 </div>
                 <div className="w-full max-w-[539px]">
-                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-gray leading-[30px]">
+                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-[#161C2D] leading-[30px]">
                     Comprehensive reports and customizable financial dashboards
                     enable informed financial decisions and easy identification
                     of trends to maximize profitability
@@ -307,12 +307,12 @@ const FinancialTools = () => {
         <div className="flex flex-col lg:flex-row justify-between items-center gap-12 md:gap-0 px-4 lg:px-0 md:py-[80px]">
           <div className="w-full max-w-[590px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[30px] md:text-[40px]  text-dark_black md:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[40px]  text-[#181D25] md:leading-[60px]">
                 Budget Control
               </h1>
             </div>
             <div className=" pt-[12px]">
-              <p className="font-normal font-Gilroy text-[15px] md:text-h2 text-blue_gray leading-h2">
+              <p className="font-normal font-Gilroy text-[15px] md:text-[19px] text-[#404B5A] leading-[32px]">
                 Streamline finances & unlock growth with our cloud accounting
                 solutions.
               </p>
@@ -323,7 +323,7 @@ const FinancialTools = () => {
                   <img src="/finantial-tool-imges/check.svg" alt="" />
                 </div>
                 <div className="w-full max-w-[539px]">
-                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-blue_gray leading-[30px]">
+                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-[#404B5A] leading-[30px]">
                     Schesti facilitates seamless budget management by converting
                     estimates into detailed budgets effortlessly
                   </p>
@@ -334,7 +334,7 @@ const FinancialTools = () => {
                   <img src="/finantial-tool-imges/check.svg" alt="" />
                 </div>
                 <div className="w-full max-w-[539px]">
-                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-blue_gray leading-[30px]">
+                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-[#404B5A] leading-[30px]">
                     The platform tracks all project related expenses in
                     real-time, ensuring adherence to budget constraints
                   </p>
@@ -345,7 +345,7 @@ const FinancialTools = () => {
                   <img src="/finantial-tool-imges/check.svg" alt="" />
                 </div>
                 <div className="w-full max-w-[539px]">
-                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-blue_gray leading-[30px]">
+                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-[#404B5A] leading-[30px]">
                     Predictive analytics help minimize financial surprises by
                     alerting users to potential budget overruns, ensuring
                     financial stability through accurate <br />
@@ -376,12 +376,12 @@ const FinancialTools = () => {
           </div>
           <div className="w-full max-w-[590px]">
             <div className="">
-              <h1 className="font-Gilroy font-bold text-[30px] md:text-[40px]  text-dark_black md:leading-[60px]">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[40px]  text-[#181D25] md:leading-[60px]">
                 Profitability Insights
               </h1>
             </div>
             <div className=" pt-[12px]">
-              <p className="font-normal font-Gilroy text-[15px] md:text-h2 text-blue_gray leading-h2">
+              <p className="font-normal font-Gilroy text-[15px] md:text-[19px] text-[#404B5A] leading-[32px]">
                 Streamline finances & unlock growth with our cloud accounting
                 solutions.
               </p>
@@ -392,7 +392,7 @@ const FinancialTools = () => {
                   <img src="/finantial-tool-imges/check.svg" alt="" />
                 </div>
                 <div className="w-full max-w-[539px]">
-                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-blue_gray leading-[30px]">
+                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-[#404B5A] leading-[30px]">
                     Schesti offers in-depth financial analysis to identify
                     cost-saving opportunities, optimizing resource allocation
                     and reducing unnecessary expenses
@@ -404,7 +404,7 @@ const FinancialTools = () => {
                   <img src="/finantial-tool-imges/check.svg" alt="" />
                 </div>
                 <div className="w-full max-w-[539px]">
-                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-blue_gray leading-[30px]">
+                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-[#404B5A] leading-[30px]">
                     Users gain a comprehensive view of project profitability,
                     allowing for strategic decisions to enhance profit margins
                   </p>
@@ -415,7 +415,7 @@ const FinancialTools = () => {
                   <img src="/finantial-tool-imges/check.svg" alt="" />
                 </div>
                 <div className="w-full max-w-[539px]">
-                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-blue_gray leading-[30px]">
+                  <p className="font-normal font-Gilroy text-[12px] md:text-[16px] text-[#404B5A] leading-[30px]">
                     The platform streamlines financial reporting, saving time
                     and reducing errors with automated features, while ensuring
                     compliance and transparency in financial dealings
@@ -433,12 +433,12 @@ const FinancialTools = () => {
           <div className=" flex flex-col items-center  py-[72px]">
             <div className="w-full max-w-[794px] flex flex-col items-center">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-dark_blue leading-[56px] px-5 md:px-0">
+                <h1 className="font-Gilroy font-bold text-center text-[25px] md:text-[40px] text-[#002B40] leading-[56px] px-5 md:px-0">
                   Financial Management Advantages with Schesti in Construction
                 </h1>
               </div>
               <div className="w-full max-w-[616px] pt-4">
-                <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[20px] text-dark_blue leading-[24px]">
+                <h1 className="font-normal font-Gilroy text-center text-[15px] md:text-[20px] text-[#002B40] leading-[24px]">
                   Explore how Schesti enhances financial accuracy and
                   profitability in your projects, Key Metrics and Benefits
                 </h1>
@@ -453,17 +453,17 @@ const FinancialTools = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[40.91px] text-dark_black  leading-[52.01px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[40.91px] text-[#181D25]  leading-[52.01px] text-center">
                     40%
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray leading-[29.71px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C] leading-[29.71px] text-center">
                     Enhanced Financial Accuracy
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-blue_gray leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#404B5A] leading-[16.8px]">
                     Users report a 40% increase in financial accuracy due to
                     Schesti advanced toolsl
                   </p>
@@ -483,17 +483,17 @@ const FinancialTools = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[40.91px] text-dark_black  leading-[52.01px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[40.91px] text-[#181D25]  leading-[52.01px] text-center">
                     35%
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray leading-[29.71px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C] leading-[29.71px] text-center">
                     Reduction in Unnecessary Costs
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-blue_gray leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#404B5A] leading-[16.8px]">
                     Achieve a 35% reduction in unnecessary costs through better
                     expense tracking and budget control
                   </p>
@@ -513,17 +513,17 @@ const FinancialTools = () => {
                   />
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[40.91px] text-dark_black  leading-[52.01px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[40.91px] text-[#181D25]  leading-[52.01px] text-center">
                     50%
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-charcoal_gray leading-[29.71px] text-center">
+                  <p className="font-Gilroy font-bold text-[18px] md:text-[24px] text-[#1A202C] leading-[29.71px] text-center">
                     Faster Financial Reporting
                   </p>
                 </div>
                 <div className="">
-                  <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-blue_gray leading-[16.8px]">
+                  <p className="font-normal font-Gilroy text-center text-[12px] md:text-[14px]  text-[#404B5A] leading-[16.8px]">
                     Financial reporting processes are accelerated by 50%,
                     enabling quicker, more informed decision-making
                   </p>
@@ -538,12 +538,12 @@ const FinancialTools = () => {
         <div className="container ">
           <div className="py-4 md:py-[82px] px-2 md:px-0 flex flex-col justify-center items-center gap-6">
             <div className="w-full max-w-[688px]">
-              <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-blue_dark md:leading-[56px] md:text-center">
+              <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-[#002B40] md:leading-[56px] md:text-center">
                 Take Control of Your Finances with Ease Using Schesti!
               </h1>
             </div>
             <div className="w-full max-w-[1008px]">
-              <p className="font-normal font-Gilroy text-[13px] md:text-h2  text-gray leading-[34px] md:text-center">
+              <p className="font-normal font-Gilroy text-[13px] md:text-[19px]  text-[#161C2D] leading-[34px] md:text-center">
                 Effortlessly manage all your financial tasks in one place with
                 Schesti. Our platform is designed to streamline financial
                 operations, allowing you to handle everything from budgeting and
@@ -564,10 +564,10 @@ const FinancialTools = () => {
         <div className="container">
           <div className=" ">
             <div className="text-center">
-              <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-dark_black md:leading-[44.57px]">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-[#181D25] md:leading-[44.57px]">
                 Browse FAQs{' '}
               </h1>
-              <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-gray md:leading-[32px] pt-3">
+              <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] md:leading-[32px] pt-3">
                 Lorem ipsum dolor sit amet consectetur. Vitae nunc facilisis{' '}
               </h1>
             </div>
@@ -590,12 +590,12 @@ const FinancialTools = () => {
             </div>
             <div className="w-full max-w-[511px]">
               <div className="">
-                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[48px]  text-dark_black lg:leading-[64px]">
+                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[48px]  text-[#181D25] lg:leading-[64px]">
                   Transform Construction with SCHESTI for a Better World!
                 </h1>
               </div>
               <div className=" pt-[32px]">
-                <p className="font-normal font-Gilroy text-[15px] lg:text-h2 text-gray leading-h2">
+                <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#161C2D] leading-8">
                   Empower Your Projects With Schesti: Estimating construction
                   projects shouldn not be a headache. We offers a solution that
                   streamlines the process for you. Discover the ease and
@@ -603,10 +603,10 @@ const FinancialTools = () => {
                 </p>
               </div>
               <div className="flex flex-col md:flex-row gap-5 pt-6">
-                <button className="bg-blue text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-md px-6 py-3 md:py-[15px]">
+                <button className="bg-[#007AB6] text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
                   Get Started Now!
                 </button>
-                <button className=" border-[2px] font-Poppins  text-blue font-medium text-[18px] leading-[27px] rounded-md px-6 py-[14px]">
+                <button className=" border-[2px] font-Poppins  text-[#007AB6] font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
                   Contact us
                 </button>
               </div>
@@ -614,6 +614,7 @@ const FinancialTools = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

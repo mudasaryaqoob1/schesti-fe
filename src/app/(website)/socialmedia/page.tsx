@@ -3,8 +3,8 @@ import Navbar from '../navbar';
 import CollapseComponent from '../components/customCollapse';
 import Socialmedia from '@/app/constants/Socialmedia.json';
 import TestimonialCard from '../components/testimonialCard';
-
-const socialmedia = () => {
+import Footer from '../footer';
+const SocialMedia = () => {
   return (
     <div>
       <div className="w-full">
@@ -210,7 +210,7 @@ const socialmedia = () => {
           <div className="container">
             <div className=" ">
               <div className="text-center">
-                <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-dark_black md:leading-[44.57px]">
+                <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-[#181D25] md:leading-[44.57px]">
                   Browse FAQs{' '}
                 </h1>
                 <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] md:leading-[32px] pt-3">
@@ -237,7 +237,7 @@ const socialmedia = () => {
               </div>
               <div className="w-full max-w-[511px]">
                 <div className="">
-                  <h1 className="font-Gilroy font-bold text-[30px] lg:text-[48px]  text-dark_black lg:leading-[64px]">
+                  <h1 className="font-Gilroy font-bold text-[30px] lg:text-[48px]  text-[#181D25] lg:leading-[64px]">
                   Ready to Simplify Your 
                     <span className=" text-schestiPrimary">
                       {' '}
@@ -263,8 +263,9 @@ const socialmedia = () => {
             </div>
           </div>
         </div>
+        <Footer/>
     </div>
   );
 };
 
-export default socialmedia;
+export default SocialMedia;

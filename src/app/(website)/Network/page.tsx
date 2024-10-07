@@ -3,6 +3,7 @@ import React from 'react';
 import Navbar from '../navbar';
 import network from '@/app/constants/network.json';
 import Image from 'next/image';
+import Footer from '../footer';
 // import HomepageSlider from '../homepage/homepageSlider';
 import CollapseComponent from '../components/customCollapse';
 
@@ -484,6 +485,7 @@ const Network = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };
