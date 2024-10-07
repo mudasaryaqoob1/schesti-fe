@@ -817,7 +817,7 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
                               scale
                             )
                           : shapeType == 'arc' || shapeType == 'curve'
-                            ? shape?.text ?? ''
+                            ? (shape?.text ?? '')
                             : '';
 
                 const line = new Konva.Line({

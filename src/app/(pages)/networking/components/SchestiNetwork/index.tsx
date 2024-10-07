@@ -12,7 +12,6 @@ const items: TabsProps['items'] = [
     key: '2',
     label: 'Contractor',
     children: <Layout userRole="contractor" />,
-
   },
   {
     key: '3',
@@ -43,7 +42,7 @@ const items: TabsProps['items'] = [
     key: '8',
     label: 'Estimator',
     children: <Layout userRole="estimator" />,
-  }
+  },
 ];
 
 const SchestiNetwork = () => {

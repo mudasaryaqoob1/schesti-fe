@@ -81,7 +81,7 @@ const Layout = ({ userRole }: Props) => {
       />
       {!schestiUsers || isLoading ? (
         <SkeletonLoader />
-      ) : (schestiUsers.length > 0 ? (
+      ) : schestiUsers.length > 0 ? (
         <div className="grid grid-cols-3 gap-4">
           {schestiUsers.map((userData: any, i: number) => (
             <SingleUserCard key={i} {...userData} />
@@ -89,7 +89,7 @@ const Layout = ({ userRole }: Props) => {
         </div>
       ) : (
         <NoData />
-      ))}
+      )}
       {filters.totalPages > 0 && (
         <div className="mt-1 flex justify-center">
           <Pagination

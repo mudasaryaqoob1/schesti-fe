@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation';
 import { useUser } from '@/app/hooks/useUser';
 
 type Props = {
-  fetchPosts?: boolean
+  fetchPosts?: boolean;
 };
 
 const UserPosts = ({ fetchPosts }: Props) => {

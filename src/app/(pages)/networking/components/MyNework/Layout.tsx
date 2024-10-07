@@ -15,14 +15,16 @@ type Props = {
 
 type IMyNetwork = {
   connections: null | [];
-}
+};
 
 const Layout = ({ userRole }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [, setError] = useState<unknown>('');
   const [searchText, setSearchText] = useState('');
   const [locationText, setLocationText] = useState('');
-  const [myNetworkUsers, setMyNetworkUsers] = useState<IMyNetwork>({ connections: null });
+  const [myNetworkUsers, setMyNetworkUsers] = useState<IMyNetwork>({
+    connections: null,
+  });
   const { myNetwork } = useSelector((state: any) => state.network);
   const [filters, setFilters] = useState({
     page: 1,
@@ -83,7 +85,7 @@ const Layout = ({ userRole }: Props) => {
           setLocationText(locationText);
         }}
       />
-      {(!myNetworkUsers.connections) || isLoading ? (
+      {!myNetworkUsers.connections || isLoading ? (
         <SkeletonLoader />
       ) : myNetworkUsers.connections.length ? (
         <div className="grid grid-cols-3 gap-4">

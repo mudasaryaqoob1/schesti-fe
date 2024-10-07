@@ -183,7 +183,8 @@ const SocialMedia = () => {
             <div className=" w-full max-w-[683.5px]">
               <div className="pb-4">
                 <h1 className="font-Gilroy font-bold text-[30px] md:text-[48px] text-[#161C2D] md:leading-[65px]">
-                  Top contractors worldwide<br/> rely on Schesti
+                  Top contractors worldwide
+                  <br /> rely on Schesti
                 </h1>
               </div>
               <div className=" w-full max-w-[500px]">
@@ -199,71 +200,77 @@ const SocialMedia = () => {
           <div className="">
             <div className="">
               <div className=" bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0_0_40px_0_rgba(46,45,116,0.2)] flex items-center">
-                <TestimonialCard/>
+                <TestimonialCard />
               </div>
             </div>
           </div>
         </div>
       </div>
-        {/* nine secyion */}
-        <div className="py-[120px]">
-          <div className="container">
-            <div className=" ">
-              <div className="text-center">
-                <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-[#181D25] md:leading-[44.57px]">
-                  Browse FAQs{' '}
-                </h1>
-                <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] md:leading-[32px] pt-3">
-                  Easily find answers to common questions with our comprehensive
-                  FAQs section.
+      {/* nine secyion */}
+      <div className="py-[120px]">
+        <div className="container">
+          <div className=" ">
+            <div className="text-center">
+              <h1 className="font-Gilroy font-bold text-[30px] md:text-[36px]  text-[#181D25] md:leading-[44.57px]">
+                Browse FAQs{' '}
+              </h1>
+              <h1 className="font-normal font-Gilroy text-[15px] md:text-[19px]  text-[#161C2D] md:leading-[32px] pt-3">
+                Easily find answers to common questions with our comprehensive
+                FAQs section.
+              </h1>
+            </div>
+            <div className="mt-4 px-4 md:px-7 lg:px-0 ">
+              <CollapseComponent faqs={Socialmedia} />
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* ten section */}
+      <div className="">
+        <div className="container">
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-12 py-3 md:py-[120px] md:gap-0 px-4 lg:px-0">
+            <div className="w-full">
+              <img
+                src="/custumer-managment-page-imeges/bedding-aplication-sec.png"
+                alt=""
+                className="w-full h-auto max-w-full max-h-[500px] object-contain"
+              />
+            </div>
+            <div className="w-full max-w-[511px]">
+              <div className="">
+                <h1 className="font-Gilroy font-bold text-[30px] lg:text-[48px]  text-[#181D25] lg:leading-[64px]">
+                  Ready to Simplify Your
+                  <span className=" text-schestiPrimary">
+                    {' '}
+                    Partner Search
+                  </span>{' '}
+                  ? Start Connecting Smarter with SCHESTI Now!
                 </h1>
               </div>
-              <div className="mt-4 px-4 md:px-7 lg:px-0 ">
-                <CollapseComponent faqs={Socialmedia} />
+              <div className=" pt-[24px]">
+                <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#161C2D] lg:leading-[32px]">
+                  With SCHESTI's Social Media Integration, managing your
+                  company's online presence has never been easier. Our platform
+                  allows you to schedule posts, track engagement, and analyze
+                  performance across multiple social media channels—all from one
+                  centralized dashboard. Stay connected with your audience,
+                  boost engagement, and streamline your digital marketing
+                  efforts in just a few clicks.
+                </p>
+              </div>
+              <div className="flex flex-col md:flex-row gap-5 pt-6">
+                <button className="bg-schestiPrimary text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
+                  Get Started Now!
+                </button>
+                <button className=" border-[2px] font-Poppins  text-schestiPrimary font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
+                  Contact us
+                </button>
               </div>
             </div>
           </div>
         </div>
-        {/* ten section */}
-        <div className="">
-          <div className="container">
-            <div className="flex flex-col lg:flex-row justify-between items-center gap-12 py-3 md:py-[120px] md:gap-0 px-4 lg:px-0">
-              <div className="w-full">
-                <img
-                  src="/custumer-managment-page-imeges/bedding-aplication-sec.png"
-                  alt=""
-                  className="w-full h-auto max-w-full max-h-[500px] object-contain"
-                />
-              </div>
-              <div className="w-full max-w-[511px]">
-                <div className="">
-                  <h1 className="font-Gilroy font-bold text-[30px] lg:text-[48px]  text-[#181D25] lg:leading-[64px]">
-                  Ready to Simplify Your 
-                    <span className=" text-schestiPrimary">
-                      {' '}
-                      Partner Search
-                    </span>{' '}
-                    ? Start Connecting Smarter with SCHESTI Now!
-                  </h1>
-                </div>
-                <div className=" pt-[24px]">
-                  <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#161C2D] lg:leading-[32px]">
-                  With SCHESTI's Social Media Integration, managing your company's online presence has never been easier. Our platform allows you to schedule posts, track engagement, and analyze performance across multiple social media channels—all from one centralized dashboard. Stay connected with your audience, boost engagement, and streamline your digital marketing efforts in just a few clicks.
-                  </p>
-                </div>
-                <div className="flex flex-col md:flex-row gap-5 pt-6">
-                  <button className="bg-schestiPrimary text-white font-medium text-[18px] font-Poppins leading-[27px] rounded-[39px] px-6 py-3 md:py-[15px]">
-                    Get Started Now!
-                  </button>
-                  <button className=" border-[2px] font-Poppins  text-schestiPrimary font-medium text-[18px] leading-[27px] rounded-[39px] px-6 py-[14px]">
-                    Contact us
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <Footer/>
+      </div>
+      <Footer />
     </div>
   );
 };

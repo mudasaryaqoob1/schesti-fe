@@ -34,9 +34,13 @@ const UpdateProfile = ({
   const [profileAvatar, setProfileAvatar] = useState<string | File>(avatar);
 
   const updateUserInRedux = (data: any) => {
-    dispatch(dispatch(setUserAction({ ...authData, user: { ...authData.user, ...data.user } })))
+    dispatch(
+      dispatch(
+        setUserAction({ ...authData, user: { ...authData.user, ...data.user } })
+      )
+    );
     setIsLoading(false);
-  }
+  };
 
   async function updateProfileHandler() {
     setIsLoading(true);
@@ -48,7 +52,9 @@ const UpdateProfile = ({
       });
       updateUserInRedux(data);
     } else {
-      const { data } = await userService.updateSocialProfile(id, { socialName: profileName });
+      const { data } = await userService.updateSocialProfile(id, {
+        socialName: profileName,
+      });
       updateUserInRedux(data);
     }
     setShowModal(false);

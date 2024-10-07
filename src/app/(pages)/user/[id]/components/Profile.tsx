@@ -12,11 +12,9 @@ import { voidFc } from '@/app/utils/types';
 
 type Props = {
   isSettings?: boolean;
-  fetchPosts?: voidFc
+  fetchPosts?: voidFc;
 };
-const ProfileIntro = ({
-  isSettings, fetchPosts = () => { }
-}: Props) => {
+const ProfileIntro = ({ isSettings, fetchPosts = () => {} }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const { id = '' } = useParams();
@@ -81,15 +79,16 @@ const ProfileIntro = ({
           />
         )}
 
-        {isSettings && <Image
-          onClick={() => setShowModal(true)}
-          width={20}
-          height={20}
-          src="/edit.svg"
-          className="cursor-pointer"
-          alt="edit"
-        />}
-
+        {isSettings && (
+          <Image
+            onClick={() => setShowModal(true)}
+            width={20}
+            height={20}
+            src="/edit.svg"
+            className="cursor-pointer"
+            alt="edit"
+          />
+        )}
       </div>
     </>
   );

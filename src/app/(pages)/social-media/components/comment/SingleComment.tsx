@@ -28,10 +28,33 @@ const SingleComment = (commentData: ICommentProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const { _id, parentId, isPostOwner = false, userReaction,
-    reactions, content, updatedAt, reply_to_username, replyCount, type, postId, isAdmin, setRefetchPost } = commentData;
+  const {
+    _id,
+    parentId,
+    isPostOwner = false,
+    userReaction,
+    reactions,
+    content,
+    updatedAt,
+    reply_to_username,
+    replyCount,
+    type,
+    postId,
+    isAdmin,
+    setRefetchPost,
+  } = commentData;
 
-  const { _id: postOwnerId, name = '', socialAvatar = '', socialName = '', avatar = '', name: postOwnerName = '', companyName = '', organizationName = '', university = '' } = commentData?.associatedCompany || {};
+  const {
+    _id: postOwnerId,
+    name = '',
+    socialAvatar = '',
+    socialName = '',
+    avatar = '',
+    name: postOwnerName = '',
+    companyName = '',
+    organizationName = '',
+    university = '',
+  } = commentData?.associatedCompany || {};
 
   const {
     isVisible: editVisible,
@@ -54,7 +77,6 @@ const SingleComment = (commentData: ICommentProps) => {
     }
   };
 
-
   const fullName = socialName || name || companyName || organizationName;
   const from = companyName || university || name;
   const userAvatar = socialAvatar || avatar;
@@ -62,7 +84,6 @@ const SingleComment = (commentData: ICommentProps) => {
   return (
     <>
       <div className="flex gap-3 justify-between mt-1">
-
         <Profile
           name={fullName}
           from={from}

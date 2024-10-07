@@ -23,8 +23,12 @@ const Reactions = ({
   isPost = true,
 }: Props) => {
   const [showReactions, setShowReactions] = useState(false);
-  const [currentUserReaction, setCurrentUserReaction] = useState(userReaction?.type || '')
-  const [currentReactions, setCurrentReactions] = useState(reactions as IUserReaction[] || []);
+  const [currentUserReaction, setCurrentUserReaction] = useState(
+    userReaction?.type || ''
+  );
+  const [currentReactions, setCurrentReactions] = useState(
+    (reactions as IUserReaction[]) || []
+  );
   const user = useUser();
   const addPostReactionHandler = async ({
     type = 'like',

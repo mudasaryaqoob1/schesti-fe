@@ -3,7 +3,7 @@
 import React from 'react';
 import Navbar from '../navbar';
 import CollapseComponent from '../components/customCollapse';
-import FAQ from  '@/app/constants/FAQ.json'
+import FAQ from '@/app/constants/FAQ.json';
 import Footer from '../footer';
 export default function FAQs() {
   return (
@@ -124,7 +124,7 @@ export default function FAQs() {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 }

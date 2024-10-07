@@ -1,8 +1,9 @@
 'use client';
 import React from 'react';
-import Navbar from '@/app/component/navbar/minnavbar';
+import Navbar from '../navbar';
 import Image from 'next/image';
 import Footer from '../footer';
+import blogs from '@/app/constants/blogs.json';
 export default function Blogs() {
   return (
     <>
@@ -254,7 +255,7 @@ export default function Blogs() {
           </button>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 }

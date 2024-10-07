@@ -167,9 +167,9 @@ const CreatePost = () => {
 
       <ReactQuill
         value={description}
-        placeholder='What’s in your mind...'
+        placeholder="What’s in your mind..."
         onChange={setDescription}
-        className='h-32 mt-3'
+        className="h-32 mt-3"
         modules={{ toolbar: false }}
       />
       {/* <textarea
@@ -267,7 +267,9 @@ const CreatePost = () => {
             onChange={({ target }) => {
               if (target.files) {
                 if (target.files.length > 0) {
-                  const selectedMediaFiles = Array.from(target.files as FileList);
+                  const selectedMediaFiles = Array.from(
+                    target.files as FileList
+                  );
                   setFiles((prev) => [
                     ...prev,
                     ...selectedMediaFiles.filter(

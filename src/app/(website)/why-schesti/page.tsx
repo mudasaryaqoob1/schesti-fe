@@ -163,7 +163,8 @@ const WhySchesti = () => {
           <div className="">
             <div className="">
               <h1 className="font-bold font-PlusJakartaSans text-center text-[25px] md:text-[40px] tracking-[-2px] text-[#161C2D] leading-[50.4px]">
-                Proven results you can <span className="text-[#007AB6]">Trust</span>{' '}
+                Proven results you can{' '}
+                <span className="text-[#007AB6]">Trust</span>{' '}
               </h1>
             </div>
             <div className="">

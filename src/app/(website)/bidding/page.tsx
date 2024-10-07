@@ -3,7 +3,7 @@ import React from 'react';
 import Navbar from '../navbar';
 // import HomepageSlider from '../homepage/homepageSlider';
 import CollapseComponent from '../components/customCollapse';
-import Biddingfaqs from '@/app/constants/Biddingfaqs.json'
+import Biddingfaqs from '@/app/constants/Biddingfaqs.json';
 import Footer from '../footer';
 
 const Bidding = () => {
@@ -523,7 +523,7 @@ const Bidding = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

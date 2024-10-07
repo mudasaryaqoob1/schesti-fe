@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../navbar';
 import CollapseComponent from '../components/customCollapse';
-import ScheduleFaqs from '@/app/constants/shedule.json'
+import ScheduleFaqs from '@/app/constants/shedule.json';
 import Footer from '../footer';
 const TimeScheduling = () => {
   return (
@@ -56,8 +56,8 @@ const TimeScheduling = () => {
           <div className="py-4 md:py-[99px] px-2 md:px-0 flex flex-col justify-center items-center gap-6">
             <div className="w-full max-w-[860px]">
               <h1 className="font-Gilroy font-bold text-[24px] md:text-[40px] text-[#002B40] md:leading-[56px] md:text-center">
-                From Plan to Perfection: How SCHESTI Time Scheduling Keeps
-                Your Projects on Track
+                From Plan to Perfection: How SCHESTI Time Scheduling Keeps Your
+                Projects on Track
               </h1>
             </div>
             <div className="w-full max-w-[1050px]">
@@ -446,7 +446,7 @@ const TimeScheduling = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };
