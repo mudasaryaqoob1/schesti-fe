@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
-
+import TestimonialData from '@/app/constants/testimonials.json';
 import Navbar from '../navbar';
 import Footer from '../footer';
 import TestimonialSlider from '../testimonialSlider';
@@ -50,7 +50,8 @@ const WhySchesti = () => {
                   <img src="/why-setch-imges/Fill1.svg" alt="" />
                 </div>
                 <div className=" bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0_0_40px_0_rgba(46,45,116,0.2)] flex items-center">
-                  <TestimonialCard />
+                  <TestimonialCard testimonials={TestimonialData[0]}/>
+                  
                 </div>
                 <div className="xl:flex hidden absolute right-[-42px] bottom-[-42px]">
                   <img src="/why-setch-imges/vector.svg" alt="" />
