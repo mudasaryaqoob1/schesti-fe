@@ -37,6 +37,7 @@ function ExperienceSlider({ slidesPerView = 3.06 }: IProps) {
         modules={[]}
         className="mySwiper"
       >
+<<<<<<< Updated upstream
         <SwiperSlide className="bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0px_0px_40px_0px_rgba(46,45,116,0.1)] py-6">
           <TestimonialCard />
         </SwiperSlide>
@@ -64,6 +65,16 @@ function ExperienceSlider({ slidesPerView = 3.06 }: IProps) {
         <SwiperSlide className="bg--wbg-whiteh-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0px_0px_40px_0px_rgba(46,45,116,0.1)] py-6">
           <TestimonialCard />
         </SwiperSlide>
+=======
+        {TestimonialData.map((testimonials: any) => (
+          <SwiperSlide
+            key={testimonials.key} // Correctly placed the key attribute here
+            className="bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px] shadow-[0px_0px_40px_0px_rgba(46,45,116,0.1)] py-6"
+          >
+            <TestimonialCard testimonials={testimonials} />
+          </SwiperSlide>
+        ))}
+>>>>>>> Stashed changes
       </Swiper>
     </>
   );

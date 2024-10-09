@@ -193,6 +193,11 @@ const Footer = () => {
                     Terms & Conditions
                   </Link>
                 </p>
+                <p className="font-regular font-Gilroy text-[17px] -tracking-[0.2px] leading-10 text-white cursor-pointer">
+                  <Link href="/privacy-cookies" className="cursor-pointer ">
+                  Cookies Policy
+                  </Link>
+                </p>
               </div>
             </div>
           </div>
