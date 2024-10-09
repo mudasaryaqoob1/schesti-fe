@@ -2,7 +2,6 @@
 import React from 'react';
 import Navbar from '../navbar';
 import Footer from '../footer';
-import Image from 'next/image';
 export default function TermsCondition() {
   return (
     <>
@@ -60,17 +59,17 @@ export default function TermsCondition() {
                 Email: <span className=" font-semibold">legal@Schesti.com</span>
               </p>
               <p className="font-normal pt-[10px] font-Gilroy text-[15px] md:text-[18px] text-[#1D1D1DE5] leading-[32px] text-left">
-                Schesti's Use of Cookies: Schesti ("we," "our," or "us") employs
-                cookies and similar technologies on our website
-                http://www.Schesti.com and the Schesti web application
-                ("Services"). By interacting with our Services and accepting the
-                prompts on our banners, you consent to our cookie usage as
-                outlined in this policy. Understanding Cookies: Cookies are
-                small text files sent to your browser by websites you visit.
-                They help our server to remember you and your preferences for a
-                more personalized experience upon your next visit to our
-                Services. Your browser notifies our systems about any cookies on
-                your device, enabling us to gather information from them.
+                Schesti Use of Cookies: Schesti employs cookies and similar
+                technologies on our website http://www.Schesti.com and the
+                Schesti web application Services. By interacting with our
+                Services and accepting the prompts on our banners, you consent
+                to our cookie usage as outlined in this policy. Understanding
+                Cookies: Cookies are small text files sent to your browser by
+                websites you visit. They help our server to remember you and
+                your preferences for a more personalized experience upon your
+                next visit to our Services. Your browser notifies our systems
+                about any cookies on your device, enabling us to gather
+                information from them.
               </p>
               <p className="font-normal pt-[10px] font-Gilroy text-[15px] md:text-[18px] text-[#1D1D1DE5] leading-[32px] text-left">
                 Types and Purposes of Cookies We Use: Schesti employs cookies

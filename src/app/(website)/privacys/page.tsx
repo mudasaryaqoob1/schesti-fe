@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import Navbar from '../navbar';
-import Image from 'next/image';
 import Footer from '../footer';
 import Link from 'next/link';
 export default function Privacy() {
@@ -32,8 +31,8 @@ export default function Privacy() {
         <div className=" container">
           <div className="pb-[80px]">
             <p className="font-normal font-Gilroy text-[15px] md:text-[18px] text-[#161C2D] leading-[32px]">
-              Schesti is dedicated to safeguarding your personal information.
-              We've aimed to craft this Privacy Policy using clear and
+              Schesti is dedicated to safeguarding your personal information. We
+              have aimed to craft this Privacy Policy using clear and
               straightforward language and to outline our privacy commitments
               transparently and accessibly. Please read this Privacy Policy
               carefully before consenting to the processing of your personal

@@ -3,6 +3,7 @@ import Navbar from '../navbar';
 import CollapseComponent from '../components/customCollapse';
 import Socialmedia from '@/app/constants/Socialmedia.json';
 import TestimonialCard from '../components/testimonialCard';
+import testimonialsData from '@/app/constants/testimonials.json';
 import Footer from '../footer';
 const SocialMedia = () => {
   return (
@@ -200,7 +201,7 @@ const SocialMedia = () => {
           <div className="">
             <div className="">
               <div className=" bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0_0_40px_0_rgba(46,45,116,0.2)] flex items-center">
-                <TestimonialCard />
+                <TestimonialCard testimonials={testimonialsData[0]} />
               </div>
             </div>
           </div>

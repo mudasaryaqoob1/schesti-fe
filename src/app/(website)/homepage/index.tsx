@@ -80,13 +80,13 @@ const HomePage = () => {
             <span className="text-[16px] leading-[20px] sm:text-[17px] sm:leading-[29px] font-Gilroy text-[#007AB6] tracking-[1.63px] font-bold uppercase">
               Leading the Way:
             </span>
-            <div className="font-extrabold text-[24px] sm:text-[32px] md:text-[35px] xl:text-[40px] leading-[32px] sm:leading-[48px] md:leading-[56px] text-[#002B40] mt-4 sm:mt-6 ">
+            <div className="text-[24px] sm:text-[32px] md:text-[35px] xl:text-[40px] leading-[32px] sm:leading-[48px] md:leading-[56px] text-[#002B40] mt-4 sm:mt-6 font-extrabold font-jakarta">
               Elevate Your Construction Venture with Schesti: A Symphony of
               Precision and Speed, Reshaping the Land
             </div>
-            <div className="w-[90%] sm:w-[80%] md:w-[583px] mx-auto text-[17px] leading-[29px] sm:text-[19px] sm:leading-[32px] font-Gilroy font-bold text-[#1A202C] mt-4 sm:mt-6 opacity-70">
+            <div className="w-[90%] sm:w-[80%] md:w-[583px] mx-auto text-[17px] leading-[29px] sm:text-[19px] sm:leading-[32px] font-medium text-[#1A202C] mt-4 sm:mt-6 opacity-70 font-jakarta">
               Elevate Your Construction Venture with Schesti:{' '}
-              <span className="text-[16px] leading-[20px] sm:text-[17px] sm:leading-[29px] md:text-[19px] md:leading-[32px] font-Gilroy font-regular text-[#4A5568]">
+              <span className="text-[16px] leading-[20px] sm:text-[17px] sm:leading-[29px] md:text-[19px] md:leading-[34px] font-normal  font-jakarta text-[#4A5568]">
                 A Symphony of Precision and Speed, Reshaping the Land
               </span>
             </div>

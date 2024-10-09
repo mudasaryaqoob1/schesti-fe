@@ -44,10 +44,7 @@ const Minicard = () => {
     useState('Bidding');
   return (
     <div className="container pt-8 ">
-      <div
-        className="flex flex-wrap max-w-[964px] w-full items-center justify-between mx-auto 
-]"
-      >
+      <div className="flex flex-wrap max-w-[964px]  w-full items-center justify-between sm:mx-auto sm:px-0 sm:gap-0 gap-2 px-4">
         {businessOperationTabs.map((tab) => (
           <div
             className="flex-shrink-0 cursor-pointer logo-container "

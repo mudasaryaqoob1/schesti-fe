@@ -158,7 +158,7 @@ export default {
       Gilroy: ['Gilroy', 'sans-serif'],
       Poppins: ['Poppins'],
       manrope: ['Manrope', 'sans-serif'],
-      jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
+      jakarta: ['"Plus Jakarta Sans"', 'latin'],
     },
     hovering: {
       custom: 'transition-transform duration-300 hover:scale-105',
