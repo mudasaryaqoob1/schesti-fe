@@ -1,0 +1,182 @@
+[
+  {
+    "key": 1,
+    "img": "/Avatar.svg",
+    "title": "John M",
+    "paragraph1": "Project Manager, Avalon Contracting, NC & USA",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“Schesti Technologies has completely transformed the way we manage our construction projects. The efficiency and ease of use of their platform is second to none. It has saved us countless hours and has streamlined our entire project management process!”"
+  },
+  {
+    "key": 2,
+    "img": "/Avatar.svg",
+    "title": "Sarah L.",
+    "paragraph1": "Operations Director & ClearSky Engineering ",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“From project scheduling to real-time updates, Schesti’s technology keeps us on track and informed. Their innovative solutions have reduced our operational delays and improved overall productivity. Highly recommended! ”"
+  },
+  {
+    "key": 3,
+    "img": "/Avatar.svg",
+    "title": "David R",
+    "paragraph1": "CEO & Peak Builders Group",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“The bid management tools from Schesti Technologies have made it easy for us to stay organized, submit proposals, and win more jobs. We’ve seen a noticeable improvement in efficiency and client satisfaction! ”"
+  },
+  {
+    "key": 4,
+    "img": "/Avatar.svg",
+    "title": "Emily S",
+    "paragraph1": "Construction Administrator & Horizon Developments",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“Schesti Technologies delivers exceptional customer service. Their team is always available and ready to assist us in overcoming any project challenges. Their platform has quickly become essential to our day-to-day operations.”"
+  },
+  {
+    "key": 5,
+    "img": "/Avatar.svg",
+    "title": "Michael T",
+    "paragraph1": "Lead Estimator & Eagle Contractors LLC",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“As an estimator, the tools provided by Schesti Technologies are indispensable. Creating, managing, and sending takeoffs has never been easier. The accuracy and user-friendly interface have simplified my work significantly!”"
+  },
+  {
+    "key": 6,
+    "img": "/Avatar.svg",
+    "title": "Renee P",
+    "paragraph1": "Architect, AEI Engineering LLC, Virginia & USA",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“Schesti Technologies’ invoicing system is a game changer. It ensures we stay on top of payments and streamlines financial management for our construction projects. The level of automation and customization is exactly what we needed.”"
+  },
+  {
+    "key": 7,
+    "img": "/Avatar.svg",
+    "title": "George K",
+    "paragraph1": "Managing Director & BlueLine Infrastructure",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“The integration of Schesti Technologies into our workflow has drastically improved our communication with clients and contractors. The transparency and real-time updates have helped us maintain strong relationships throughout our projects.”"
+  },
+  {
+    "key": 8,
+    "img": "/Avatar.svg",
+    "title": "Katherine D",
+    "paragraph1": "Project Coordinator & Ridgeview Construction",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“We used to face challenges with scheduling and coordinating our team across multiple projects. Schesti’s scheduling tools have given us complete control and visibility, allowing us to avoid conflicts and stay ahead of deadlines.”"
+  },
+  {
+    "key": 9,
+    "img": "/Avatar.svg",
+    "title": "Brandon S",
+    "paragraph1": "Contract Manager & Nova Real Estate Developments",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“Schesti Technologies has enhanced our contract management process. Their electronic signature feature is a lifesaver, and the ease of setting up contracts online has saved us tons of paperwork and legal headaches.”"
+  },
+  {
+    "key": 10,
+    "img": "/Avatar.svg",
+    "title": "Jennifer H",
+    "paragraph1": "Senior Engineer & RapidTech Construction Solutions",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“The customer support at Schesti Technologies is unparalleled. Whenever we have a question or concern, they’re quick to respond and provide solutions. We’re beyond impressed with the quality of their technology and the people behind it.”"
+  },
+  {
+    "key": 11,
+    "img": "/Avatar.svg",
+    "title": "Matthew A",
+    "paragraph1": "Construction Manager & CityBuild Constructors",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“We’ve been using Schesti Technologies for over a year now, and it has streamlined every aspect of our construction process, from planning to invoicing. Their platform is intuitive, and their customer service is always on point.”"
+  },
+  {
+    "key": 12,
+    "img": "/Avatar.svg",
+    "title": "Linda M",
+    "paragraph1": "Senior Estimator & Alpha Contracting",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“Schesti’s takeoff software is the best in the industry. It has made estimating fast, accurate, and stress-free. We’ve seen a huge improvement in our bidding process thanks to their detailed and reliable takeoff tools.”"
+  },
+  {
+    "key": 13,
+    "img": "/Avatar.svg",
+    "title": "Naser Alttabakh",
+    "paragraph1": "CEO, Alnaser Development Group, Cairo & Egypt",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“The comprehensive tools provided by Schesti have helped us grow our business and take on larger, more complex projects. The reporting features alone have given us valuable insights to improve our operations and profitability.”"
+  },
+  {
+    "key": 14,
+    "img": "/Avatar.svg",
+    "title": "Jessica F",
+    "paragraph1": "Project Coordinator & Elite Construction Services",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“We were blown away by how easy it was to integrate Schesti’s solutions into our existing workflow. Their software has enhanced collaboration across teams, minimized errors, and improved communication with subcontractors.”"
+  },
+  {
+    "key": 15,
+    "img": "/Avatar.svg",
+    "title": "Tony G",
+    "paragraph1": "General Contractor & BuildersPro LLC",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“Schesti Technologies has made managing multiple projects a breeze. Their cloud-based platform lets us stay updated in real-time, no matter where we are. This has greatly improved our decision-making and response times on-site.”"
+  },
+  {
+    "key": 16,
+    "img": "/Avatar.svg",
+    "title": "Diane R",
+    "paragraph1": "CEO & Excel Builders Inc.",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“I can’t say enough about the value that Schesti Technologies has brought to our company. We’ve saved time and money on every project since switching to their platform. It’s a powerful tool that every construction firm should be using!”"
+  },
+  {
+    "key": 17,
+    "img": "/Avatar.svg",
+    "title": "Kevin P",
+    "paragraph1": "Finance Manager & NextGen Construction",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“Schesti’s invoicing system is incredibly flexible and detailed. It allows us to track expenses, generate financial reports, and get paid faster. It’s exactly what we needed to keep our finances in check and stay organized.”"
+  },
+  {
+    "key": 18,
+    "img": "/Avatar.svg",
+    "title": "Olivia J",
+    "paragraph1": "Project Scheduler & ProBuild Contractors",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“Since we started using Schesti’s project scheduling tools, we’ve been able to meet deadlines more consistently. The platform’s ability to assign tasks and track progress in real-time has been a game changer for us.”"
+  },
+  {
+    "key": 19,
+    "img": "/Avatar.svg",
+    "title": "Carlos S",
+    "paragraph1": "Contract Administrator & LandMark Construction Group",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“The electronic contract signature feature from Schesti Technologies has revolutionized our paperwork process. We can now send and sign contracts digitally, reducing delays and keeping our projects on schedule.”"
+  },
+  {
+    "key": 20,
+    "img": "/Avatar.svg",
+    "title": "Amanda L",
+    "paragraph1": "Director of Operations & Keystone Building Solutions",
+    "img2": "/Star.svg",
+    "heading1": "5 stars",
+    "paragraph2": "“Schesti Technologies offers everything we need for project management in one platform. Their customer support is top-notch, and they’re always rolling out new features that make our jobs easier. We highly recommend them!”"
+  }
+]

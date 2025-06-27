@@ -8,13 +8,11 @@ import { userService } from '@/app/services/user.service';
 import Loader from '@/app/component/loader';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import ProfileAvatar from '@/app/(pages)/social-media/components/post/Profile';
-import { voidFc } from '@/app/utils/types';
 
 type Props = {
-  isSettings?: boolean;
-  fetchPosts?: voidFc;
+  userId?: boolean;
 };
-const ProfileIntro = ({ isSettings, fetchPosts = () => {} }: Props) => {
+const ProfileIntro = ({ userId }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const { id = '' } = useParams();
@@ -55,10 +53,7 @@ const ProfileIntro = ({ isSettings, fetchPosts = () => {} }: Props) => {
         avatar={avatar}
         showModal={showModal}
         setShowModal={setShowModal}
-        fetchUser={() => {
-          setFetchUser((prev) => !prev);
-          fetchPosts();
-        }}
+        fetchUser={() => setFetchUser((prev) => !prev)}
       />
       <div className="w-full mt-3.5 shadow rounded-xl p-6 bg-white flex justify-between">
         <div className="flex gap-4 items-center">
@@ -78,8 +73,7 @@ const ProfileIntro = ({ isSettings, fetchPosts = () => {} }: Props) => {
             alt="edit"
           />
         )}
-
-        {isSettings && (
+        {!id && userId && (
           <Image
             onClick={() => setShowModal(true)}
             width={20}

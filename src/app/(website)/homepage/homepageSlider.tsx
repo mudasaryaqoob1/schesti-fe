@@ -28,10 +28,10 @@ const HomePageSlider = () => {
               posuere. Neque”
             </div>
             <div className="flex flex-col sm:flex-row gap-3 mt-6 px-4">
-              <div className="font-bold font-Gilroy text-[17px] leading-[29px] -tracking-[0.2] text-blue">
+              <div className="font-bold  font-Gilroy text-[17px] leading-[29px] -tracking-[0.2] text-[#007AB6]">
                 Maria José Botín
               </div>
-              <div className="font-regular font-Gilroy text-[17px] leading-[29px] -tracking-[0.2] text-blue">
+              <div className="font-regular font-Gilroy text-[17px] leading-[29px] -tracking-[0.2] text-[#007AB6]">
                 Interior Designer
               </div>
             </div>
@@ -46,18 +46,18 @@ const HomePageSlider = () => {
               width={767}
               height={463}
               alt="slider image"
-              className="rounded-sm w-full max-w-[767px]"
+              className="rounded-lg w-full max-w-[767px]"
             />
-            <div className="max-w-[540px] font-Gilroy font-regular leading-[34px] text-xl md:text-[24px] -tracking-[0.5px] text-[#1A202C] text-center mt-10 px-4">
+            <div className="max-w-[600px] w-full font-Gilroy font-regular leading-[34px] text-xl md:text-[24px] -tracking-[0.5px] text-[#1A202C] text-center mt-10 ">
               “Lorem ipsum dolor sit amet consectetur. Eget consectetur in
               vivamus arcu. Velit sed libero libero imperdiet lacus nibh aliquam
               posuere. Neque”
             </div>
             <div className="flex flex-col sm:flex-row gap-3 mt-6 px-4">
-              <div className="font-bold font-Gilroy text-[17px] leading-[29px] -tracking-[0.2] text-blue">
+              <div className="font-bold font-Gilroy text-[17px] leading-[29px] -tracking-[0.2] text-[#007AB6]">
                 Maria José Botín
               </div>
-              <div className="font-regular font-Gilroy text-[17px] leading-[29px] -tracking-[0.2] text-blue">
+              <div className="font-regular font-Gilroy text-[17px] leading-[29px] -tracking-[0.2] text-[#007AB6]">
                 Interior Designer
               </div>
             </div>

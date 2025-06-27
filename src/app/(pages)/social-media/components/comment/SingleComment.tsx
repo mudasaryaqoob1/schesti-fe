@@ -23,39 +23,25 @@ export type ICommentProps = {
   setRefetchPost: Dispatch<SetStateAction<boolean>>;
 } & IComment;
 
-const SingleComment = (commentData: ICommentProps) => {
+const SingleComment = ({
+  _id,
+  parentId,
+  isPostOwner,
+  content,
+  updatedAt,
+  userReaction,
+  reactions,
+  associatedCompany,
+  replyCount,
+  isAdmin,
+  type,
+  reply_to_username,
+  postId,
+  setRefetchPost,
+}: ICommentProps) => {
   const { user } = useSelector((state: RootState) => state.auth.user);
   const router = useRouter();
   const dispatch = useDispatch();
-
-  const {
-    _id,
-    parentId,
-    isPostOwner = false,
-    userReaction,
-    reactions,
-    content,
-    updatedAt,
-    reply_to_username,
-    replyCount,
-    type,
-    postId,
-    isAdmin,
-    setRefetchPost,
-  } = commentData;
-
-  const {
-    _id: postOwnerId,
-    name = '',
-    socialAvatar = '',
-    socialName = '',
-    avatar = '',
-    name: postOwnerName = '',
-    companyName = '',
-    organizationName = '',
-    university = '',
-  } = commentData?.associatedCompany || {};
-
   const {
     isVisible: editVisible,
     toggleVisibility: toggleEditVisibility,
@@ -67,7 +53,7 @@ const SingleComment = (commentData: ICommentProps) => {
     containerRef: replyContainerRef,
   } = useToggleVisibility<HTMLDivElement>();
 
-  const isCommentOwner = user._id === postOwnerId;
+  const isCommentOwner = user._id === associatedCompany._id;
   const deletePostCommentHandler = async () => {
     try {
       await socialMediaService.httpDeletePostComment(_id);
@@ -77,19 +63,14 @@ const SingleComment = (commentData: ICommentProps) => {
     }
   };
 
-  const fullName = socialName || name || companyName || organizationName;
-  const from = companyName || university || name;
-  const userAvatar = socialAvatar || avatar;
-
   return (
     <>
       <div className="flex gap-3 justify-between mt-1">
         <Profile
-          name={fullName}
-          from={from}
-          avatar={userAvatar}
+          name={associatedCompany.name}
+          avatar={associatedCompany.avatar}
           date={updatedAt}
-          onClick={() => router.push(`/user/${postOwnerId}`)}
+          onClick={() => router.push(`/user/${associatedCompany._id}`)}
           isOwner={isCommentOwner}
         />
         {isCommentOwner ? (
@@ -171,6 +152,7 @@ const SingleComment = (commentData: ICommentProps) => {
       <Reactions
         id={_id}
         reactions={reactions}
+        setRefetchPost={setRefetchPost}
         isPost={false}
         userReaction={userReaction}
       />
@@ -181,7 +163,7 @@ const SingleComment = (commentData: ICommentProps) => {
             isPostOwner={isPostOwner}
             isAdmin={isAdmin}
             setRefetchPost={setRefetchPost}
-            reply_to_username={postOwnerName}
+            reply_to_username={associatedCompany.name}
             postId={_id}
           />
         )}

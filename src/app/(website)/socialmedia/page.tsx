@@ -3,6 +3,7 @@ import Navbar from '../navbar';
 import CollapseComponent from '../components/customCollapse';
 import Socialmedia from '@/app/constants/Socialmedia.json';
 import TestimonialCard from '../components/testimonialCard';
+import testimonialsData from '@/app/constants/testimonials.json';
 import Footer from '../footer';
 const SocialMedia = () => {
   return (
@@ -200,7 +201,7 @@ const SocialMedia = () => {
           <div className="">
             <div className="">
               <div className=" bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0_0_40px_0_rgba(46,45,116,0.2)] flex items-center">
-                <TestimonialCard />
+                <TestimonialCard testimonials={testimonialsData[0]} />
               </div>
             </div>
           </div>
@@ -249,13 +250,13 @@ const SocialMedia = () => {
               </div>
               <div className=" pt-[24px]">
                 <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#161C2D] lg:leading-[32px]">
-                  With SCHESTI's Social Media Integration, managing your
-                  company's online presence has never been easier. Our platform
-                  allows you to schedule posts, track engagement, and analyze
-                  performance across multiple social media channels—all from one
-                  centralized dashboard. Stay connected with your audience,
-                  boost engagement, and streamline your digital marketing
-                  efforts in just a few clicks.
+                  With SCHESTI Social Media Integration, managing your company
+                  online presence has never been easier. Our platform allows you
+                  to schedule posts, track engagement, and analyze performance
+                  across multiple social media channels—all from one centralized
+                  dashboard. Stay connected with your audience, boost
+                  engagement, and streamline your digital marketing efforts in
+                  just a few clicks.
                 </p>
               </div>
               <div className="flex flex-col md:flex-row gap-5 pt-6">

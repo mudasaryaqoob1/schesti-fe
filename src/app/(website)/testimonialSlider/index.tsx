@@ -2,6 +2,7 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import TestimonialCard from '../components/testimonialCard';
+import TestimonialData from '@/app/constants/testimonials.json';
 
 interface IProps {
   slidesPerView?: number;
@@ -37,36 +38,7 @@ function ExperienceSlider({ slidesPerView = 3.06 }: IProps) {
         modules={[]}
         className="mySwiper"
       >
-<<<<<<< Updated upstream
-        <SwiperSlide className="bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0px_0px_40px_0px_rgba(46,45,116,0.1)] py-6">
-          <TestimonialCard />
-        </SwiperSlide>
-        <SwiperSlide className="bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0_0_40px_0_rgba(46,45,116,0.2)] py-6">
-          <TestimonialCard />
-        </SwiperSlide>
-        <SwiperSlide className="bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0px_0px_40px_0px_rgba(46,45,116,0.1)] py-6">
-          <TestimonialCard />
-        </SwiperSlide>
-        <SwiperSlide className="bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0px_0px_40px_0px_rgba(46,45,116,0.1)] py-6">
-          <TestimonialCard />
-        </SwiperSlide>
-        <SwiperSlide className="bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0px_0px_40px_0px_rgba(46,45,116,0.1)] py-6">
-          <TestimonialCard />
-        </SwiperSlide>
-        <SwiperSlide className="bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0px_0px_40px_0px_rgba(46,45,116,0.1)] py-6">
-          <TestimonialCard />
-        </SwiperSlide>
-        <SwiperSlide className="bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0px_0px_40px_0px_rgba(46,45,116,0.1)] py-6">
-          <TestimonialCard />
-        </SwiperSlide>
-        <SwiperSlide className="bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0px_0px_40px_0px_rgba(46,45,116,0.1)] py-6">
-          <TestimonialCard />
-        </SwiperSlide>
-        <SwiperSlide className="bg--wbg-whiteh-[361px] rounded-[16px] w-full max-w-[346.5px]  shadow-[0px_0px_40px_0px_rgba(46,45,116,0.1)] py-6">
-          <TestimonialCard />
-        </SwiperSlide>
-=======
-        {TestimonialData.map((testimonials: any) => (
+ {TestimonialData.map((testimonials: any) => (
           <SwiperSlide
             key={testimonials.key} // Correctly placed the key attribute here
             className="bg-white h-[361px] rounded-[16px] w-full max-w-[346.5px] shadow-[0px_0px_40px_0px_rgba(46,45,116,0.1)] py-6"
@@ -74,7 +46,6 @@ function ExperienceSlider({ slidesPerView = 3.06 }: IProps) {
             <TestimonialCard testimonials={testimonials} />
           </SwiperSlide>
         ))}
->>>>>>> Stashed changes
       </Swiper>
     </>
   );

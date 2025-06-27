@@ -174,9 +174,9 @@ export default function HelpCenter() {
               <div className=" pt-[24px]">
                 <p className="font-normal font-Gilroy text-[15px] lg:text-[19px] text-[#161C2D] lg:leading-[32px]">
                   Empower Your Projects With Schesti: Estimating construction
-                  projects shouldn't be a headache. We offers a solution that
+                  projects shouldn be a headache. We offers a solution that
                   streamlines the process for you. Discover the ease and
-                  efficiency of Schesti's estimating feature today.
+                  efficiency of Schesti estimating feature today.
                 </p>
               </div>
               <div className="flex flex-col md:flex-row gap-5 pt-6">

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Comments from '../comment';
 import { IPost } from '.';
+import { truncate } from 'lodash';
 import { socialMediaService } from '@/app/services/social-media.service';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -26,30 +27,29 @@ import ProfileAvatar from './Profile';
 type Props = {
   myFeed?: boolean;
 } & IPost;
-const SinglePost = (data: Props) => {
-  const {
-    _id,
-    description,
-    mediaFiles,
-    feeling = '',
-    userReaction,
-    createdAt,
-    reactions,
-    myFeed = false,
-  } = data;
-  const {
+const SinglePost = ({
+  _id,
+  description,
+  mediaFiles,
+  feeling = '',
+  userReaction,
+  createdAt,
+  reactions,
+  associatedCompany: {
     _id: postOwnerId = '',
-    userRole: postOwnerRole = '',
-    socialName,
+    userRole: postOwnerRole,
     name = '',
-    university = '',
     companyName = '',
     organizationName = '',
+    socialName,
+    university = '',
     avatar = '',
     socialAvatar = '',
-  } = data?.associatedCompany || {};
+  },
+  myFeed = false,
+}: Props) => {
   const [refetchPost, setRefetchPost] = useState(false);
-  // const [seeMore, setSeeMore] = useState(false);
+  const [seeMore, setSeeMore] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
   // const [showComments, setShowComments] = useState(true);
   let showComments = true;
@@ -149,12 +149,6 @@ const SinglePost = (data: Props) => {
         from={isAdmin ? '' : from}
       />
       {description && (
-        <div
-          className="description mt-3 text-steelGray text-xs"
-          dangerouslySetInnerHTML={{ __html: description }}
-        ></div>
-      )}
-      {/* {description && (
         <div className="flex description mt-3 text-steelGray text-xs">
           <p>
             {truncate(description, {
@@ -174,7 +168,7 @@ const SinglePost = (data: Props) => {
             )}{' '}
           </p>
         </div>
-      )} */}
+      )}
 
       {/* filesimages or video view on single post */}
 
@@ -202,7 +196,7 @@ const SinglePost = (data: Props) => {
                 className="rounded-md cursor-pointer shadow-sm size-24 object-cover"
               />
             )}
-            {mediaFiles.length > 3 && i === 2 && (
+            {mediaFiles.length > 2 && i === 2 && (
               <p
                 onClick={() => handleLightbox(i)}
                 className="absolute text-white font-semibold text-xl left-[50%] top-[50%]"
@@ -218,6 +212,7 @@ const SinglePost = (data: Props) => {
           <Reactions
             id={_id}
             reactions={reactions}
+            setRefetchPost={setRefetchPost}
             userReaction={userReaction}
           />
           <div

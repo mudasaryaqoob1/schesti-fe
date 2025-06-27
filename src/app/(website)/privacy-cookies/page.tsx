@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import React from 'react';
 import Navbar from '../navbar';
 import Footer from '../footer';
@@ -8,7 +9,7 @@ export default function PrivacyCookies() {
     <>
       <Navbar />
       <div className="w-full">
-        <div className="bg-[url('/term-conditin-imges/hero.png')] bg-cover bg-center bg-no-repeat w-full lg:h-[310px] ">
+        <div className="bg-[#007AB699] bg-gradient-to-t from-white w-full lg:h-[310px] ">
           {/* Add your content here if needed */}
           <div className="container">
             <div className="flex justify-center pt-[60px] lg:pt-[195px]">

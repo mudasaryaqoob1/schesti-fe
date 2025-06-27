@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import Image from 'next/image';
 import { socialMediaService } from '@/app/services/social-media.service';
 import { IUserReaction } from '.';
@@ -7,6 +7,7 @@ import { useUser } from '@/app/hooks/useUser';
 type Props = {
   id: string;
   userReaction: IUserReaction | null;
+  setRefetchPost: Dispatch<SetStateAction<boolean>>;
   reactions: IUserReaction[];
   isPost?: boolean;
 };
@@ -27,7 +28,7 @@ const Reactions = ({
     userReaction?.type || ''
   );
   const [currentReactions, setCurrentReactions] = useState(
-    (reactions as IUserReaction[]) || []
+    reactions as IUserReaction[]
   );
   const user = useUser();
   const addPostReactionHandler = async ({

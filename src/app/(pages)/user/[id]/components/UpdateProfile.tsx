@@ -33,29 +33,28 @@ const UpdateProfile = ({
   const { id } = useParams();
   const [profileAvatar, setProfileAvatar] = useState<string | File>(avatar);
 
-  const updateUserInRedux = (data: any) => {
-    dispatch(
-      dispatch(
-        setUserAction({ ...authData, user: { ...authData.user, ...data.user } })
-      )
-    );
-    setIsLoading(false);
-  };
-
   async function updateProfileHandler() {
     setIsLoading(true);
     if (typeof profileAvatar === 'object') {
       const { mediaFiles } = await filesUrlGenerator([profileAvatar]);
-      const { data } = await userService.updateSocialProfile(id, {
+      await userService.updateSocialProfile(id, {
         socialName: profileName,
         socialAvatar: mediaFiles[0].url,
       });
-      updateUserInRedux(data);
+      setIsLoading(false);
     } else {
       const { data } = await userService.updateSocialProfile(id, {
         socialName: profileName,
       });
-      updateUserInRedux(data);
+      dispatch(
+        dispatch(
+          setUserAction({
+            ...authData,
+            user: { ...authData.user, ...data.user },
+          })
+        )
+      );
+      setIsLoading(false);
     }
     setShowModal(false);
     fetchUser();
@@ -79,10 +78,10 @@ const UpdateProfile = ({
         <div className="px-6 py-3 flex items-center flex-col gap-4">
           <label
             htmlFor="avatar"
-            className="flex justify-center cursor-pointer max-w-16 relative"
+            className="flex justify-center cursor-pointer max-w-16"
           >
             <Image
-              className="rounded-full border border-slate-700"
+              className="rounded-full"
               width={60}
               height={60}
               src={
@@ -93,13 +92,6 @@ const UpdateProfile = ({
                     : URL.createObjectURL(profileAvatar as File)
               }
               alt={name}
-            />
-            <Image
-              width={16}
-              height={16}
-              src="/edit.svg"
-              className="cursor-pointer absolute right-3 bottom-3.5"
-              alt="edit"
             />
           </label>
           <input

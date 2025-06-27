@@ -22,7 +22,7 @@ const Network = () => {
                   <div className=" w-full  flex flex-col items-center">
                     <div className="pb-5 w-full max-w-[900px]">
                       <h1 className="font-Gilroy font-bold text-[24px] md:text-[48px] leading-[-1.2px] text-center text-[#161C2D] md:leading-[64px]">
-                        Simplify Your Partner Search with SCHESTI's Smart
+                        Simplify Your Partner Search with SCHESTIs Smart
                         Networking Solutions
                       </h1>
                     </div>
@@ -32,7 +32,7 @@ const Network = () => {
                         partners in construction—use SCHESTI to simplify the
                         process and achieve immediate results. Connect
                         seamlessly with a diverse network of construction
-                        professionals and businesses. With SCHESTI's smart
+                        professionals and businesses. With SCHESTIs smart
                         networking solutions, discover new opportunities and
                         collaborations effortlessly
                       </p>
@@ -65,7 +65,7 @@ const Network = () => {
               <div className=" flex flex-col items-center  py-[72px]">
                 <div className="w-full max-w-[744px]">
                   <h1 className="font-bold font-Gilroy text-center text-[25px] md:text-[32px] text-dark_blue leading-[48px]">
-                    Streamline Your Partner Search with SCHESTI's Intelligent
+                    Streamline Your Partner Search with SCHESTI Intelligent
                     Networking Solutions
                   </h1>
                 </div>
@@ -86,9 +86,9 @@ const Network = () => {
                         industry
                       </p>
                       <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-[#4A5568] leading-[19.41px] pt-5">
-                        With SCHESTI's smart networking solutions, streamline
-                        your partner search and achieve immediate results,
-                        saving you time and effort
+                        With SCHESTI smart networking solutions, streamline your
+                        partner search and achieve immediate results, saving you
+                        time and effort
                       </p>
                     </div>
                   </div>
@@ -197,7 +197,7 @@ const Network = () => {
                   Networking
                 </div>
                 <div className="font-bold font-Gilroy text-[24px] lg:text-[32px] leading-[36px] lg:leading-[48px] -tracking-[1.2px] text-[#161C2D] mt-3 lg:mt-3">
-                  Simplify Your Partner Search with SCHESTI's Smart Networking
+                  Simplify Your Partner Search with SCHESTI Smart Networking
                   Solutions
                 </div>
                 <div className="font-regular font-Gilroy text-[19px] leading-[32px] text-[#161C2D] opacity-70 mt-4 lg:mt-6">
@@ -231,7 +231,7 @@ const Network = () => {
               </div>
               <div className="font-regular font-Gilroy text-[19px] leading-[32px] text-[#161C2D] opacity-70 mt-4 lg:mt-6">
                 Make connecting with the right companies easier than ever with
-                SCHESTI's smart networking solutions. Streamline your partner
+                SCHESTI smart networking solutions. Streamline your partner
                 discovery in the construction sector with ease and reliability
               </div>
               <div className="mt-5 lg:mt-6">
@@ -303,7 +303,7 @@ const Network = () => {
               </div>
               <div className="font-regular w-full max-w-[464px] font-Gilroy text-[19px] leading-[32px] text-[#161C2D] opacity-70 mt-4 lg:mt-6">
                 Build strong partnerships and strategic alliances that foster
-                tangible growth and development for your business. SCHESTI's
+                tangible growth and development for your business. SCHESTI
                 platform is designed to drive collaborative success and ensure
                 long-term relationships
               </div>
@@ -363,8 +363,8 @@ const Network = () => {
                     <div className="">
                       <p className="font-normal font-Gilroy text-center text-[15px] md:text-[16px]  text-[#4A5568] leading-[19.41px]">
                         Customer respondents reported a 95% increase in
-                        successful business connections using SCHESTI's
-                        networking platform
+                        successful business connections using SCHESTI networking
+                        platform
                       </p>
                     </div>
                   </div>
@@ -387,7 +387,7 @@ const Network = () => {
                     </div>
                     <div className="">
                       <p className="font-normal font-Gilroy text-center text-[12px] md:text-[16px]  text-[#4A5568] leading-[19.41px]">
-                        Customer survey respondents who use SCHESTI's networking
+                        Customer survey respondents who use SCHESTI networking
                         solutions experience an average search time reduction of
                         75%
                       </p>

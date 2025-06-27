@@ -6,7 +6,7 @@ import NoData from '../NoData';
 import { useSelector } from 'react-redux';
 import { networkingService } from '@/app/services/networking.service';
 import { NetworkSearchTypes } from '../../page';
-import SkeletonLoader from '@/app/component/loader/Skeleton';
+import Loader from '@/app/component/loader';
 const lodash = require('lodash');
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
 
 const Layout = ({ userRole }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [schestiUsers, setSchestiUsers] = useState<[] | null>(null);
+  const [schestiUsers, setSchestiUsers] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [locationText, setLocationText] = useState('');
   const { schestiNetwork } = useSelector((state: any) => state.network);
@@ -79,8 +79,8 @@ const Layout = ({ userRole }: Props) => {
           setLocationText(locationText);
         }}
       />
-      {!schestiUsers || isLoading ? (
-        <SkeletonLoader />
+      {isLoading ? (
+        <Loader />
       ) : schestiUsers.length > 0 ? (
         <div className="grid grid-cols-3 gap-4">
           {schestiUsers.map((userData: any, i: number) => (
